@@ -15,10 +15,10 @@ export function HeroSection() {
       <div className="container relative py-12 md:py-16">
         <div className="mx-auto max-w-5xl text-center mb-8">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 text-zinc-900">
-            Shop Parts for Your Vehicle
+            Find Your Perfect Tires
           </h1>
           <p className="text-base md:text-lg text-zinc-600 font-semibold">
-            Find the Perfect Tires - Free Shipping Sitewide!
+            New & Used Tires | Off-Road Wheels | Expert Service in El Cajon
           </p>
         </div>
 

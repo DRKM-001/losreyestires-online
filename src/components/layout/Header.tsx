@@ -26,11 +26,11 @@ export function Header() {
       <div className="border-b bg-zinc-50">
         <div className="container flex h-10 items-center justify-between text-xs">
           <div className="flex items-center gap-6">
-            <a href="tel:+1234567890" className="flex items-center gap-2 hover:text-red-600 transition-colors text-zinc-700">
+            <a href="tel:619-440-6098" className="flex items-center gap-2 hover:text-red-600 transition-colors text-zinc-700">
               <Phone className="h-4 w-4" />
-              <span className="hidden sm:inline font-semibold">877-474-4821</span>
+              <span className="hidden sm:inline font-semibold">619-440-6098</span>
             </a>
-            <span className="hidden md:inline text-zinc-600 font-medium">Free Shipping Sitewide!</span>
+            <span className="hidden md:inline text-zinc-600 font-medium">El Cajon, CA | Open 7 Days a Week</span>
           </div>
           <div className="flex items-center gap-6 font-semibold text-zinc-700">
             <Link href="/locations" className="hover:text-red-600 transition-colors text-[11px]">

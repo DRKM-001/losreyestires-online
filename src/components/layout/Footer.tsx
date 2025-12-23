@@ -51,12 +51,12 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-zinc-400 mb-4">
-              Your trusted source for quality tires and wheels.
+              Founded by Polo Reyes in the early 2000s. Your trusted source for quality tires and wheels in San Diego.
             </p>
             <div className="space-y-2.5 text-sm">
-              <a href="tel:+1234567890" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
+              <a href="tel:619-440-6098" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
                 <Phone className="h-4 w-4" />
-                (123) 456-7890
+                619-440-6098
               </a>
               <a href="mailto:info@losreyestires.com" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
                 <Mail className="h-4 w-4" />
@@ -64,7 +64,7 @@ export function Footer() {
               </a>
               <div className="flex items-center gap-2 text-zinc-400">
                 <MapPin className="h-4 w-4" />
-                <span>Multiple Locations</span>
+                <span>1245 N 1st St, El Cajon, CA 92021</span>
               </div>
             </div>
           </div>

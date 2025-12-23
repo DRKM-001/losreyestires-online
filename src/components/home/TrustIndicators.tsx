@@ -4,23 +4,23 @@ export function TrustIndicators() {
   const features = [
     {
       icon: Truck,
-      title: 'Free Shipping',
-      description: 'On orders over $150',
+      title: 'New & Used Tires',
+      description: 'Quality options for every budget',
     },
     {
       icon: Shield,
-      title: 'Price Match Guarantee',
-      description: 'We beat competitor prices',
+      title: 'Expert Service',
+      description: 'Professional installation & repairs',
     },
     {
       icon: Award,
-      title: 'Certified Experts',
-      description: 'Professional installation',
+      title: 'Off-Road Specialists',
+      description: 'Custom wheels & lift culture',
     },
     {
       icon: HeadphonesIcon,
-      title: '24/7 Support',
-      description: 'Always here to help',
+      title: 'Open 7 Days',
+      description: 'Mon-Sat 7AM-7PM | Sun 8AM-3PM',
     },
   ];
 
