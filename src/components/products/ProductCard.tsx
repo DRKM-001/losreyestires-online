@@ -16,7 +16,7 @@ export function ProductCard({ product }: ProductCardProps) {
     : 0;
 
   return (
-    <Card className="group overflow-hidden h-full flex flex-col transition-all hover:shadow-xl border-2 hover:border-red-600">
+    <Card className="group overflow-hidden h-full flex flex-col transition-all hover:shadow-lg">
       <Link href={`/products/${product.id}`}>
         <div className="relative aspect-square overflow-hidden bg-zinc-100">
           {product.images[0] ? (
@@ -33,12 +33,12 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
           
           {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-2">
+          <div className="absolute top-3 left-3 flex flex-col gap-2">
             {!product.inStock && (
-              <Badge className="bg-red-600 hover:bg-red-700 font-bold uppercase">Out of Stock</Badge>
+              <Badge className="bg-red-600 font-semibold text-xs">Out of Stock</Badge>
             )}
             {discount > 0 && (
-              <Badge className="bg-black hover:bg-zinc-800 font-bold uppercase">
+              <Badge className="bg-red-600 font-semibold text-xs">
                 Save {discount}%
               </Badge>
             )}
@@ -48,15 +48,15 @@ export function ProductCard({ product }: ProductCardProps) {
 
       <CardContent className="flex-1 p-4">
         <Link href={`/products/${product.id}`}>
-          <div className="mb-2">
-            <p className="text-xs text-zinc-500 uppercase font-bold mb-1">{product.brand}</p>
-            <h3 className="font-bold line-clamp-2 group-hover:text-red-600 transition-colors">
+          <div className="mb-3">
+            <p className="text-xs text-zinc-500 font-semibold mb-1">{product.brand}</p>
+            <h3 className="font-semibold text-sm line-clamp-2 text-zinc-900">
               {product.name}
             </h3>
           </div>
 
           {product.size && (
-            <p className="text-sm text-zinc-600 font-semibold mb-2">{product.size}</p>
+            <p className="text-xs text-zinc-600 mb-2">{product.size}</p>
           )}
 
           {/* Rating */}
@@ -80,23 +80,23 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
 
         {/* Price */}
-        <div className="flex items-baseline gap-2 mb-2">
+        <div className="flex items-baseline gap-2 mb-3">
           {product.salePrice ? (
             <>
-              <span className="text-2xl font-black text-red-600">${product.salePrice.toFixed(2)}</span>
-              <span className="text-sm text-zinc-500 line-through font-semibold">
+              <span className="text-xl font-bold text-red-600">${product.salePrice.toFixed(2)}</span>
+              <span className="text-sm text-zinc-400 line-through">
                 ${product.price.toFixed(2)}
               </span>
             </>
           ) : (
-            <span className="text-2xl font-black">${product.price.toFixed(2)}</span>
+            <span className="text-xl font-bold text-zinc-900">${product.price.toFixed(2)}</span>
           )}
         </div>
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
         <Button 
-          className={`w-full font-bold uppercase ${
+          className={`w-full font-semibold text-sm ${
             product.inStock 
               ? 'bg-red-600 hover:bg-red-700' 
               : 'bg-zinc-400'

@@ -25,19 +25,19 @@ export function TrustIndicators() {
   ];
 
   return (
-    <section className="py-12 border-y-2 border-zinc-200 bg-white">
+    <section className="py-10 border-y bg-zinc-50">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
-              <div key={feature.title} className="flex items-start gap-4">
+              <div key={feature.title} className="flex items-center gap-4">
                 <div className="flex-shrink-0">
-                  <Icon className="h-10 w-10 text-red-600" />
+                  <Icon className="h-8 w-8 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="font-black uppercase text-sm mb-1">{feature.title}</h3>
-                  <p className="text-sm text-zinc-600 font-medium">{feature.description}</p>
+                  <h3 className="font-bold text-sm mb-0.5 text-zinc-900">{feature.title}</h3>
+                  <p className="text-xs text-zinc-600">{feature.description}</p>
                 </div>
               </div>
             );

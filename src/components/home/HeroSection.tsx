@@ -10,43 +10,42 @@ export function HeroSection() {
   const [searchType, setSearchType] = useState<'vehicle' | 'size'>('vehicle');
 
   return (
-    <section className="relative bg-black text-white">
-      <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/50 to-black" />
+    <section className="relative bg-gradient-to-br from-zinc-100 to-white">
       
-      <div className="container relative py-16 md:py-24">
-        <div className="mx-auto max-w-5xl text-center mb-10">
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4 uppercase tracking-tight">
-            Find The Right Tires
+      <div className="container relative py-12 md:py-16">
+        <div className="mx-auto max-w-5xl text-center mb-8">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 text-zinc-900">
+            Shop Parts for Your Vehicle
           </h1>
-          <p className="text-lg md:text-xl text-zinc-300 font-medium">
-            Shop by Vehicle or Size - Free Shipping Over $150
+          <p className="text-base md:text-lg text-zinc-600 font-semibold">
+            Find the Perfect Tires - Free Shipping Sitewide!
           </p>
         </div>
 
-        <Card className="mx-auto max-w-5xl p-6 md:p-8 bg-zinc-900 border-zinc-800">
+        <Card className="mx-auto max-w-5xl p-6 md:p-8 bg-white shadow-lg border-0">
           <div className="flex gap-3 mb-6">
             <Button
               variant={searchType === 'vehicle' ? 'default' : 'outline'}
               onClick={() => setSearchType('vehicle')}
-              className={`flex-1 h-11 font-bold uppercase text-sm ${
+              className={`flex-1 h-12 font-bold text-sm ${
                 searchType === 'vehicle' 
-                  ? 'bg-red-600 hover:bg-red-700' 
-                  : 'border-zinc-700 hover:bg-zinc-800 hover:text-white'
+                  ? 'bg-red-600 hover:bg-red-700 text-white' 
+                  : 'border-2 border-zinc-300 hover:border-red-600 hover:text-red-600 bg-white text-zinc-700'
               }`}
             >
-              <Car className="mr-2 h-4 w-4" />
+              <Car className="mr-2 h-5 w-5" />
               Shop By Vehicle
             </Button>
             <Button
               variant={searchType === 'size' ? 'default' : 'outline'}
               onClick={() => setSearchType('size')}
-              className={`flex-1 h-11 font-bold uppercase text-sm ${
+              className={`flex-1 h-12 font-bold text-sm ${
                 searchType === 'size' 
-                  ? 'bg-red-600 hover:bg-red-700' 
-                  : 'border-zinc-700 hover:bg-zinc-800 hover:text-white'
+                  ? 'bg-red-600 hover:bg-red-700 text-white' 
+                  : 'border-2 border-zinc-300 hover:border-red-600 hover:text-red-600 bg-white text-zinc-700'
               }`}
             >
-              <Search className="mr-2 h-4 w-4" />
+              <Search className="mr-2 h-5 w-5" />
               Shop By Size
             </Button>
           </div>
@@ -91,9 +90,8 @@ export function HeroSection() {
                 </SelectContent>
               </Select>
 
-              <Button size="lg" className="w-full h-11 bg-red-600 hover:bg-red-700 font-bold uppercase">
-                <Search className="mr-2 h-4 w-4" />
-                Search Tires
+              <Button size="lg" className="w-full h-12 bg-red-600 hover:bg-red-700 font-bold">
+                Go
               </Button>
             </div>
           ) : (
@@ -138,28 +136,13 @@ export function HeroSection() {
                 </SelectContent>
               </Select>
 
-              <Button size="lg" className="w-full h-11 bg-red-600 hover:bg-red-700 font-bold uppercase">
-                <Search className="mr-2 h-4 w-4" />
-                Search Tires
+              <Button size="lg" className="w-full h-12 bg-red-600 hover:bg-red-700 font-bold">
+                Go
               </Button>
             </div>
           )}
         </Card>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-8 text-sm font-semibold uppercase">
-          <div className="flex items-center gap-2 text-zinc-300">
-            <div className="h-2 w-2 rounded-full bg-red-600" />
-            <span>Free Shipping $150+</span>
-          </div>
-          <div className="flex items-center gap-2 text-zinc-300">
-            <div className="h-2 w-2 rounded-full bg-red-600" />
-            <span>Expert Installation</span>
-          </div>
-          <div className="flex items-center gap-2 text-zinc-300">
-            <div className="h-2 w-2 rounded-full bg-red-600" />
-            <span>Price Match Guarantee</span>
-          </div>
-        </div>
       </div>
     </section>
   );

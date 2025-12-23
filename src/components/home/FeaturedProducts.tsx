@@ -73,18 +73,18 @@ export function FeaturedProducts() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-zinc-50">
+    <section className="py-12 md:py-16 bg-zinc-50">
       <div className="container">
-        <div className="flex items-end justify-between mb-12">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl md:text-4xl font-black uppercase mb-3">Featured Products</h2>
-            <p className="text-zinc-600 text-lg font-medium">
-              Top-Rated Tires At Unbeatable Prices
+            <h2 className="text-2xl md:text-3xl font-black mb-1 text-zinc-900">New Products</h2>
+            <p className="text-sm text-zinc-600">
+              Shop our latest arrivals
             </p>
           </div>
           <Link href="/products">
-            <Button className="hidden sm:flex bg-black hover:bg-zinc-800 font-bold uppercase">
-              View All
+            <Button className="hidden sm:flex bg-red-600 hover:bg-red-700 font-bold">
+              Shop All
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
@@ -98,8 +98,8 @@ export function FeaturedProducts() {
 
         <div className="mt-8 text-center sm:hidden">
           <Link href="/products">
-            <Button className="bg-black hover:bg-zinc-800 font-bold uppercase">
-              View All Products
+            <Button className="bg-red-600 hover:bg-red-700 font-bold">
+              Shop All Products
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
