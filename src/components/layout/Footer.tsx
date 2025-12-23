@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Phone, Mail, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
@@ -41,11 +42,16 @@ export function Footer() {
           {/* Brand & Contact */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center mb-4">
-              <span className="text-xl font-black">LOS REYES</span>
-              <span className="text-xl font-black text-red-600 ml-2">TIRES</span>
+              <Image
+                src="/losreyes_000White.png"
+                alt="Los Reyes Tires"
+                width={200}
+                height={80}
+                className="h-16 w-auto brightness-0 invert"
+              />
             </Link>
             <p className="text-sm text-zinc-400 mb-4">
-              Your trusted source for quality tires and wheels since 1995.
+              Your trusted source for quality tires and wheels.
             </p>
             <div className="space-y-2.5 text-sm">
               <a href="tel:+1234567890" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">

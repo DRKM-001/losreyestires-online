@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShoppingCart, Search, Menu, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,10 +50,14 @@ export function Header() {
       <div className="container flex h-20 items-center justify-between gap-8">
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl lg:text-3xl font-black tracking-tight text-zinc-900">LOS REYES</span>
-            <span className="text-2xl lg:text-3xl font-black text-red-600">TIRES</span>
-          </div>
+          <Image
+            src="/losreyes_002.png"
+            alt="Los Reyes Tires"
+            width={180}
+            height={60}
+            className="h-12 w-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}
