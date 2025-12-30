@@ -72,7 +72,6 @@ export function Header() {
           </div>
         </div>
       </div>
-
       {/* Main header */}
       <div className="container flex h-20 items-center justify-between gap-8">
         {/* Logo */}
@@ -382,20 +381,20 @@ export function Header() {
 
             {/* Financing link */}
             <NavigationMenuItem>
-              <Link href="/financing" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle() + " text-sm font-bold"}>
+              <NavigationMenuLink asChild>
+                <Link href="/financing" className={navigationMenuTriggerStyle() + " text-sm font-bold"}>
                   Financing
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
 
             {/* Deals link */}
             <NavigationMenuItem>
-              <Link href="/deals" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle() + " text-sm font-bold"}>
+              <NavigationMenuLink asChild>
+                <Link href="/deals" className={navigationMenuTriggerStyle() + " text-sm font-bold"}>
                   Deals
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
@@ -512,7 +511,6 @@ export function Header() {
           </Sheet>
         </div>
       </div>
-      
       {/* Auth Modals */}
       <LoginModal 
         open={loginOpen} 
