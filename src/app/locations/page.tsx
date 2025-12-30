@@ -147,7 +147,7 @@ export default function LocationsPage() {
             <h2 className="text-3xl font-bold mb-6 text-center">Find Your Nearest Location</h2>
             <div className="rounded-lg overflow-hidden shadow-lg border-2 border-zinc-200">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m52!1m12!1m3!1d429456.8901234567!2d-117.1611!3d32.8153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m37!3e0!4m5!1s0x80d95a14c3fb8d85%3A0x2204cb4d3e90fca0!2s1245%20N%201st%20St%2C%20El%20Cajon%2C%20CA%2092021!3m2!1d32.8128!2d-116.9443!4m5!1s0x80d9535ae8d54359%3A0x24e3693d38e36a2e!2s405%2016th%20St%2C%20San%20Diego%2C%20CA%2092101!3m2!1d32.7157!2d-117.1611!4m5!1s0x80d956fe7e2c1b0f%3A0x201b2db382e3e0b8!2s7267%20El%20Cajon%20Blvd%2C%20San%20Diego%2C%20CA%2092115!3m2!1d32.7556!2d-117.0634!4m5!1s0x80d9540883a0c2c3%3A0x3f25c42e5f3c7e4d!2s2702%20Market%20St%2C%20San%20Diego%2C%20CA%2092102!3m2!1d32.7075!2d-117.1285!4m5!1s0x80d9540883a0c2c3%3A0x3f25c42e5f3c7e4d!2s3658%20Ocean%20View%20Blvd%2C%20San%20Diego%2C%20CA%2092113!3m2!1d32.6958!2d-117.1131!4m5!1s0x80d9540883a0c2c3%3A0x3f25c42e5f3c7e4d!2s8828%20Winter%20Gardens%20Blvd%2C%20Lakeside%2C%20CA%2092040!3m2!1d32.8342!2d-116.9212!4m5!1s0x80d9540883a0c2c3%3A0x3f25c42e5f3c7e4d!2s8740%20Troy%20St%2C%20Spring%20Valley%2C%20CA%2091977!3m2!1d32.7448!2d-116.9889!4m5!1s0x80d9540883a0c2c3%3A0x3f25c42e5f3c7e4d!2s260%20N%20Juniper%20St%2C%20Escondido%2C%20CA%2092025!3m2!1d33.1253!2d-117.0814!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d107023.89291304535!2d-117.08143175!3d32.81531!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80d95a14c3fb8d85%3A0x2204cb4d3e90fca0!2sLos%20Reyes%20Tires!5e0!3m2!1sen!2sus!4v1704000000000!5m2!1sen!2sus"
                 width="100%"
                 height="500"
                 style={{ border: 0 }}
@@ -158,7 +158,14 @@ export default function LocationsPage() {
               />
             </div>
             <p className="text-center text-sm text-muted-foreground mt-4">
-              Click on any marker to view store details and get directions
+              <a 
+                href="https://www.google.com/maps/search/Los+Reyes+Tires+San+Diego/@32.8153,-117.1611,11z"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-medium"
+              >
+                Open in Google Maps for directions →
+              </a>
             </p>
           </div>
         </div>
