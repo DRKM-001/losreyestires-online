@@ -1,0 +1,11 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow admin/account pages
+Disallow: /account/
+Disallow: /cart
+Disallow: /checkout
+
+# Sitemap location
+Sitemap: https://losreyestires.com/sitemap.xml

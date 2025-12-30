@@ -1,6 +1,14 @@
 import Image from 'next/image';
 import { Award, Users, Wrench, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { generatePageMetadata } from '@/lib/metadata';
+
+export const metadata = generatePageMetadata({
+  title: 'About Us - Founded by Polo Reyes',
+  description: 'Learn about Los Reyes Tires, founded by Polo Reyes in the early 2000s. From a small El Cajon shop to a community staple built on hard work, integrity, and unmatched customer service.',
+  path: '/about',
+  keywords: ['Polo Reyes', 'tire shop history', 'El Cajon tire shop', 'family owned tires'],
+});
 
 export default function AboutPage() {
   const values = [
