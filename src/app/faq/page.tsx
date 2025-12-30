@@ -30,7 +30,7 @@ const faqs = [
   },
   {
     question: 'Do you specialize in off-road tires and wheels?',
-    answer: 'Absolutely! We specialize in off-road wheels, custom wheels, and lift kits. We're part of the off-road culture.',
+    answer: 'Absolutely! We specialize in off-road wheels, custom wheels, and lift kits. We are part of the off-road culture.',
   },
   {
     question: 'Can you repair a flat tire?',
@@ -52,4 +52,45 @@ const faqs = [
 
 export default function FAQPage() {
   return (
-    <div className=\"min-h-screen\">\n      <section className=\"bg-zinc-900 text-white py-16\">\n        <div className=\"container\">\n          <h1 className=\"text-4xl md:text-5xl font-black mb-4\">Frequently Asked Questions</h1>\n          <p className=\"text-xl text-zinc-300\">\n            Find answers to common questions about our tires, services, and shop.\n          </p>\n        </div>\n      </section>\n\n      <section className=\"py-16\">\n        <div className=\"container max-w-4xl\">\n          <div className=\"space-y-4\">\n            {faqs.map((faq, index) => (\n              <Card key={index}>\n                <CardContent className=\"p-6\">\n                  <h3 className=\"text-lg font-bold mb-3\">{faq.question}</h3>\n                  <p className=\"text-zinc-600\">{faq.answer}</p>\n                </CardContent>\n              </Card>\n            ))}\n          </div>\n\n          <Card className=\"mt-8 bg-zinc-50 border-2\">\n            <CardContent className=\"p-8 text-center\">\n              <h3 className=\"text-xl font-black mb-3\">Still Have Questions?</h3>\n              <p className=\"text-zinc-600 mb-4\">\n                Give us a call or stop by our El Cajon location.\n              </p>\n              <a\n                href=\"tel:619-440-6098\"\n                className=\"inline-block bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3 rounded-md transition-colors\"\n              >\n                Call 619-440-6098\n              </a>\n            </CardContent>\n          </Card>\n        </div>\n      </section>\n    </div>\n  );\n}
+    <div className="min-h-screen">
+      <section className="bg-zinc-900 text-white py-16">
+        <div className="container">
+          <h1 className="text-4xl md:text-5xl font-black mb-4">Frequently Asked Questions</h1>
+          <p className="text-xl text-zinc-300">
+            Find answers to common questions about our tires, services, and shop.
+          </p>
+        </div>
+      </section>
+
+      <section className="py-16">
+        <div className="container max-w-4xl">
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <Card key={index}>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-bold mb-3">{faq.question}</h3>
+                  <p className="text-zinc-600">{faq.answer}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <Card className="mt-8 bg-zinc-50 border-2">
+            <CardContent className="p-8 text-center">
+              <h3 className="text-xl font-black mb-3">Still Have Questions?</h3>
+              <p className="text-zinc-600 mb-4">
+                Give us a call or stop by our El Cajon location.
+              </p>
+              <a
+                href="tel:619-440-6098"
+                className="inline-block bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3 rounded-md transition-colors"
+              >
+                Call 619-440-6098
+              </a>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+    </div>
+  );
+}
