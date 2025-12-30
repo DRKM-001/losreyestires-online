@@ -18,7 +18,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card className="group overflow-hidden h-full flex flex-col transition-all hover:shadow-lg">
       <Link href={`/products/${product.id}`}>
-        <div className="relative aspect-square overflow-hidden bg-zinc-100">
+        <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
           {product.images[0] ? (
             <Image
               src={product.images[0]}
@@ -33,7 +33,7 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
           
           {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2">
+          <div className="absolute top-2 left-2 flex flex-col gap-1">
             {!product.inStock && (
               <Badge className="bg-red-600 font-semibold text-xs">Out of Stock</Badge>
             )}
@@ -46,17 +46,17 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
 
-      <CardContent className="flex-1 p-4">
+      <CardContent className="flex-1 p-3">
         <Link href={`/products/${product.id}`}>
-          <div className="mb-3">
-            <p className="text-xs text-zinc-500 font-semibold mb-1">{product.brand}</p>
+          <div className="mb-2">
+            <p className="text-xs text-zinc-500 font-semibold mb-0.5">{product.brand}</p>
             <h3 className="font-semibold text-sm line-clamp-2 text-zinc-900">
               {product.name}
             </h3>
           </div>
 
           {product.size && (
-            <p className="text-xs text-zinc-600 mb-2">{product.size}</p>
+            <p className="text-xs text-zinc-600 mb-1.5">{product.size}</p>
           )}
 
           {/* Rating */}
@@ -65,7 +65,7 @@ export function ProductCard({ product }: ProductCardProps) {
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`h-4 w-4 ${
+                  className={`h-3.5 w-3.5 ${
                     i < Math.floor(product.rating)
                       ? 'fill-yellow-400 text-yellow-400'
                       : 'text-gray-300'
@@ -73,37 +73,38 @@ export function ProductCard({ product }: ProductCardProps) {
                 />
               ))}
             </div>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               ({product.reviewCount})
             </span>
           </div>
         </Link>
 
         {/* Price */}
-        <div className="flex items-baseline gap-2 mb-3">
+        <div className="flex items-baseline gap-2 mb-2">
           {product.salePrice ? (
             <>
-              <span className="text-xl font-bold text-red-600">${product.salePrice.toFixed(2)}</span>
-              <span className="text-sm text-zinc-400 line-through">
+              <span className="text-lg font-bold text-red-600">${product.salePrice.toFixed(2)}</span>
+              <span className="text-xs text-zinc-400 line-through">
                 ${product.price.toFixed(2)}
               </span>
             </>
           ) : (
-            <span className="text-xl font-bold text-zinc-900">${product.price.toFixed(2)}</span>
+            <span className="text-lg font-bold text-zinc-900">${product.price.toFixed(2)}</span>
           )}
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-3 pt-0">
         <Button 
-          className={`w-full font-semibold text-sm ${
+          size="sm"
+          className={`w-full font-semibold text-xs ${
             product.inStock 
               ? 'bg-red-600 hover:bg-red-700' 
               : 'bg-zinc-400'
           }`}
           disabled={!product.inStock}
         >
-          <ShoppingCart className="mr-2 h-4 w-4" />
+          <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
           {product.inStock ? 'Add to Cart' : 'Out of Stock'}
         </Button>
       </CardFooter>
