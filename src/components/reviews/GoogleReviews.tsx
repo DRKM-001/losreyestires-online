@@ -1,7 +1,7 @@
 'use client';
 
 import { Star } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
 
 interface Review {
   author: string;
@@ -57,74 +57,98 @@ const reviews: Review[] = [
 ];
 
 export function GoogleReviews() {
-  const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-  const totalReviews = "200+"; // You can update this manually
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+  const totalReviews = "200+";
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsVisible(false);
+      
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % reviews.length);
+        setIsVisible(true);
+      }, 500); // Wait for fade out before changing review
+    }, 6000); // Change every 6 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentReview = reviews[currentIndex];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-zinc-50">
       <div className="container">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <span className="text-2xl font-bold">⭐ Google Reviews</span>
-            </div>
-            <div className="flex items-center justify-center gap-2 mb-2">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-2 mb-3">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className="h-6 w-6 fill-yellow-400 text-yellow-400"
+                    className="h-5 w-5 fill-yellow-400 text-yellow-400"
                   />
                 ))}
               </div>
-              <span className="text-3xl font-bold">{averageRating.toFixed(1)}</span>
+              <span className="text-2xl font-bold">5.0</span>
             </div>
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Based on {totalReviews} Google reviews
             </p>
           </div>
 
-          {/* Reviews Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {reviews.map((review, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  {/* Rating Stars */}
-                  <div className="flex gap-1 mb-3">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-4 w-4 fill-yellow-400 text-yellow-400"
-                      />
-                    ))}
-                  </div>
+          {/* Single Review with Fade Animation */}
+          <div
+            className={`transition-opacity duration-500 ease-in-out ${
+              isVisible ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <div className="text-center px-6">
+              {/* Review Text */}
+              <p className="text-lg md:text-xl text-muted-foreground italic mb-6 leading-relaxed">
+                "{currentReview.text}"
+              </p>
 
-                  {/* Review Text */}
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-4">
-                    "{review.text}"
-                  </p>
+              {/* Author Info */}
+              <div className="space-y-1">
+                <p className="font-semibold text-base">{currentReview.author}</p>
+                {currentReview.location && (
+                  <p className="text-sm text-muted-foreground">{currentReview.location}</p>
+                )}
+              </div>
+            </div>
+          </div>
 
-                  {/* Author & Date */}
-                  <div className="border-t pt-3">
-                    <p className="font-semibold text-sm">{review.author}</p>
-                    {review.location && (
-                      <p className="text-xs text-muted-foreground">{review.location}</p>
-                    )}
-                    <p className="text-xs text-muted-foreground mt-1">{review.date}</p>
-                  </div>
-                </CardContent>
-              </Card>
+          {/* Dots Indicator */}
+          <div className="flex justify-center gap-2 mt-8">
+            {reviews.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setIsVisible(false);
+                  setTimeout(() => {
+                    setCurrentIndex(index);
+                    setIsVisible(true);
+                  }, 300);
+                }}
+                className={`h-2 rounded-full transition-all ${
+                  index === currentIndex
+                    ? 'w-8 bg-primary'
+                    : 'w-2 bg-zinc-300 hover:bg-zinc-400'
+                }`}
+                aria-label={`View review ${index + 1}`}
+              />
             ))}
           </div>
 
           {/* CTA */}
-          <div className="text-center">
+          <div className="text-center mt-8">
             <a
               href="https://www.google.com/search?q=Los+Reyes+Tires+reviews"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-primary hover:underline font-semibold"
+              className="text-sm text-primary hover:underline font-medium"
             >
               Read all reviews on Google →
             </a>
