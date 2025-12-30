@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { RegisterModal } from '@/components/auth/RegisterModal';
+import { ReviewTicker } from '@/components/reviews/ReviewTicker';
 
 export function Header() {
   const [loginOpen, setLoginOpen] = useState(false);
@@ -42,8 +43,9 @@ export function Header() {
               <Phone className="h-4 w-4" />
               <span className="hidden sm:inline font-semibold">619-440-6098</span>
             </a>
-            <span className="hidden md:inline text-zinc-600 font-medium">El Cajon, CA | Open 7 Days a Week</span>
+            <span className="hidden lg:inline text-zinc-600 font-medium">El Cajon, CA | Open 7 Days a Week</span>
           </div>
+          <ReviewTicker />
           <div className="flex items-center gap-6 font-semibold text-zinc-700">
             <Link href="/locations" className="hover:text-red-600 transition-colors text-[11px]">
               Find an Installer
