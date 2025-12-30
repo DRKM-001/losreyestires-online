@@ -80,6 +80,34 @@ const locations = [
     googleMapsUrl: 'https://maps.google.com/?q=3658+Ocean+View+Blvd+San+Diego+CA+92113',
     features: ['Tire Sales', 'Installation', 'Repairs'],
   },
+  {
+    name: 'Los Reyes Tire Shop - Lakeside',
+    address: '8828 Winter Gardens Blvd',
+    city: 'Lakeside',
+    state: 'CA',
+    zip: '92040',
+    phone: '619-328-2099',
+    hours: {
+      weekday: 'Mon-Sat: 8:00 AM - 6:00 PM',
+      weekend: 'Sunday: 8:00 AM - 5:00 PM',
+    },
+    googleMapsUrl: 'https://maps.google.com/?q=8828+Winter+Gardens+Blvd+Lakeside+CA+92040',
+    features: ['New & Used Tires', 'Best Prices', 'Fast Service', 'Discounted Prices'],
+  },
+  {
+    name: 'Los Reyes Tire Shop - Spring Valley',
+    address: '8740 Troy St',
+    city: 'Spring Valley',
+    state: 'CA',
+    zip: '91977',
+    phone: '619-467-7490',
+    hours: {
+      weekday: 'Mon-Fri: 8:00 AM - 6:00 PM',
+      weekend: 'Saturday: 8:00 AM - 5:00 PM',
+    },
+    googleMapsUrl: 'https://maps.google.com/?q=8740+Troy+St+Spring+Valley+CA+91977',
+    features: ['New & Used Tires', 'Wheels', 'Brakes', 'Auto Service'],
+  },
 ];
 
 export default function LocationsPage() {
@@ -204,6 +232,7 @@ export default function LocationsPage() {
                 'San Diego',
                 'La Mesa',
                 'Spring Valley',
+                'Lakeside',
                 'Lemon Grove',
                 'National City',
                 'Chula Vista',
