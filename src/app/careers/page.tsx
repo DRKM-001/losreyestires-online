@@ -178,7 +178,7 @@ export default function CareersPage() {
                     <a href="tel:619-440-6098" className="text-primary hover:underline font-semibold">
                       619-440-6098
                     </a>{' '}
-                    or stop by our location at 1050 N Magnolia Ave, El Cajon, CA 92020.
+                    or stop by our location at 1245 N 1st St, El Cajon, CA 92021.
                   </p>
                 </div>
 

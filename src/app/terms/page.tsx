@@ -249,8 +249,8 @@ export default function TermsOfServicePage() {
           <p>If you have questions about these Terms of Service, please contact us:</p>
           <div className="bg-muted p-6 rounded-lg mt-4">
             <p className="font-semibold">Los Reyes Tires</p>
-            <p>1050 N Magnolia Ave</p>
-            <p>El Cajon, CA 92020</p>
+            <p>1245 N 1st St</p>
+            <p>El Cajon, CA 92021</p>
             <p className="mt-2">
               Phone: <a href="tel:619-440-6098" className="text-primary hover:underline">619-440-6098</a>
             </p>

@@ -139,8 +139,8 @@ export default function WarrantyPage() {
           <div className="bg-muted p-6 rounded-lg mt-4">
             <ol className="list-decimal pl-6 space-y-3">
               <li>
-                <strong>Visit Our Location:</strong> Bring your vehicle to Los Reyes Tires at 1050 N Magnolia Ave, 
-                El Cajon, CA 92020
+                <strong>Visit Our Location:</strong> Bring your vehicle to Los Reyes Tires at 1245 N 1st St, 
+                El Cajon, CA 92021
               </li>
               <li>
                 <strong>Bring Documentation:</strong> Original purchase receipt and vehicle information
@@ -232,8 +232,8 @@ export default function WarrantyPage() {
           <p>For warranty claims or questions, visit us or contact:</p>
           <div className="bg-muted p-6 rounded-lg mt-4">
             <p className="font-semibold">Los Reyes Tires</p>
-            <p>1050 N Magnolia Ave</p>
-            <p>El Cajon, CA 92020</p>
+            <p>1245 N 1st St</p>
+            <p>El Cajon, CA 92021</p>
             <p className="mt-2">
               Phone: <a href="tel:619-440-6098" className="text-primary hover:underline">619-440-6098</a>
             </p>
