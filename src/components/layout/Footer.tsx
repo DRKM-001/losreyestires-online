@@ -22,6 +22,7 @@ export function Footer() {
     support: [
       { name: 'Contact Us', href: '/contact' },
       { name: 'Find a Store', href: '/locations' },
+      { name: 'Financing Options', href: '/financing' },
       { name: 'Shipping Info', href: '/shipping' },
       { name: 'Returns', href: '/returns' },
       { name: 'FAQ', href: '/faq' },

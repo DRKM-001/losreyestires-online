@@ -30,6 +30,7 @@ export function Header() {
     { name: 'Wheels', href: '/wheels' },
     { name: 'Packages', href: '/packages' },
     { name: 'Services', href: '/services' },
+    { name: 'Financing', href: '/financing' },
     { name: 'Deals', href: '/deals' },
   ];
 
@@ -47,6 +48,9 @@ export function Header() {
           </div>
           <ReviewTicker />
           <div className="flex items-center gap-6 font-semibold text-zinc-700">
+            <Link href="/financing" className="hover:text-red-600 transition-colors text-[11px]">
+              Financing
+            </Link>
             <Link href="/locations" className="hover:text-red-600 transition-colors text-[11px]">
               Find an Installer
             </Link>
@@ -181,6 +185,9 @@ export function Header() {
                   </Link>
                 ))}
                 <div className="pt-4 border-t">
+                  <Link href="/financing" className="block py-2 text-sm font-semibold text-zinc-600 hover:text-red-600">
+                    Financing
+                  </Link>
                   <Link href="/locations" className="block py-2 text-sm font-semibold text-zinc-600 hover:text-red-600">
                     Find an Installer
                   </Link>
