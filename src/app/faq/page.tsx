@@ -34,7 +34,7 @@ const faqs = [
   },
   {
     question: 'Can you repair a flat tire?',
-    answer: 'Yes, we offer tire repair services. Bring your flat tire in and we'll assess if it can be safely repaired.',
+    answer: 'Yes, we offer tire repair services. Bring your flat tire in and we will assess if it can be safely repaired.',
   },
   {
     question: 'Do you offer financing?',
