@@ -24,9 +24,9 @@ export function SnapFinanceBanner() {
             <Image
               src="https://assets.snapfinance.com/app/images/apply_image_17.jpeg"
               alt="Snap Finance - Apply Here"
-              width={400}
-              height={100}
-              className="shadow-[4px_2px_6px_#010101]"
+              width={800}
+              height={200}
+              className="shadow-[4px_2px_6px_#010101] w-full max-w-2xl h-auto"
               unoptimized
             />
           </Link>
