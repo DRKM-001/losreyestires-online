@@ -108,6 +108,20 @@ const locations = [
     googleMapsUrl: 'https://maps.google.com/?q=8740+Troy+St+Spring+Valley+CA+91977',
     features: ['New & Used Tires', 'Wheels', 'Brakes', 'Auto Service'],
   },
+  {
+    name: 'Reyes Tires Pro - Escondido',
+    address: '260 N Juniper St',
+    city: 'Escondido',
+    state: 'CA',
+    zip: '92025',
+    phone: '442-999-5014',
+    hours: {
+      weekday: 'Mon-Sat: 8:00 AM - 5:30 PM',
+      weekend: 'Sunday: 8:00 AM - 3:00 PM',
+    },
+    googleMapsUrl: 'https://maps.google.com/?q=260+N+Juniper+St+Escondido+CA+92025',
+    features: ['Customer Experience', 'Low Prices', 'Fast Service', 'Alignment'],
+  },
 ];
 
 export default function LocationsPage() {
@@ -233,6 +247,7 @@ export default function LocationsPage() {
                 'La Mesa',
                 'Spring Valley',
                 'Lakeside',
+                'Escondido',
                 'Lemon Grove',
                 'National City',
                 'Chula Vista',
