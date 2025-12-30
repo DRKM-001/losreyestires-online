@@ -13,6 +13,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { LoginModal } from '@/components/auth/LoginModal';
 import { RegisterModal } from '@/components/auth/RegisterModal';
 import { ReviewTicker } from '@/components/reviews/ReviewTicker';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu';
 
 export function Header() {
   const [loginOpen, setLoginOpen] = useState(false);
@@ -79,17 +88,213 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="text-sm font-bold text-zinc-700 hover:text-red-600 transition-colors"
-            >
-              {item.name}
-            </Link>
-          ))}
-        </nav>
+        <NavigationMenu className="hidden lg:flex">
+          <NavigationMenuList>
+            {/* Tires Dropdown */}
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="text-sm font-bold">Tires</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/tires"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">All Tires</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Browse our complete tire catalog
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/tires?type=all-season"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">All-Season Tires</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Year-round performance and reliability
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/tires?type=winter"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">Winter Tires</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Maximum grip in snow and ice
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/tires?type=performance"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">Performance Tires</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Enhanced handling and speed
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/tires?type=all-terrain"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">All-Terrain Tires</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          On-road comfort, off-road capability
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/tires?type=mud-terrain"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">Mud-Terrain Tires</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Extreme off-road traction
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            {/* Wheels Dropdown */}
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="text-sm font-bold">Wheels</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/wheels"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">All Wheels</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Browse our complete wheel catalog
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/wheels?finish=matte-black"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">Matte Black Wheels</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Modern aggressive styling
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/wheels?finish=chrome"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">Chrome Wheels</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Classic shine and elegance
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/wheels?finish=machined"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">Machined Wheels</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Precision-cut unique finish
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/wheels?size=20x10"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">Truck & SUV Wheels</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Heavy-duty load-rated wheels
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <li>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/packages"
+                        className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <div className="text-sm font-semibold leading-none">Wheel & Tire Packages</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Save with bundled deals
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            {/* Regular links */}
+            <NavigationMenuItem>
+              <Link href="/packages" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle() + " text-sm font-bold"}>
+                  Packages
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/services" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle() + " text-sm font-bold"}>
+                  Services
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/financing" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle() + " text-sm font-bold"}>
+                  Financing
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/deals" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle() + " text-sm font-bold"}>
+                  Deals
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
 
         {/* Search & Actions */}
         <div className="flex items-center gap-2">
