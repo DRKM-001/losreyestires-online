@@ -1,14 +1,26 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingCart, Search, Menu, Phone } from 'lucide-react';
+import { ShoppingCart, Search, Menu, Phone, User, LogOut, Package, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { LoginModal } from '@/components/auth/LoginModal';
+import { RegisterModal } from '@/components/auth/RegisterModal';
 
 export function Header() {
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
+  
+  // TODO: Replace with actual auth state from context
+  const isLoggedIn = false;
+  const userName = 'John Doe';
+  
   // TODO: Replace with actual cart state from context
   const cartItemCount = 0;
 
@@ -86,6 +98,54 @@ export function Header() {
             </div>
           </div>
 
+          {/* User Avatar */}
+          {isLoggedIn ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative hover:bg-zinc-100 rounded-full">
+                  <Avatar className="h-9 w-9">
+                    <AvatarFallback className="bg-red-600 text-white font-bold">
+                      {userName.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56" align="end">
+                <div className="space-y-1">
+                  <div className="px-3 py-2 border-b">
+                    <p className="font-semibold text-sm">{userName}</p>
+                  </div>
+                  <Link href="/account" className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md">
+                    <User className="h-4 w-4" />
+                    My Account
+                  </Link>
+                  <Link href="/orders" className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md">
+                    <Package className="h-4 w-4" />
+                    My Orders
+                  </Link>
+                  <Link href="/account/settings" className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md">
+                    <Settings className="h-4 w-4" />
+                    Settings
+                  </Link>
+                  <button className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md w-full text-left text-red-600">
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLoginOpen(true)}
+              className="gap-2 font-semibold hover:bg-zinc-100"
+            >
+              <User className="h-5 w-5" />
+              <span className="hidden md:inline">Sign In</span>
+            </Button>
+          )}
+
           {/* Cart */}
           <Link href="/cart">
             <Button variant="ghost" size="icon" className="relative hover:bg-zinc-100">
@@ -134,6 +194,24 @@ export function Header() {
           </Sheet>
         </div>
       </div>
+      
+      {/* Auth Modals */}
+      <LoginModal 
+        open={loginOpen} 
+        onOpenChange={setLoginOpen}
+        onSwitchToRegister={() => {
+          setLoginOpen(false);
+          setRegisterOpen(true);
+        }}
+      />
+      <RegisterModal 
+        open={registerOpen} 
+        onOpenChange={setRegisterOpen}
+        onSwitchToLogin={() => {
+          setRegisterOpen(false);
+          setLoginOpen(true);
+        }}
+      />
     </header>
   );
 }
