@@ -248,6 +248,8 @@ export default function LocationsPage() {
                 'Spring Valley',
                 'Lakeside',
                 'Escondido',
+                'La Jolla',
+                'Temecula',
                 'Lemon Grove',
                 'National City',
                 'Chula Vista',
