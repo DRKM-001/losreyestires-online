@@ -1,9 +1,5 @@
-'use client';
-
-import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,10 +13,10 @@ import {
   MapPin,
   Phone,
   ChevronLeft,
-  Plus,
-  Minus
 } from 'lucide-react';
 import { Product } from '@/lib/types';
+import { ProductGallery } from '@/components/products/ProductGallery';
+import { ProductQuantity } from '@/components/products/ProductQuantity';
 
 // Generate static paths for all products
 export function generateStaticParams() {
@@ -34,14 +30,10 @@ export function generateStaticParams() {
   ];
 }
 
-export default function ProductDetailPage() {
-  const params = useParams();
-  const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(0);
-
+export default function ProductDetailPage({ params }: { params: { id: string } }) {
   // TODO: Replace with API call to ERP backend using params.id
   const product: Product = {
-    id: params.id as string,
+    id: params.id,
     name: 'Michelin Defender T+H All-Season Tire',
     brand: 'Michelin',
     price: 189.99,
@@ -68,10 +60,6 @@ export default function ProductDetailPage() {
     ? Math.round(((product.price - product.salePrice) / product.price) * 100)
     : 0;
 
-  const handleQuantityChange = (delta: number) => {
-    setQuantity(Math.max(1, quantity + delta));
-  };
-
   return (
     <div className="min-h-screen bg-white">
       {/* Breadcrumb */}
@@ -97,52 +85,8 @@ export default function ProductDetailPage() {
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
-          {/* Image Gallery */}
-          <div>
-            <div className="relative aspect-square bg-zinc-100 rounded-lg overflow-hidden mb-4">
-              <Image
-                src={product.images[selectedImage]}
-                alt={product.name}
-                fill
-                className="object-cover"
-                priority
-              />
-              {discount > 0 && (
-                <Badge className="absolute top-4 left-4 bg-red-600 font-bold">
-                  Save {discount}%
-                </Badge>
-              )}
-              {!product.inStock && (
-                <Badge className="absolute top-4 left-4 bg-zinc-800 font-bold">
-                  Out of Stock
-                </Badge>
-              )}
-            </div>
-            
-            {/* Thumbnail Gallery */}
-            {product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`relative aspect-square bg-zinc-100 rounded-md overflow-hidden border-2 transition-all ${
-                      selectedImage === index 
-                        ? 'border-red-600' 
-                        : 'border-transparent hover:border-zinc-300'
-                    }`}
-                  >
-                    <Image
-                      src={image}
-                      alt={`${product.name} - View ${index + 1}`}
-                      fill
-                      className="object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Image Gallery - Client Component */}
+          <ProductGallery images={product.images} productName={product.name} discount={discount} inStock={product.inStock} />
 
           {/* Product Info */}
           <div>
@@ -233,53 +177,8 @@ export default function ProductDetailPage() {
               </Card>
             )}
 
-            {/* Quantity & Add to Cart */}
-            <div className="mb-6">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center border-2 rounded-lg">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleQuantityChange(-1)}
-                    className="h-10 px-3"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                  <span className="px-4 font-bold">{quantity}</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleQuantityChange(1)}
-                    className="h-10 px-3"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                <span className="text-sm text-zinc-600">
-                  {quantity > 1 ? `Set of ${quantity} tires` : '1 tire'}
-                </span>
-              </div>
-
-              <Button
-                size="lg"
-                disabled={!product.inStock}
-                className={`w-full h-14 text-lg font-bold ${
-                  product.inStock
-                    ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-zinc-400'
-                }`}
-              >
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                {product.inStock ? 'Add to Cart' : 'Out of Stock'}
-              </Button>
-
-              {product.inStock && (
-                <p className="text-sm text-green-600 font-semibold mt-2 flex items-center gap-1">
-                  <Check className="h-4 w-4" />
-                  In Stock - Ships within 1-2 business days
-                </p>
-              )}
-            </div>
+            {/* Quantity & Add to Cart - Client Component */}
+            <ProductQuantity inStock={product.inStock} />
 
             {/* Trust Signals */}
             <div className="grid grid-cols-3 gap-3 mb-6">
@@ -322,7 +221,7 @@ export default function ProductDetailPage() {
 
         <Separator className="my-8" />
 
-        {/* Product Details Tabs */}
+        {/* Product Details */}
         <div className="max-w-4xl">
           <h2 className="text-2xl font-black mb-6">Product Details</h2>
           
