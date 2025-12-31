@@ -22,6 +22,18 @@ import {
 } from 'lucide-react';
 import { Product } from '@/lib/types';
 
+// Generate static paths for all products
+export function generateStaticParams() {
+  // TODO: Replace with API call to fetch all product IDs from ERP
+  // For now, return the sample products from homepage
+  return [
+    { id: '1' },
+    { id: '2' },
+    { id: '3' },
+    { id: '4' },
+  ];
+}
+
 export default function ProductDetailPage() {
   const params = useParams();
   const [quantity, setQuantity] = useState(1);
