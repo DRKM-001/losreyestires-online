@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingCart, Search, Menu, Phone, User, LogOut, Package, Settings } from 'lucide-react';
+import { ShoppingCart, Search, Menu, Phone, User, LogOut, Package, Settings, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -52,6 +52,10 @@ export function Header() {
             <a href="tel:619-440-6098" className="flex items-center gap-2 hover:text-red-600 transition-colors text-zinc-700">
               <Phone className="h-4 w-4" />
               <span className="hidden sm:inline font-semibold">619-440-6098</span>
+            </a>
+            <a href="https://wa.me/16197299468" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-red-600 transition-colors text-zinc-700" title="WhatsApp">
+              <MessageCircle className="h-4 w-4" />
+              <span className="hidden sm:inline font-semibold">WhatsApp</span>
             </a>
             <span className="hidden lg:inline text-zinc-600 font-medium">El Cajon, CA | Open 7 Days a Week</span>
           </div>
