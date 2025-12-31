@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, Mail, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 export function Footer() {
@@ -58,6 +58,10 @@ export function Footer() {
               <a href="tel:619-440-6098" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
                 <Phone className="h-4 w-4" />
                 619-440-6098
+              </a>
+              <a href="https://wa.me/16197299468" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp: (619) 729-9468
               </a>
               <a href="mailto:info@losreyestires.com" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
                 <Mail className="h-4 w-4" />
@@ -135,13 +139,16 @@ export function Footer() {
             © {new Date().getFullYear()} Los Reyes Tires. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors">
+            <a href="https://wa.me/16197299468" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="WhatsApp">
+              <MessageCircle className="h-5 w-5" />
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="Facebook">
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="Instagram">
               <Instagram className="h-5 w-5" />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="Twitter">
               <Twitter className="h-5 w-5" />
             </a>
           </div>
