@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, Car } from 'lucide-react';
 import { 
@@ -12,7 +13,7 @@ import {
   getAvailableModels,
   getTireSizesForVehicle 
 } from '@/lib/data/vehicles';
-
+import { getTiresBySize } from '@/lib/api/tireraven';
 export function HeroSection() {
   const router = useRouter();
   const [searchType, setSearchType] = useState<'vehicle' | 'size'>('vehicle');

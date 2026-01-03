@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { Metadata } from 'next';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -9,10 +9,15 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/products/ProductCard';
 import { FilterSidebar } from '@/components/catalog/FilterSidebar';
-import { tires, tireBrands, tireSizes, tireTypes } from '@/lib/data/tires';
+import { tires as fallbackTires, tireTypes } from '@/lib/data/tires';
+import { getAllTires, getTireBrands, getTireSizes, type Tire } from '@/lib/api/tireraven';
 import { TypographyH1, TypographyP } from '@/components/ui/typography';
 
 export default function TiresPage() {
+  const [tires, setTires] = useState<Tire[]>(fallbackTires);
+  const [tireBrands, setTireBrands] = useState<string[]>([]);
+  const [tireSizes, setTireSizes] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('featured');
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({
@@ -23,6 +28,45 @@ export default function TiresPage() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 400]);
 
   const maxPrice = 400;
+
+  // Fetch tires from TireRaven API on component mount
+  useEffect(() => {
+    async function loadTires() {
+      try {
+        setLoading(true);
+        const [apiTires, brands, sizes] = await Promise.all([
+          getAllTires(10), // Fetch up to 10 pages
+          getTireBrands(),
+          getTireSizes(),
+        ]);
+        
+        if (apiTires.length > 0) {
+          setTires(apiTires);
+          setTireBrands(brands);
+          setTireSizes(sizes);
+          console.log(`Loaded ${apiTires.length} tires from TireRaven API`);
+        } else {
+          console.log('Using fallback tire data');
+          // Keep fallback data if API fails
+          const brands = Array.from(new Set(fallbackTires.map(t => t.brand))).sort();
+          const sizes = Array.from(new Set(fallbackTires.map(t => t.size))).sort();
+          setTireBrands(brands);
+          setTireSizes(sizes);
+        }
+      } catch (error) {
+        console.error('Error loading tires:', error);
+        // Use fallback data on error
+        const brands = Array.from(new Set(fallbackTires.map(t => t.brand))).sort();
+        const sizes = Array.from(new Set(fallbackTires.map(t => t.size))).sort();
+        setTireBrands(brands);
+        setTireSizes(sizes);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadTires();
+  }, []);
 
   // Filter configuration
   const filterGroups = [
@@ -188,11 +232,20 @@ export default function TiresPage() {
 
         {/* Product Grid */}
         <div className="flex-1">
-          <div className="mb-4 text-sm text-zinc-600">
-            Showing {filteredProducts.length} of {tires.length} tires
-          </div>
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+              </div>
+              <p className="mt-4 text-zinc-600">Loading tires from inventory...</p>
+            </div>
+          ) : (
+            <>
+              <div className="mb-4 text-sm text-zinc-600">
+                Showing {filteredProducts.length} of {tires.length} tires
+              </div>
 
-          {filteredProducts.length === 0 ? (
+              {filteredProducts.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-zinc-600 mb-4">No tires found matching your criteria.</p>
               <Button onClick={handleClearFilters} variant="outline">
@@ -223,6 +276,8 @@ export default function TiresPage() {
                 />
               ))}
             </div>
+          )}
+            </>
           )}
         </div>
       </div>
