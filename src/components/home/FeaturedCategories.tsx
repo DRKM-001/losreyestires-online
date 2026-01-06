@@ -1,59 +1,87 @@
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
-import { Gauge, Disc3, Package, Wrench } from 'lucide-react';
+import Image from 'next/image';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ArrowRight } from 'lucide-react';
 
 export function FeaturedCategories() {
   const categories = [
     {
-      name: 'Tires',
-      description: 'Premium tires for every vehicle',
-      icon: Gauge,
+      name: 'New Tires',
+      description: 'Premium brand-name tires with warranty',
       href: '/tires',
-      color: 'text-blue-500',
+      image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&q=80',
+      badge: 'Popular',
+    },
+    {
+      name: 'Used Tires',
+      description: 'Quality inspected pre-owned tires',
+      href: '/tires?condition=used',
+      image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80',
+      badge: 'Best Value',
     },
     {
       name: 'Wheels',
-      description: 'Custom wheels that make a statement',
-      icon: Disc3,
+      description: 'Custom wheels & rims',
       href: '/wheels',
-      color: 'text-purple-500',
+      image: 'https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=800&q=80',
+      badge: null,
     },
     {
       name: 'Packages',
-      description: 'Complete tire & wheel packages',
-      icon: Package,
+      description: 'Complete tire & wheel sets',
       href: '/packages',
-      color: 'text-green-500',
-    },
-    {
-      name: 'Services',
-      description: 'Professional installation & maintenance',
-      icon: Wrench,
-      href: '/services',
-      color: 'text-orange-500',
+      image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80',
+      badge: 'Save More',
     },
   ];
 
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-12 md:py-16 bg-zinc-50">
       <div className="container">
         <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-black mb-2 text-zinc-900">Top Categories</h2>
+          <h2 className="text-3xl md:text-4xl font-black mb-2 text-zinc-900">Shop by Category</h2>
+          <p className="text-zinc-600">Find exactly what you need for your vehicle</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category) => {
-            const Icon = category.icon;
             return (
-              <Link key={category.name} href={category.href}>
-                <Card className="h-full transition-all hover:shadow-lg border hover:border-red-600 group">
-                  <CardContent className="p-6 flex flex-col items-center text-center">
-                    <div className="mb-4 p-3 rounded-lg bg-zinc-100 group-hover:bg-red-50 transition-colors">
-                      <Icon className="h-8 w-8 text-red-600" />
+              <Link key={category.name} href={category.href} className="group">
+                <Card className="h-full overflow-hidden border-2 border-transparent hover:border-red-600 transition-all hover:shadow-2xl rounded-lg">
+                  {/* Image Section */}
+                  <div className="relative aspect-[5/4] overflow-hidden bg-gradient-to-br from-zinc-100 to-zinc-200">
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    {/* Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    
+                    {/* Badge */}
+                    {category.badge && (
+                      <Badge className="absolute top-3 right-3 bg-red-600 hover:bg-red-600 text-white font-bold shadow-lg">
+                        {category.badge}
+                      </Badge>
+                    )}
+
+                    {/* Category Name Overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="text-xl font-black text-white mb-1">
+                        {category.name}
+                      </h3>
                     </div>
-                    <h3 className="text-lg font-bold mb-1.5 text-zinc-900 group-hover:text-red-600 transition-colors">{category.name}</h3>
-                    <p className="text-sm text-zinc-600">{category.description}</p>
-                  </CardContent>
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="px-4 py-2.5 bg-white">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-zinc-600 font-medium">{category.description}</p>
+                      <ArrowRight className="h-4 w-4 text-red-600 group-hover:translate-x-1 transition-transform flex-shrink-0 ml-2" />
+                    </div>
+                  </div>
                 </Card>
               </Link>
             );
