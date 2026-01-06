@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Car } from 'lucide-react';
+import { Search, Car, CheckCircle } from 'lucide-react';
 import { 
   getAvailableYears, 
   getAvailableMakes, 
@@ -98,20 +98,48 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-zinc-100 to-white">
+    <section className="relative bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{
+          backgroundImage: 'url(/hero-tires-bg.jpg)',
+          backgroundPosition: '60% center',
+        }}
+      />
       
-      <div className="container relative py-12 md:py-16">
-        <div className="mx-auto max-w-5xl text-center mb-8">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 text-zinc-900">
-            Find Your Perfect Tires
-          </h1>
-          <p className="text-base md:text-lg text-zinc-600 font-semibold">
-            New & Used Tires | Off-Road Wheels | Expert Service in El Cajon
-          </p>
-        </div>
+      <div className="container relative py-16 md:py-24 lg:py-32">
+        <div className="grid lg:grid-cols-5 gap-12 items-center">
+          {/* Left side - Content (Golden Ratio ~62%) */}
+          <div className="lg:col-span-3 text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 leading-tight">
+              Find Your Perfect Tires
+            </h1>
+            <p className="text-xl md:text-2xl text-zinc-300 mb-8 font-semibold">
+              New & Used Tires | Off-Road Wheels | Expert Service in El Cajon
+            </p>
+            <div className="flex flex-wrap gap-3 mb-8">
+              <div className="flex items-center gap-2 text-zinc-200">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="font-medium">Free Installation</span>
+              </div>
+              <div className="flex items-center gap-2 text-zinc-200">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="font-medium">Lifetime Balance & Rotation</span>
+              </div>
+              <div className="flex items-center gap-2 text-zinc-200">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="font-medium">Financing Available</span>
+              </div>
+            </div>
+          </div>
 
-        <Card className="mx-auto max-w-5xl p-6 md:p-8 bg-white shadow-lg border-0">
-          <div className="flex gap-3 mb-6">
+          {/* Right side - Tire Finder Card (Golden Ratio ~38%) */}
+          <Card className="lg:col-span-2 p-6 md:p-8 bg-white shadow-2xl border-0 backdrop-blur-sm">
+            <h3 className="text-2xl font-black text-zinc-900 mb-6 text-center">
+              Find Your Tires
+            </h3>
+            <div className="flex gap-3 mb-6">
             <Button
               variant={searchType === 'vehicle' ? 'default' : 'outline'}
               onClick={() => setSearchType('vehicle')}
@@ -247,8 +275,8 @@ export function HeroSection() {
               </Button>
             </div>
           )}
-        </Card>
-
+          </Card>
+        </div>
       </div>
     </section>
   );
