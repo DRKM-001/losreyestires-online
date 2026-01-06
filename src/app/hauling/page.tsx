@@ -31,8 +31,15 @@ export default function HaulingPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-white py-16 md:py-24">
-        <div className="container">
+      <section className="relative bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 text-white py-16 md:py-24 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-15"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1477823986828-5aff156284aa?w=1600&q=80)',
+          }}
+        />
+        <div className="container relative">
           <div className="max-w-4xl mx-auto text-center">
             <Badge className="bg-green-600 hover:bg-green-600 mb-4 text-sm font-bold">
               Licensed & Insured

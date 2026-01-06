@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { ArrowRight } from 'lucide-react';
 
 export function FeaturedCategories() {
@@ -11,28 +10,24 @@ export function FeaturedCategories() {
       description: 'Premium brand-name tires with warranty',
       href: '/tires',
       image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&q=80',
-      badge: 'Popular',
     },
     {
       name: 'Used Tires',
       description: 'Quality inspected pre-owned tires',
       href: '/tires?condition=used',
-      image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80',
-      badge: 'Best Value',
+      image: '/usedtireimage.png',
     },
     {
       name: 'Wheels',
       description: 'Custom wheels & rims',
       href: '/wheels',
-      image: 'https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=800&q=80',
-      badge: null,
+      image: 'https://budstyres.com.au/cdn/shop/collections/Method_Race_Wheels_Collection_Banner_1200x1200.jpg?v=1747982210',
     },
     {
       name: 'Packages',
       description: 'Complete tire & wheel sets',
       href: '/packages',
       image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80',
-      badge: 'Save More',
     },
   ];
 
@@ -59,13 +54,6 @@ export function FeaturedCategories() {
                     />
                     {/* Overlay Gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                    
-                    {/* Badge */}
-                    {category.badge && (
-                      <Badge className="absolute top-3 right-3 bg-red-600 hover:bg-red-600 text-white font-bold shadow-lg">
-                        {category.badge}
-                      </Badge>
-                    )}
 
                     {/* Category Name Overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-4">

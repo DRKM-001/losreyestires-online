@@ -6,8 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Car, CheckCircle } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, Car, CheckCircle, Send, MessageSquare, Sparkles } from 'lucide-react';
 import { 
   getAvailableYears, 
   getAvailableMakes, 
@@ -17,7 +21,9 @@ import {
 import { getTiresBySize } from '@/lib/api/tireraven';
 export function HeroSection() {
   const router = useRouter();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchType, setSearchType] = useState<'vehicle' | 'size'>('vehicle');
+  const [tireCondition, setTireCondition] = useState<'new' | 'used' | 'both'>('new');
   
   // Vehicle search state
   const [selectedYear, setSelectedYear] = useState<string>('');
@@ -28,6 +34,12 @@ export function HeroSection() {
   const [selectedWidth, setSelectedWidth] = useState<string>('');
   const [selectedAspect, setSelectedAspect] = useState<string>('');
   const [selectedDiameter, setSelectedDiameter] = useState<string>('');
+  
+  // RFI form state
+  const [name, setName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [additionalInfo, setAdditionalInfo] = useState<string>('');
   
   // Available options (cascading)
   const [availableMakes, setAvailableMakes] = useState<string[]>([]);
@@ -63,38 +75,63 @@ export function HeroSection() {
     }
   }, [selectedYear, selectedMake]);
   
-  // Handle vehicle search
-  const handleVehicleSearch = () => {
-    if (!selectedYear || !selectedMake || !selectedModel) {
-      alert('Please select year, make, and model');
+  // Handle RFI submission
+  const handleRFISubmit = async () => {
+    // Validate required fields
+    if (!name || !phone || !email) {
+      alert('Please fill in your name, phone, and email');
       return;
     }
     
-    // Get tire sizes for this vehicle
-    const tireSizes = getTireSizesForVehicle(
-      parseInt(selectedYear),
-      selectedMake,
-      selectedModel
-    );
+    // Build inquiry details
+    let inquiry = `Tire Condition: ${tireCondition}\n`;
     
-    if (tireSizes.length > 0) {
-      // Navigate to tires page filtered by the primary tire size
-      const primarySize = tireSizes[0];
-      router.push(`/tires?size=${encodeURIComponent(primarySize)}&vehicle=${selectedYear}-${selectedMake}-${selectedModel}`);
+    if (searchType === 'vehicle') {
+      if (selectedYear && selectedMake && selectedModel) {
+        inquiry += `Vehicle: ${selectedYear} ${selectedMake} ${selectedModel}\n`;
+      }
     } else {
-      router.push('/tires');
-    }
-  };
-  
-  // Handle size search
-  const handleSizeSearch = () => {
-    if (!selectedWidth || !selectedAspect || !selectedDiameter) {
-      alert('Please select width, aspect ratio, and diameter');
-      return;
+      if (selectedWidth && selectedAspect && selectedDiameter) {
+        inquiry += `Tire Size: ${selectedWidth}/${selectedAspect}R${selectedDiameter}\n`;
+      }
     }
     
-    const tireSize = `${selectedWidth}/${selectedAspect}R${selectedDiameter}`;
-    router.push(`/tires?size=${encodeURIComponent(tireSize)}`);
+    if (additionalInfo) {
+      inquiry += `Additional Info: ${additionalInfo}\n`;
+    }
+    
+    // TODO: Send to backend/email service
+    const requestData = {
+      name,
+      phone,
+      email,
+      tireCondition,
+      searchType,
+      vehicleInfo: searchType === 'vehicle' ? { year: selectedYear, make: selectedMake, model: selectedModel } : null,
+      sizeInfo: searchType === 'size' ? { width: selectedWidth, aspect: selectedAspect, diameter: selectedDiameter } : null,
+      additionalInfo,
+      timestamp: new Date().toISOString(),
+    };
+    
+    console.log('RFI Submission:', requestData);
+    
+    // For now, just show success message
+    alert('Thank you! We\'ll get back to you shortly with a quote.');
+    
+    // Close dialog
+    setIsDialogOpen(false);
+    
+    // Reset form
+    setName('');
+    setPhone('');
+    setEmail('');
+    setAdditionalInfo('');
+    setSelectedYear('');
+    setSelectedMake('');
+    setSelectedModel('');
+    setSelectedWidth('');
+    setSelectedAspect('');
+    setSelectedDiameter('');
   };
 
   return (
@@ -107,9 +144,16 @@ export function HeroSection() {
           backgroundPosition: '60% center',
         }}
       />
+      {/* Subtle Vehicle Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{
+          backgroundImage: 'url(https://summit4x4company.com/wp-content/uploads/2025/03/Offroad-Rig-showing-Beginners-how-to-navigate-the-trails.jpg)',
+        }}
+      />
       
-      <div className="container relative py-16 md:py-24 lg:py-32">
-        <div className="grid lg:grid-cols-5 gap-12 items-center">
+      <div className="container relative py-12 md:py-16 lg:py-20">
+        <div className="grid lg:grid-cols-5 gap-8 items-center">
           {/* Left side - Content (Golden Ratio ~62%) */}
           <div className="lg:col-span-3 text-white">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 leading-tight">
@@ -134,148 +178,255 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right side - Tire Finder Card (Golden Ratio ~38%) */}
-          <Card className="lg:col-span-2 p-6 md:p-8 bg-white shadow-2xl border-0 backdrop-blur-sm">
-            <h3 className="text-2xl font-black text-zinc-900 mb-6 text-center">
-              Find Your Tires
-            </h3>
-            <div className="flex gap-3 mb-6">
-            <Button
-              variant={searchType === 'vehicle' ? 'default' : 'outline'}
-              onClick={() => setSearchType('vehicle')}
-              className={`flex-1 h-12 font-bold text-sm ${
-                searchType === 'vehicle' 
-                  ? 'bg-red-600 hover:bg-red-700 text-white' 
-                  : 'border-2 border-zinc-300 hover:border-red-600 hover:text-red-600 bg-white text-zinc-700'
-              }`}
-            >
-              <Car className="mr-2 h-5 w-5" />
-              Shop By Vehicle
-            </Button>
-            <Button
-              variant={searchType === 'size' ? 'default' : 'outline'}
-              onClick={() => setSearchType('size')}
-              className={`flex-1 h-12 font-bold text-sm ${
-                searchType === 'size' 
-                  ? 'bg-red-600 hover:bg-red-700 text-white' 
-                  : 'border-2 border-zinc-300 hover:border-red-600 hover:text-red-600 bg-white text-zinc-700'
-              }`}
-            >
-              <Search className="mr-2 h-5 w-5" />
-              Shop By Size
-            </Button>
-          </div>
+          {/* Right side - Elegant Tire Finder Card */}
+          <Card className="lg:col-span-2 p-6 bg-white/95 backdrop-blur shadow-2xl border-0">
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <h3 className="text-2xl font-bold tracking-tight">
+                  Find Your Tires
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Search by vehicle or tire size
+                </p>
+              </div>
+            
+              <Tabs value={searchType} onValueChange={(val) => setSearchType(val as 'vehicle' | 'size')} className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="vehicle" className="gap-2">
+                    <Car className="h-4 w-4" />
+                    Vehicle
+                  </TabsTrigger>
+                  <TabsTrigger value="size" className="gap-2">
+                    <Search className="h-4 w-4" />
+                    Size
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="vehicle" className="space-y-3">
+                  <div className="grid grid-cols-3 gap-2">
+                    <Select value={selectedYear} onValueChange={setSelectedYear}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {years.map((year) => (
+                          <SelectItem key={year} value={year.toString()}>
+                            {year}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
-          {searchType === 'vehicle' ? (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Year" />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map((year) => (
-                    <SelectItem key={year} value={year.toString()}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <Select 
+                      value={selectedMake} 
+                      onValueChange={setSelectedMake}
+                      disabled={!selectedYear}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Make" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableMakes.map((make) => (
+                          <SelectItem key={make} value={make}>
+                            {make}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
-              <Select 
-                value={selectedMake} 
-                onValueChange={setSelectedMake}
-                disabled={!selectedYear}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Make" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableMakes.map((make) => (
-                    <SelectItem key={make} value={make}>
-                      {make}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <Select 
+                      value={selectedModel} 
+                      onValueChange={setSelectedModel}
+                      disabled={!selectedMake}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Model" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableModels.map((model) => (
+                          <SelectItem key={model} value={model}>
+                            {model}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="size" className="space-y-3">
+                  <div className="grid grid-cols-3 gap-2">
+                    <Select value={selectedWidth} onValueChange={setSelectedWidth}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Width" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {['195', '205', '215', '225', '235', '245', '255', '265', '275', '285'].map((width) => (
+                          <SelectItem key={width} value={width}>
+                            {width}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
-              <Select 
-                value={selectedModel} 
-                onValueChange={setSelectedModel}
-                disabled={!selectedMake}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Model" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableModels.map((model) => (
-                    <SelectItem key={model} value={model}>
-                      {model}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <Select value={selectedAspect} onValueChange={setSelectedAspect}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Ratio" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {['40', '45', '50', '55', '60', '65', '70', '75'].map((aspect) => (
+                          <SelectItem key={aspect} value={aspect}>
+                            {aspect}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
-              <Button 
-                size="lg" 
-                className="w-full h-12 bg-red-600 hover:bg-red-700 font-bold"
-                onClick={handleVehicleSearch}
-                disabled={!selectedYear || !selectedMake || !selectedModel}
-              >
-                Go
-              </Button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Select value={selectedWidth} onValueChange={setSelectedWidth}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Width" />
-                </SelectTrigger>
-                <SelectContent>
-                  {['195', '205', '215', '225', '235', '245', '255', '265', '275', '285'].map((width) => (
-                    <SelectItem key={width} value={width}>
-                      {width}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={selectedAspect} onValueChange={setSelectedAspect}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Aspect Ratio" />
-                </SelectTrigger>
-                <SelectContent>
-                  {['40', '45', '50', '55', '60', '65', '70', '75'].map((aspect) => (
-                    <SelectItem key={aspect} value={aspect}>
-                      {aspect}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={selectedDiameter} onValueChange={setSelectedDiameter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Diameter" />
-                </SelectTrigger>
-                <SelectContent>
-                  {['15', '16', '17', '18', '19', '20', '21', '22'].map((diameter) => (
-                    <SelectItem key={diameter} value={diameter}>
-                      {diameter}&quot;
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Button 
-                size="lg" 
-                className="w-full h-12 bg-red-600 hover:bg-red-700 font-bold"
-                onClick={handleSizeSearch}
-                disabled={!selectedWidth || !selectedAspect || !selectedDiameter}
-              >
-                Go
-              </Button>
-            </div>
-          )}
-          </Card>
+                    <Select value={selectedDiameter} onValueChange={setSelectedDiameter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Diameter" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {['15', '16', '17', '18', '19', '20', '21', '22'].map((diameter) => (
+                          <SelectItem key={diameter} value={diameter}>
+                            {diameter}&quot;
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TabsContent>
+              </Tabs>
+              
+              <div className="flex gap-2 pt-2">
+                <Button 
+                  size="lg"
+                  className="flex-1 bg-red-600 hover:bg-red-700"
+                  onClick={() => router.push('/tires')}
+                >
+                  <Search className="mr-2 h-4 w-4" />
+                  Browse
+                </Button>
+                
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button 
+                        size="lg"
+                        variant="outline"
+                        className="flex-1 border-2 border-red-600 text-red-600 hover:bg-red-50 hover:text-red-700"
+                      >
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Quote
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Request a Quote</DialogTitle>
+                        <DialogDescription>
+                          Tell us what you need and we'll get back to you with pricing
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      <div className="space-y-6 py-4">
+                        {/* Tire Condition */}
+                        <div className="space-y-2">
+                          <Label>I'm interested in</Label>
+                          <RadioGroup value={tireCondition} onValueChange={(val) => setTireCondition(val as 'new' | 'used' | 'both')} className="flex gap-4">
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="new" id="dialog-new" />
+                              <Label htmlFor="dialog-new" className="font-normal cursor-pointer">New</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="used" id="dialog-used" />
+                              <Label htmlFor="dialog-used" className="font-normal cursor-pointer">Used</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="both" id="dialog-both" />
+                              <Label htmlFor="dialog-both" className="font-normal cursor-pointer">Both</Label>
+                            </div>
+                          </RadioGroup>
+                        </div>
+                        
+                        {/* Vehicle/Size Info Display */}
+                        <div className="rounded-lg border bg-muted/50 p-3">
+                          <p className="text-xs font-medium text-muted-foreground mb-1">Your Selection</p>
+                          {searchType === 'vehicle' ? (
+                            <p className="text-sm font-medium">
+                              {selectedYear && selectedMake && selectedModel 
+                                ? `${selectedYear} ${selectedMake} ${selectedModel}` 
+                                : 'No vehicle selected'}
+                            </p>
+                          ) : (
+                            <p className="text-sm font-medium">
+                              {selectedWidth && selectedAspect && selectedDiameter
+                                ? `${selectedWidth}/${selectedAspect}R${selectedDiameter}`
+                                : 'No size selected'}
+                            </p>
+                          )}
+                        </div>
+                        
+                        {/* Additional Info */}
+                        <div className="space-y-2">
+                          <Label htmlFor="additional">Additional Details</Label>
+                          <Textarea
+                            id="additional"
+                            placeholder="Budget, brand preference, quantity, special requirements..."
+                            value={additionalInfo}
+                            onChange={(e) => setAdditionalInfo(e.target.value)}
+                            className="resize-none"
+                            rows={3}
+                          />
+                        </div>
+                        
+                        {/* Contact Info */}
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="name">Name *</Label>
+                            <Input
+                              id="name"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="phone">Phone *</Label>
+                              <Input
+                                id="phone"
+                                type="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="email">Email *</Label>
+                              <Input
+                                id="email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Submit */}
+                        <Button 
+                          size="lg"
+                          className="w-full bg-red-600 hover:bg-red-700"
+                          onClick={handleRFISubmit}
+                        >
+                          <Send className="mr-2 h-4 w-4" />
+                          Submit Request
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            </Card>
         </div>
       </div>
     </section>
