@@ -41,10 +41,10 @@ export default function HaulingPage() {
               San Diego's Trusted Tire Hauling Service
             </h1>
             <p className="text-2xl md:text-3xl text-red-400 mb-4 font-bold">
-              "One Call, We Haul It All"
+              Local. Fast. Always Reliable.
             </p>
             <p className="text-xl md:text-2xl text-zinc-300 mb-8 leading-relaxed">
-              Licensed California waste tire hauler and registered tire facility. Serving San Diego County with reliable, eco-friendly tire recycling since the early 2000s.
+              Licensed California waste tire hauler and registered tire facility. Serving San Diego County with eco-friendly tire recycling since the early 2000s.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-lg font-bold h-14 px-8">
