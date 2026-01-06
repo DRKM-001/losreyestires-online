@@ -1,12 +1,63 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/products/ProductCard';
 import { Product } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
+import { getAllTires, type Tire } from '@/lib/api/tireraven';
 
 export function FeaturedProducts() {
-  // TODO: Replace with API call to ERP backend
-  const featuredProducts: Product[] = [
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadLatestProducts() {
+      try {
+        setLoading(true);
+        const tires = await getAllTires(1); // Fetch first page only
+        
+        if (tires.length > 0) {
+          // Take the first 4 products (or however many are available)
+          const latestTires = tires.slice(0, 4);
+          
+          // Map Tire to Product format
+          const mappedProducts: Product[] = latestTires.map((tire: Tire) => ({
+            id: tire.id,
+            name: tire.name,
+            brand: tire.brand,
+            price: tire.price,
+            salePrice: tire.originalPrice ? tire.price : undefined,
+            images: [tire.image],
+            category: 'tires',
+            inStock: tire.stock > 0,
+            rating: tire.rating,
+            reviewCount: tire.reviewCount,
+            size: tire.size,
+            loadIndex: tire.loadIndex,
+            speedRating: tire.speedRating,
+            features: tire.features,
+          }));
+          
+          setProducts(mappedProducts);
+        } else {
+          // Fallback to placeholder data if API returns nothing
+          setProducts(getFallbackProducts());
+        }
+      } catch (error) {
+        console.error('Error loading featured products:', error);
+        setProducts(getFallbackProducts());
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadLatestProducts();
+  }, []);
+
+  // Fallback data if API is unavailable
+  const getFallbackProducts = (): Product[] => [
     {
       id: '1',
       name: 'Michelin Defender T+H All-Season Tire',
@@ -91,9 +142,20 @@ export function FeaturedProducts() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {loading ? (
+            // Loading skeleton
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-lg p-4 shadow animate-pulse">
+                <div className="bg-zinc-200 h-48 rounded mb-4"></div>
+                <div className="bg-zinc-200 h-4 rounded mb-2"></div>
+                <div className="bg-zinc-200 h-4 rounded w-2/3"></div>
+              </div>
+            ))
+          ) : (
+            products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          )}
         </div>
 
         <div className="mt-8 text-center sm:hidden">
