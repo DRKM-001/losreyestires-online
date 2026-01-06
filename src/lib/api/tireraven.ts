@@ -104,14 +104,14 @@ export async function fetchTires(params?: {
  */
 export function mapTireRavenItemToTire(item: TireRavenItem): Tire {
   // Parse load index and speed rating from pattern or nav
-  const loadSpeedMatch = item.pattern.match(/(\d{2,3})([A-Z])/);
+  const loadSpeedMatch = item.pattern?.match(/(\d{2,3})([A-Z])/);
   const loadIndex = loadSpeedMatch?.[1] || '—';
   const speedRating = loadSpeedMatch?.[2] || '—';
   
   // Determine tire type based on pattern keywords
   let type: Tire['type'] = 'all-season'; // default
-  const patternLower = item.pattern.toLowerCase();
-  const navLower = item.nav.toLowerCase();
+  const patternLower = (item.pattern || '').toLowerCase();
+  const navLower = (item.nav || '').toLowerCase();
   
   if (patternLower.includes('winter') || patternLower.includes('blizzak') || navLower.includes('winter')) {
     type = 'winter';
@@ -139,21 +139,34 @@ export function mapTireRavenItemToTire(item: TireRavenItem): Tire {
 
   return {
     id: `tireraven-${item.id}`,
-    name: item.pattern,
-    brand: item.brand.name,
+    name: item.pattern || item.nav || 'Unknown Product',
+    brand: item.brand?.name || 'Unknown Brand',
     image: '/placeholder-tire.jpg', // TODO: Add tire images
-    price: parseFloat(item.price),
+    price: parseFloat(item.price || '0'),
     rating: 4.0, // Default rating - could be enhanced with reviews
     reviewCount: 0,
-    size: item.size,
+    size: item.size || 'UNKNOWN',
     type,
     loadIndex,
     speedRating,
-    stock: item.stock_quantity,
+    stock: item.stock_quantity || 0,
     features,
     eanCode: item.ean_code,
     pattern: item.pattern,
   };
+}
+
+/**
+ * Check if an item is a valid tire (not accessories like valve stems)
+ */
+function isValidTire(item: TireRavenItem): boolean {
+  // Filter out non-tire items
+  if (!item.size || item.size === 'UNKNOWN') return false;
+  if (!item.brand || !item.brand.name) return false;
+  
+  // Check if it looks like a tire size (has pattern like 225/65R17 or LT265/70R17)
+  const tirePattern = /^(P|LT)?\d{3}\/\d{2}R\d{2}$/i;
+  return tirePattern.test(item.size);
 }
 
 /**
@@ -173,7 +186,9 @@ export async function getAllTires(maxPages: number = 10): Promise<Tire[]> {
         break;
       }
 
-      const mappedTires = response.data.map(mapTireRavenItemToTire);
+      // Filter out non-tire items and map to internal format
+      const validItems = response.data.filter(isValidTire);
+      const mappedTires = validItems.map(mapTireRavenItemToTire);
       allTires.push(...mappedTires);
 
       totalPages = response.pagination.total_pages;
@@ -199,7 +214,8 @@ export async function getTiresBySize(size: string): Promise<Tire[]> {
       return [];
     }
 
-    return response.data.map(mapTireRavenItemToTire);
+    const validItems = response.data.filter(isValidTire);
+    return validItems.map(mapTireRavenItemToTire);
   } catch (error) {
     console.error(`Error fetching tires for size ${size}:`, error);
     return [];
@@ -217,7 +233,8 @@ export async function getTireBrands(): Promise<string[]> {
       return [];
     }
 
-    const brands = Array.from(new Set(response.data.map(item => item.brand.name)));
+    const validItems = response.data.filter(isValidTire);
+    const brands = Array.from(new Set(validItems.map(item => item.brand.name)));
     return brands.sort();
   } catch (error) {
     console.error('Error fetching tire brands:', error);
