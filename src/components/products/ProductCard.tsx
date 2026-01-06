@@ -16,51 +16,70 @@ export function ProductCard({ product }: ProductCardProps) {
     : 0;
 
   return (
-    <Card className="group overflow-hidden h-full flex flex-col transition-all hover:shadow-lg">
-      <Link href={`/products/${product.id}`}>
-        <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+    <Card className="group overflow-hidden h-full flex flex-col transition-all hover:shadow-xl border-zinc-200">
+      <Link href={`/products/${product.id}`} className="relative">
+        {/* Image Container - More square aspect ratio */}
+        <div className="relative aspect-[5/6] overflow-hidden bg-gradient-to-br from-zinc-50 to-zinc-100">
           {product.images[0] ? (
             <Image
               src={product.images[0]}
               alt={product.name}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
+              className="object-contain p-6 transition-transform group-hover:scale-110"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-              No Image
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-6xl mb-2">🛞</div>
+                <p className="text-xs text-zinc-400 font-medium">No Image</p>
+              </div>
             </div>
           )}
           
-          {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {!product.inStock && (
-              <Badge className="bg-red-600 font-semibold text-xs">Out of Stock</Badge>
-            )}
+          {/* Status Badges - Top Right */}
+          <div className="absolute top-3 right-3 flex flex-col gap-1.5">
             {discount > 0 && (
-              <Badge className="bg-red-600 font-semibold text-xs">
-                Save {discount}%
+              <Badge className="bg-red-600 hover:bg-red-600 font-bold text-xs shadow-md">
+                -{discount}%
+              </Badge>
+            )}
+            {!product.inStock && (
+              <Badge variant="secondary" className="bg-zinc-900 hover:bg-zinc-900 text-white font-bold text-xs shadow-md">
+                Sold Out
+              </Badge>
+            )}
+            {product.inStock && product.features?.some(f => f.includes('in stock')) && (
+              <Badge className="bg-green-600 hover:bg-green-600 font-bold text-xs shadow-md">
+                In Stock
               </Badge>
             )}
           </div>
         </div>
       </Link>
 
-      <CardContent className="flex-1 p-3">
+      <CardContent className="flex-1 p-4 space-y-2">
         <Link href={`/products/${product.id}`}>
-          <div className="mb-2">
-            <p className="text-xs text-zinc-500 font-semibold mb-0.5">{product.brand}</p>
-            <h3 className="font-semibold text-sm line-clamp-2 text-zinc-900">
-              {product.name}
-            </h3>
-          </div>
+          {/* Brand */}
+          <p className="text-xs font-bold text-red-600 uppercase tracking-wide mb-1">
+            {product.brand}
+          </p>
+          
+          {/* Product Name */}
+          <h3 className="font-bold text-base line-clamp-2 text-zinc-900 mb-2 leading-tight">
+            {product.name}
+          </h3>
 
+          {/* Tire Size */}
           {product.size && (
-            <p className="text-xs text-zinc-600 mb-1.5">{product.size}</p>
+            <div className="inline-block bg-zinc-100 px-2 py-1 rounded text-xs font-semibold text-zinc-700 mb-2">
+              {product.size}
+            </div>
           )}
+        </Link>
 
-          {/* Rating */}
-          <div className="flex items-center gap-1 mb-2">
+        {/* Rating */}
+        {product.rating > 0 && (
+          <div className="flex items-center gap-1.5">
             <div className="flex">
               {[...Array(5)].map((_, i) => (
                 <Star
@@ -68,43 +87,50 @@ export function ProductCard({ product }: ProductCardProps) {
                   className={`h-3.5 w-3.5 ${
                     i < Math.floor(product.rating)
                       ? 'fill-yellow-400 text-yellow-400'
-                      : 'text-gray-300'
+                      : 'fill-zinc-200 text-zinc-200'
                   }`}
                 />
               ))}
             </div>
-            <span className="text-xs text-muted-foreground">
-              ({product.reviewCount})
-            </span>
+            {product.reviewCount > 0 && (
+              <span className="text-xs text-zinc-500 font-medium">
+                ({product.reviewCount})
+              </span>
+            )}
           </div>
-        </Link>
+        )}
 
         {/* Price */}
-        <div className="flex items-baseline gap-2 mb-2">
+        <div className="pt-1">
           {product.salePrice ? (
-            <>
-              <span className="text-lg font-bold text-red-600">${product.salePrice.toFixed(2)}</span>
-              <span className="text-xs text-zinc-400 line-through">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-black text-red-600">
+                ${product.salePrice.toFixed(2)}
+              </span>
+              <span className="text-sm text-zinc-400 line-through font-medium">
                 ${product.price.toFixed(2)}
               </span>
-            </>
+            </div>
           ) : (
-            <span className="text-lg font-bold text-zinc-900">${product.price.toFixed(2)}</span>
+            <span className="text-2xl font-black text-zinc-900">
+              ${product.price.toFixed(2)}
+            </span>
           )}
+          <p className="text-xs text-zinc-500 mt-0.5">per tire</p>
         </div>
       </CardContent>
 
-      <CardFooter className="p-3 pt-0">
+      <CardFooter className="p-4 pt-0">
         <Button 
-          size="sm"
-          className={`w-full font-semibold text-xs ${
+          size="lg"
+          className={`w-full font-bold ${
             product.inStock 
-              ? 'bg-red-600 hover:bg-red-700' 
-              : 'bg-zinc-400'
+              ? 'bg-red-600 hover:bg-red-700 shadow-md hover:shadow-lg' 
+              : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
           }`}
           disabled={!product.inStock}
         >
-          <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
+          <ShoppingCart className="mr-2 h-4 w-4" />
           {product.inStock ? 'Add to Cart' : 'Out of Stock'}
         </Button>
       </CardFooter>
