@@ -17,9 +17,9 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Tire Hauling & Waste Management Services | Los Reyes Tires San Diego',
-  description: 'Professional tire scrap hauling and waste management in San Diego. Licensed, insured, and eco-friendly tire disposal services. Free pickup estimates for businesses and tire shops.',
-  keywords: 'tire hauling San Diego, tire waste disposal, scrap tire removal, tire recycling service, commercial tire hauling, tire disposal El Cajon, California tire waste management',
+  title: 'San Diego Waste Tire Removal & Recycling | Licensed Hauler | Los Reyes Tires',
+  description: 'San Diego\'s trusted waste tire removal service. Licensed California tire hauler, registered facility, annual state inspections. Weekly, on-call, or one-time pickups. All tires recycled in California. Call for free quote.',
+  keywords: 'tire hauling San Diego, waste tire removal, tire recycling San Diego, scrap tire pickup, registered tire facility California, waste tire hauler San Diego, tire disposal El Cajon, California tire manifest',
   openGraph: {
     title: 'Licensed Tire Hauling Services - Los Reyes Tires',
     description: 'Professional tire scrap hauling and waste management in San Diego County. Fully licensed, insured, and eco-friendly.',
@@ -38,10 +38,13 @@ export default function HaulingPage() {
               Licensed & Insured
             </Badge>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6">
-              Professional Tire Hauling & Waste Management
+              San Diego's Trusted Tire Hauling Service
             </h1>
+            <p className="text-2xl md:text-3xl text-red-400 mb-4 font-bold">
+              "One Call, We Haul It All"
+            </p>
             <p className="text-xl md:text-2xl text-zinc-300 mb-8 leading-relaxed">
-              San Diego County's trusted tire scrap hauling service. Fully licensed, insured, and committed to eco-friendly tire disposal and recycling.
+              Licensed California waste tire hauler and registered tire facility. Serving San Diego County with reliable, eco-friendly tire recycling since the early 2000s.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-lg font-bold h-14 px-8">
@@ -110,15 +113,19 @@ export default function HaulingPage() {
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Flexible scheduling</span>
+                    <span className="text-sm">Weekly scheduled pickups</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">High-volume capacity</span>
+                    <span className="text-sm">On-call emergency service</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Competitive pricing</span>
+                    <span className="text-sm">One-time cleanups available</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">Competitive rates</span>
                   </li>
                 </ul>
               </CardContent>
@@ -136,15 +143,19 @@ export default function HaulingPage() {
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">All tires recycled in California</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                     <span className="text-sm">100% recycling rate</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">EPA compliant</span>
+                    <span className="text-sm">State waste tire manifests provided</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Documentation provided</span>
+                    <span className="text-sm">EPA compliant facilities</span>
                   </li>
                 </ul>
               </CardContent>
@@ -162,15 +173,19 @@ export default function HaulingPage() {
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">State licensed operation</span>
+                    <span className="text-sm">Registered waste tire facility</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Proper manifests</span>
+                    <span className="text-sm">State licensed hauler</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">Audit trail records</span>
+                    <span className="text-sm">Annual state inspections</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">California manifest forms provided</span>
                   </li>
                 </ul>
               </CardContent>
