@@ -18,9 +18,9 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card className="group overflow-hidden h-full flex flex-col transition-all hover:shadow-xl border-zinc-200">
       <Link href={`/products/${product.id}`} className="relative">
-        {/* Image Container - More square aspect ratio */}
-        <div className="relative aspect-[5/6] overflow-hidden bg-gradient-to-br from-zinc-50 to-zinc-100">
-          {product.images[0] ? (
+        {/* Image Container - 6:5 aspect ratio (slightly wider than tall) */}
+        <div className="relative aspect-[6/5] overflow-hidden bg-gradient-to-br from-zinc-50 to-zinc-100">
+          {product.images[0] && product.images[0] !== '/placeholder-tire.jpg' ? (
             <Image
               src={product.images[0]}
               alt={product.name}
@@ -28,10 +28,31 @@ export function ProductCard({ product }: ProductCardProps) {
               className="object-contain p-6 transition-transform group-hover:scale-110"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-6xl mb-2">🛞</div>
-                <p className="text-xs text-zinc-400 font-medium">No Image</p>
+            <div className="w-full h-full flex items-center justify-center p-8">
+              <div className="text-center space-y-3">
+                {/* Tire Icon SVG */}
+                <svg 
+                  className="w-24 h-24 mx-auto text-zinc-300" 
+                  fill="currentColor" 
+                  viewBox="0 0 24 24" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
+                  <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                  <circle cx="12" cy="12" r="2" fill="currentColor" />
+                  <line x1="12" y1="2" x2="12" y2="6" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="2" y1="12" x2="6" y2="12" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="18" y1="12" x2="22" y2="12" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="5" y1="5" x2="7.5" y2="7.5" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="16.5" y1="16.5" x2="19" y2="19" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="5" y1="19" x2="7.5" y2="16.5" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="16.5" y1="7.5" x2="19" y2="5" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
+                <div>
+                  <p className="text-sm font-bold text-zinc-900 mb-0.5">{product.brand}</p>
+                  <p className="text-xs text-zinc-500 font-medium">Image Coming Soon</p>
+                </div>
               </div>
             </div>
           )}

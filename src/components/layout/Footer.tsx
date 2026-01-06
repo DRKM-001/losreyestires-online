@@ -17,6 +17,7 @@ export function Footer() {
       { name: 'Wheel Alignment', href: '/services/alignment' },
       { name: 'Tire Rotation', href: '/services/rotation' },
       { name: 'Balancing', href: '/services/balancing' },
+      { name: 'Tire Hauling', href: '/hauling' },
       { name: 'Schedule Appointment', href: '/schedule' },
     ],
     support: [

@@ -39,6 +39,7 @@ export function Header() {
     { name: 'Wheels', href: '/wheels' },
     { name: 'Packages', href: '/packages' },
     { name: 'Services', href: '/services' },
+    { name: 'Hauling', href: '/hauling' },
     { name: 'Financing', href: '/financing' },
     { name: 'Deals', href: '/deals' },
   ];
@@ -375,6 +376,17 @@ export function Header() {
                           className="block select-none rounded-md p-2 text-sm leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
                         >
                           Tire Rotation
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/hauling"
+                          className="block select-none rounded-md p-2 text-sm leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                        >
+                          <div className="font-semibold">Tire Hauling</div>
+                          <p className="text-xs text-muted-foreground mt-0.5">Commercial waste pickup</p>
                         </Link>
                       </NavigationMenuLink>
                     </li>

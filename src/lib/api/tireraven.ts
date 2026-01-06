@@ -19,7 +19,8 @@ export interface TireRavenItem {
   supply: string; // Supply description
   available: boolean;
   stock_quantity: number;
-  price: string; // Price as string
+  price: string; // Retail price (customer-facing)
+  ddp: string; // DDP/Cost price (wholesale/dealer price)
   location: string;
   type: string | null;
   brand: TireRavenBrand;
@@ -137,12 +138,16 @@ export function mapTireRavenItemToTire(item: TireRavenItem): Tire {
     features.push(`Load Index: ${loadIndex}`);
   }
 
+  // price field is the retail price (customer-facing)
+  // ddp is the dealer/cost price (not shown to customers)
+  const retailPrice = parseFloat(item.price || '0');
+
   return {
     id: `tireraven-${item.id}`,
     name: item.pattern || item.nav || 'Unknown Product',
     brand: item.brand?.name || 'Unknown Brand',
     image: '/placeholder-tire.jpg', // TODO: Add tire images
-    price: parseFloat(item.price || '0'),
+    price: retailPrice, // Retail price for customers ($62 not $37)
     rating: 4.0, // Default rating - could be enhanced with reviews
     reviewCount: 0,
     size: item.size || 'UNKNOWN',
