@@ -83,24 +83,7 @@ export function HeroSection() {
       return;
     }
     
-    // Build inquiry details
-    let inquiry = `Tire Condition: ${tireCondition}\n`;
-    
-    if (searchType === 'vehicle') {
-      if (selectedYear && selectedMake && selectedModel) {
-        inquiry += `Vehicle: ${selectedYear} ${selectedMake} ${selectedModel}\n`;
-      }
-    } else {
-      if (selectedWidth && selectedAspect && selectedDiameter) {
-        inquiry += `Tire Size: ${selectedWidth}/${selectedAspect}R${selectedDiameter}\n`;
-      }
-    }
-    
-    if (additionalInfo) {
-      inquiry += `Additional Info: ${additionalInfo}\n`;
-    }
-    
-    // TODO: Send to backend/email service
+    // Build request data
     const requestData = {
       name,
       phone,
@@ -113,25 +96,44 @@ export function HeroSection() {
       timestamp: new Date().toISOString(),
     };
     
-    console.log('RFI Submission:', requestData);
-    
-    // For now, just show success message
-    alert('Thank you! We\'ll get back to you shortly with a quote.');
-    
-    // Close dialog
-    setIsDialogOpen(false);
-    
-    // Reset form
-    setName('');
-    setPhone('');
-    setEmail('');
-    setAdditionalInfo('');
-    setSelectedYear('');
-    setSelectedMake('');
-    setSelectedModel('');
-    setSelectedWidth('');
-    setSelectedAspect('');
-    setSelectedDiameter('');
+    try {
+      // Submit to API
+      const response = await fetch('/api/rfi', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit request');
+      }
+      
+      const result = await response.json();
+      
+      // Show success message
+      alert('Thank you! We\'ll get back to you shortly with a quote.');
+      
+      // Close dialog
+      setIsDialogOpen(false);
+      
+      // Reset form
+      setName('');
+      setPhone('');
+      setEmail('');
+      setAdditionalInfo('');
+      setSelectedYear('');
+      setSelectedMake('');
+      setSelectedModel('');
+      setSelectedWidth('');
+      setSelectedAspect('');
+      setSelectedDiameter('');
+      
+    } catch (error) {
+      console.error('RFI submission error:', error);
+      alert('Sorry, there was an error submitting your request. Please try calling us at 619-440-6098 or emailing info@losreyestires.com');
+    }
   };
 
   return (
