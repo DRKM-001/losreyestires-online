@@ -34,6 +34,7 @@ export function Footer() {
       { name: 'Warranty Info', href: '/warranty' },
       { name: 'Privacy Policy', href: '/privacy' },
       { name: 'Terms of Service', href: '/terms' },
+      { name: 'Messaging Terms', href: '/messaging-terms' },
     ],
   };
 

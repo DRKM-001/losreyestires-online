@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { Newsletter } from "@/components/layout/Newsletter";
 import { SnapFinanceBanner } from "@/components/financing/SnapFinanceBanner";
 import { siteConfig } from "@/lib/metadata";
 
@@ -111,6 +112,7 @@ export default function RootLayout({
         <Header />
         <main className="min-h-screen">{children}</main>
         <SnapFinanceBanner />
+        <Newsletter />
         <Footer />
       </body>
     </html>
