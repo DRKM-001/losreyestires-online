@@ -88,7 +88,7 @@ export async function fetchTires(params?: {
 
   const response = await fetch(url, {
     headers: {
-      'X-API-Key': TIRERAVEN_API_KEY,
+      'X-API-Key': TIRERAVEN_API_KEY || '',
     },
     next: { revalidate: 300 }, // Cache for 5 minutes
   });
