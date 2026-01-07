@@ -92,8 +92,9 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <NavigationMenu className="hidden lg:flex">
-          <NavigationMenuList>
+        <div suppressHydrationWarning>
+          <NavigationMenu className="hidden lg:flex">
+            <NavigationMenuList>
             {/* Tires Dropdown */}
             <NavigationMenuItem>
               <NavigationMenuTrigger className="text-sm font-bold">Tires</NavigationMenuTrigger>
@@ -414,6 +415,7 @@ export function Header() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        </div>
 
         {/* Search & Actions */}
         <div className="flex items-center gap-2">
