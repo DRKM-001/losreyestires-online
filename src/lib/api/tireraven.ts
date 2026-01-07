@@ -1,8 +1,8 @@
 // TireRaven API Integration
 // API Documentation: https://api.tireraven.com
 
-const TIRERAVEN_API_BASE = 'https://api.tireraven.com/api/external/v1';
-const TIRERAVEN_API_KEY = process.env.NEXT_PUBLIC_TIRERAVEN_API_KEY || 'tireraven_live_e561279385760a19fd9ce9b9c177419cca92f6cec9afbd97f83b647e424373c7';
+const TIRERAVEN_API_BASE = process.env.NEXT_PUBLIC_TIRERAVEN_API_BASE || 'https://api.tireraven.com/api/external/v1';
+const TIRERAVEN_API_KEY = process.env.NEXT_PUBLIC_TIRERAVEN_API_KEY;
 
 // TireRaven API Response Types
 export interface TireRavenBrand {
@@ -78,14 +78,14 @@ export async function fetchTires(params?: {
   brand?: string;
 }): Promise<TireRavenResponse> {
   const searchParams = new URLSearchParams();
-  
+
   if (params?.page) searchParams.append('page', params.page.toString());
   if (params?.per_page) searchParams.append('per_page', params.per_page.toString());
   if (params?.size) searchParams.append('size', params.size);
   if (params?.brand) searchParams.append('brand', params.brand);
 
   const url = `${TIRERAVEN_API_BASE}/items${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-  
+
   const response = await fetch(url, {
     headers: {
       'X-API-Key': TIRERAVEN_API_KEY,
@@ -108,12 +108,12 @@ export function mapTireRavenItemToTire(item: TireRavenItem): Tire {
   const loadSpeedMatch = item.pattern?.match(/(\d{2,3})([A-Z])/);
   const loadIndex = loadSpeedMatch?.[1] || '—';
   const speedRating = loadSpeedMatch?.[2] || '—';
-  
+
   // Determine tire type based on pattern keywords
   let type: Tire['type'] = 'all-season'; // default
   const patternLower = (item.pattern || '').toLowerCase();
   const navLower = (item.nav || '').toLowerCase();
-  
+
   if (patternLower.includes('winter') || patternLower.includes('blizzak') || navLower.includes('winter')) {
     type = 'winter';
   } else if (patternLower.includes('a/t') || patternLower.includes('all-terrain') || patternLower.includes('4x4')) {
@@ -168,7 +168,7 @@ function isValidTire(item: TireRavenItem): boolean {
   // Filter out non-tire items
   if (!item.size || item.size === 'UNKNOWN') return false;
   if (!item.brand || !item.brand.name) return false;
-  
+
   // Check if it looks like a tire size (has pattern like 225/65R17 or LT265/70R17)
   const tirePattern = /^(P|LT)?\d{3}\/\d{2}R\d{2}$/i;
   return tirePattern.test(item.size);
@@ -185,7 +185,7 @@ export async function getAllTires(maxPages: number = 10): Promise<Tire[]> {
   try {
     do {
       const response = await fetchTires({ page: currentPage, per_page: 50 });
-      
+
       if (!response.success || !response.data) {
         console.error('Failed to fetch tires from TireRaven API');
         break;
@@ -214,7 +214,7 @@ export async function getAllTires(maxPages: number = 10): Promise<Tire[]> {
 export async function getTiresBySize(size: string): Promise<Tire[]> {
   try {
     const response = await fetchTires({ size, per_page: 50 });
-    
+
     if (!response.success || !response.data) {
       return [];
     }
@@ -233,7 +233,7 @@ export async function getTiresBySize(size: string): Promise<Tire[]> {
 export async function getTireBrands(): Promise<string[]> {
   try {
     const response = await fetchTires({ per_page: 50 });
-    
+
     if (!response.success || !response.data) {
       return [];
     }
@@ -253,7 +253,7 @@ export async function getTireBrands(): Promise<string[]> {
 export async function getTireSizes(): Promise<string[]> {
   try {
     const response = await fetchTires({ per_page: 50 });
-    
+
     if (!response.success || !response.data) {
       return [];
     }
