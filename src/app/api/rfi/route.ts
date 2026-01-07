@@ -118,9 +118,10 @@ This request was submitted from losreyestires.com
 </html>
     `.trim();
 
-    // Send email using Resend
+    // Send emails using Resend
     if (process.env.RESEND_API_KEY) {
-      const resendResponse = await fetch('https://api.resend.com/emails', {
+      // 1. Send notification email to company
+      const companyResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
@@ -136,14 +137,133 @@ This request was submitted from losreyestires.com
         }),
       });
 
-      if (!resendResponse.ok) {
-        const error = await resendResponse.text();
-        console.error('Resend API error:', error);
-        throw new Error('Failed to send email');
+      if (!companyResponse.ok) {
+        const error = await companyResponse.text();
+        console.error('Resend API error (company email):', error);
+        throw new Error('Failed to send company notification');
       }
 
-      const result = await resendResponse.json();
-      console.log('Email sent successfully:', result);
+      const companyResult = await companyResponse.json();
+      console.log('Company notification sent:', companyResult);
+
+      // 2. Send confirmation email to customer
+      const customerSubject = 'Quote Request Received - Los Reyes Tires';
+      
+      const customerTextBody = `
+Hi ${name},
+
+Thank you for your tire quote request!
+
+We've received your inquiry and one of our tire experts will review it shortly. You can expect to hear back from us within 24 hours during business hours.
+
+Your Request Details:
+${vehicleOrSizeInfo}
+Condition: ${tireCondition.toUpperCase()}
+${additionalInfo ? `\nAdditional Notes: ${additionalInfo}` : ''}
+
+Questions? Feel free to contact us:
+📞 Phone: 619-440-6098
+💬 WhatsApp: (619) 729-9468
+📧 Email: info@losreyestires.com
+📍 Location: 1245 N 1st St, El Cajon, CA 92021
+
+Family Owned Since 2005 | Serving San Diego with Pride
+
+Best regards,
+The Los Reyes Tires Team
+      `.trim();
+
+      const customerHtmlBody = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 30px 20px; text-align: center; }
+    .header h1 { margin: 0; font-size: 28px; }
+    .content { background: #ffffff; padding: 30px 20px; }
+    .highlight-box { background: #f9fafb; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; border-radius: 4px; }
+    .details { margin: 20px 0; }
+    .detail-row { margin: 8px 0; }
+    .label { font-weight: bold; color: #6b7280; }
+    .contact-section { background: #f9fafb; padding: 20px; border-radius: 8px; margin: 25px 0; }
+    .contact-item { margin: 10px 0; }
+    .contact-item a { color: #dc2626; text-decoration: none; }
+    .footer { background: #18181b; color: #a1a1aa; text-align: center; padding: 20px; font-size: 12px; }
+    .button { display: inline-block; background: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✅ Quote Request Received!</h1>
+    </div>
+    <div class="content">
+      <p>Hi <strong>${name}</strong>,</p>
+      
+      <p>Thank you for your tire quote request! We've received your inquiry and one of our tire experts will review it shortly.</p>
+      
+      <p><strong>You can expect to hear back from us within 24 hours during business hours.</strong></p>
+      
+      <div class="highlight-box">
+        <h3 style="margin-top: 0; color: #dc2626;">Your Request Details</h3>
+        <div class="detail-row"><span class="label">${searchType === 'vehicle' ? 'Vehicle:' : 'Tire Size:'}</span> ${vehicleOrSizeInfo.split(': ')[1]}</div>
+        <div class="detail-row"><span class="label">Condition:</span> ${tireCondition.toUpperCase()}</div>
+        ${additionalInfo ? `<div class="detail-row"><span class="label">Notes:</span> ${additionalInfo}</div>` : ''}
+      </div>
+      
+      <div class="contact-section">
+        <h3 style="margin-top: 0; color: #dc2626;">Need Immediate Assistance?</h3>
+        <div class="contact-item">📞 <strong>Phone:</strong> <a href="tel:619-440-6098">619-440-6098</a></div>
+        <div class="contact-item">💬 <strong>WhatsApp:</strong> <a href="https://wa.me/16197299468">(619) 729-9468</a></div>
+        <div class="contact-item">📧 <strong>Email:</strong> <a href="mailto:info@losreyestires.com">info@losreyestires.com</a></div>
+        <div class="contact-item">📍 <strong>Location:</strong> 1245 N 1st St, El Cajon, CA 92021</div>
+      </div>
+      
+      <p style="text-align: center;">
+        <a href="https://losreyestires.com" class="button">Visit Our Website</a>
+      </p>
+      
+      <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
+        <strong>Family Owned Since 2005</strong><br>
+        Serving San Diego with Pride
+      </p>
+    </div>
+    <div class="footer">
+      <p><strong>Los Reyes Tires</strong></p>
+      <p>1245 N 1st St, El Cajon, CA 92021</p>
+      <p>© ${new Date().getFullYear()} Los Reyes Tires. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+      `.trim();
+
+      const customerResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Los Reyes Tires <quotes@losreyestires.com>',
+          to: email,
+          subject: customerSubject,
+          text: customerTextBody,
+          html: customerHtmlBody,
+        }),
+      });
+
+      if (!customerResponse.ok) {
+        const error = await customerResponse.text();
+        console.error('Resend API error (customer email):', error);
+        // Don't throw - company email already sent successfully
+        console.log('Customer confirmation failed, but company notification was sent');
+      } else {
+        const customerResult = await customerResponse.json();
+        console.log('Customer confirmation sent:', customerResult);
+      }
     } else {
       // Log to console if no email service configured
       console.log('RFI Submission (no email service configured):', {
