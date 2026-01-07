@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, MessageCircle, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { YelpIcon } from '@/components/icons/YelpIcon';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
 
 export function Footer() {
@@ -158,8 +157,14 @@ export function Footer() {
             © {new Date().getFullYear()} Los Reyes Tires. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
-            <a href="https://www.yelp.com/biz/los-reyes-tire-shop-el-cajon" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="Yelp">
-              <YelpIcon className="h-5 w-5" />
+            <a href="https://www.yelp.com/biz/los-reyes-tire-shop-el-cajon" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity" aria-label="Yelp">
+              <Image
+                src="/yelp_logos/Burst/yelp_burst.svg"
+                alt="Yelp"
+                width={20}
+                height={20}
+                className="h-5 w-5"
+              />
             </a>
             <a href="https://wa.me/16197299468" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="WhatsApp">
               <MessageCircle className="h-5 w-5" />
