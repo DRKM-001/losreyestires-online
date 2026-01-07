@@ -5,7 +5,7 @@ import { generatePageMetadata } from '@/lib/metadata';
 
 export const metadata = generatePageMetadata({
   title: 'About Us - Family Owned Since 2005',
-  description: 'Learn about Los Reyes Tires, founded by Polo Reyes in 2005. Family owned for over 19 years, we've grown from a small El Cajon shop to San Diego's trusted tire experts.',
+  description: 'Learn about Los Reyes Tires, founded by Polo Reyes in 2005. Family owned for over 19 years, we have grown from a small El Cajon shop to San Diego\'s trusted tire experts.',
   path: '/about',
   keywords: ['Polo Reyes', 'family owned since 2005', 'El Cajon tire shop', 'San Diego tires'],
 });
