@@ -58,7 +58,7 @@ export function Header() {
               <MessageCircle className="h-4 w-4" />
               <span className="hidden sm:inline font-semibold">WhatsApp</span>
             </a>
-            <span className="hidden lg:inline text-zinc-600 font-medium">El Cajon, CA | Open 7 Days a Week</span>
+            <span className="hidden lg:inline text-zinc-600 font-medium">🏆 Family Owned Since 2005 | Serving San Diego</span>
           </div>
           <ReviewTicker />
           <div className="flex items-center gap-6 font-semibold text-zinc-700">

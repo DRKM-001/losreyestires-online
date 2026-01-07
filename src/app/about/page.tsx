@@ -4,10 +4,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { generatePageMetadata } from '@/lib/metadata';
 
 export const metadata = generatePageMetadata({
-  title: 'About Us - Founded by Polo Reyes',
-  description: 'Learn about Los Reyes Tires, founded by Polo Reyes in the early 2000s. From a small El Cajon shop to a community staple built on hard work, integrity, and unmatched customer service.',
+  title: 'About Us - Family Owned Since 2005',
+  description: 'Learn about Los Reyes Tires, founded by Polo Reyes in 2005. Family owned for over 19 years, we've grown from a small El Cajon shop to San Diego's trusted tire experts.',
   path: '/about',
-  keywords: ['Polo Reyes', 'tire shop history', 'El Cajon tire shop', 'family owned tires'],
+  keywords: ['Polo Reyes', 'family owned since 2005', 'El Cajon tire shop', 'San Diego tires'],
 });
 
 export default function AboutPage() {
@@ -40,9 +40,12 @@ export default function AboutPage() {
       <section className="bg-gradient-to-br from-zinc-900 to-black text-white py-20">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
+              Family Owned Since 2005
+            </div>
             <h1 className="text-4xl md:text-5xl font-black mb-6">Our Story</h1>
             <p className="text-xl text-zinc-300">
-              Built on hard work, integrity, and a commitment to exceptional service.
+              Over 19 years of serving San Diego with hard work, integrity, and exceptional service.
             </p>
           </div>
         </div>
@@ -62,21 +65,21 @@ export default function AboutPage() {
             </div>
             <div>
               <h2 className="text-3xl md:text-4xl font-black mb-6">
-                Founded by Polo Reyes
+                Founded by Polo Reyes in 2005
               </h2>
               <div className="space-y-4 text-zinc-700">
                 <p className="text-lg">
-                  In the early 2000s, Polo Reyes had a vision: to create a tire shop that would serve the El Cajon 
+                  In 2005, Polo Reyes had a vision: to create a family-owned tire shop that would serve the El Cajon 
                   and San Diego communities with honest service, quality products, and unbeatable customer care.
                 </p>
                 <p className="text-lg">
-                  What started as a small shop has grown into a staple of the community, built on the foundation of 
-                  hard-working ethics and a genuine commitment to helping every customer find the perfect solution 
-                  for their vehicle.
+                  What started as a small family shop has grown into a community staple over 19 years, built on the 
+                  foundation of hard-working ethics and a genuine commitment to helping every customer find the 
+                  perfect solution for their vehicle.
                 </p>
                 <p className="text-lg">
-                  Today, Los Reyes Tires continues that legacy, specializing in everything from premium new tires 
-                  to quality used options, with a particular expertise in off-road wheels and lift culture.
+                  Today, Los Reyes Tires continues that family legacy, specializing in everything from premium new 
+                  tires to quality used options, with a particular expertise in off-road wheels and San Diego's lift culture.
                 </p>
               </div>
             </div>

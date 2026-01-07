@@ -165,15 +165,15 @@ export function HeroSection() {
             <div className="flex flex-wrap gap-3 mb-8">
               <div className="flex items-center gap-2 text-zinc-200">
                 <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="font-medium">Family Owned Since 2005</span>
+              </div>
+              <div className="flex items-center gap-2 text-zinc-200">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="font-medium">San Diego's Trusted Experts</span>
+              </div>
+              <div className="flex items-center gap-2 text-zinc-200">
+                <CheckCircle className="h-5 w-5 text-green-500" />
                 <span className="font-medium">Free Installation</span>
-              </div>
-              <div className="flex items-center gap-2 text-zinc-200">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="font-medium">Lifetime Balance & Rotation</span>
-              </div>
-              <div className="flex items-center gap-2 text-zinc-200">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="font-medium">Financing Available</span>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { YelpIcon } from '@/components/icons/YelpIcon';
 
 export function Footer() {
   const footerLinks = {
@@ -54,7 +55,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-zinc-400 mb-4">
-              Founded by Polo Reyes in the early 2000s. Your trusted source for quality tires and wheels in San Diego.
+              <span className="text-zinc-300 font-semibold">Family Owned Since 2005.</span> Founded by Polo Reyes, Los Reyes Tires has been San Diego's trusted source for quality tires, wheels, and expert service for over 19 years.
             </p>
             <div className="space-y-2.5 text-sm">
               <a href="tel:619-440-6098" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
@@ -141,6 +142,9 @@ export function Footer() {
             © {new Date().getFullYear()} Los Reyes Tires. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
+            <a href="https://www.yelp.com/biz/los-reyes-tire-shop-el-cajon" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="Yelp">
+              <YelpIcon className="h-5 w-5" />
+            </a>
             <a href="https://wa.me/16197299468" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="WhatsApp">
               <MessageCircle className="h-5 w-5" />
             </a>
