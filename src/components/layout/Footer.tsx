@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, MessageCircle, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { YelpIcon } from '@/components/icons/YelpIcon';
+import { GoogleIcon } from '@/components/icons/GoogleIcon';
 
 export function Footer() {
   const footerLinks = {
@@ -25,6 +26,7 @@ export function Footer() {
       { name: 'Contact Us', href: '/contact' },
       { name: 'Find a Store', href: '/locations' },
       { name: 'Financing Options', href: '/financing' },
+      { name: 'Tire & Wheel Encyclopedia', href: '/encyclopedia' },
       { name: 'Shipping Info', href: '/shipping' },
       { name: 'Returns', href: '/returns' },
       { name: 'FAQ', href: '/faq' },
@@ -135,6 +137,20 @@ export function Footer() {
         </div>
 
         <Separator className="my-8 bg-zinc-700" />
+
+        {/* Review CTA */}
+        <div className="mb-6">
+          <a
+            href="https://g.page/r/CVxUx3jWbjPzEAE/review"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-zinc-900 rounded-lg font-semibold hover:bg-zinc-100 transition-colors"
+          >
+            <GoogleIcon className="h-5 w-5" />
+            <span>Review Us on Google</span>
+            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+          </a>
+        </div>
 
         {/* Bottom bar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
