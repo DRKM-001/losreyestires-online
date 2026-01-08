@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -5,19 +7,60 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, ShoppingCart } from 'lucide-react';
 import { Product } from '@/lib/types';
+import { trackSelectItem, trackAddToCart } from '@/lib/analytics/ga4';
 
 interface ProductCardProps {
   product: Product;
+  listName?: string;   // e.g., "All-Terrain Tires", "Search Results"
+  index?: number;      // Position in the list
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, listName = 'Product List', index }: ProductCardProps) {
   const discount = product.salePrice 
     ? Math.round(((product.price - product.salePrice) / product.price) * 100)
     : 0;
 
+  // Track when user clicks product to view details
+  const handleProductClick = () => {
+    trackSelectItem(
+      {
+        item_id: product.id,
+        item_name: product.name,
+        item_brand: product.brand,
+        item_category: product.category || 'Tires',
+        item_variant: 'New',
+        price: product.salePrice || product.price,
+      },
+      listName,
+      index
+    );
+  };
+
+  // Track when user adds item to cart
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); // Don't navigate to product page
+    e.stopPropagation();
+    
+    if (!product.inStock) return;
+    
+    trackAddToCart({
+      item_id: product.id,
+      item_name: product.name,
+      item_brand: product.brand,
+      item_category: product.category || 'Tires',
+      item_variant: 'New',
+      price: product.salePrice || product.price,
+      quantity: 1,
+    });
+    
+    // TODO: Add actual cart logic here
+    // For now, just show feedback
+    alert(`${product.name} added to cart!`);
+  };
+
   return (
     <Card className="group overflow-hidden h-full flex flex-col transition-all hover:shadow-xl border-zinc-200">
-      <Link href={`/products/${product.id}`} className="relative">
+      <Link href={`/products/${product.id}`} className="relative" onClick={handleProductClick}>
         {/* Image Container - 6:5 aspect ratio (slightly wider than tall) */}
         <div className="relative aspect-[6/5] overflow-hidden bg-gradient-to-br from-zinc-50 to-zinc-100">
           {product.images[0] && product.images[0] !== '/placeholder-tire.jpg' ? (
@@ -79,7 +122,7 @@ export function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       <CardContent className="flex-1 p-4 space-y-2">
-        <Link href={`/products/${product.id}`}>
+        <Link href={`/products/${product.id}`} onClick={handleProductClick}>
           {/* Brand */}
           <p className="text-xs font-bold text-red-600 uppercase tracking-wide mb-1">
             {product.brand}
@@ -144,6 +187,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <CardFooter className="p-4 pt-0">
         <Button 
           size="lg"
+          onClick={handleAddToCart}
           className={`w-full font-bold ${
             product.inStock 
               ? 'bg-red-600 hover:bg-red-700 shadow-md hover:shadow-lg' 
