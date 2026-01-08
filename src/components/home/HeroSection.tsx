@@ -18,6 +18,7 @@ import {
   getTireSizesForVehicle 
 } from '@/lib/data/vehicles';
 import { getTiresBySize } from '@/lib/api/tireraven';
+import { trackQuoteRequest } from '@/lib/analytics/ga4';
 export function HeroSection() {
   const router = useRouter();
   const [searchType, setSearchType] = useState<'vehicle' | 'size'>('vehicle');
@@ -113,6 +114,17 @@ export function HeroSection() {
       if (!response.ok) {
         throw new Error('Failed to submit request');
       }
+      
+      // Track quote request in GA4
+      trackQuoteRequest({
+        vehicle: searchType === 'vehicle' && selectedYear && selectedMake && selectedModel 
+          ? `${selectedYear} ${selectedMake} ${selectedModel}` 
+          : undefined,
+        tire_size: searchType === 'size' && selectedWidth && selectedAspect && selectedDiameter
+          ? `${selectedWidth}/${selectedAspect}R${selectedDiameter}`
+          : undefined,
+        condition: tireCondition,
+      });
       
       // Show success state
       setShowSuccess(true);
