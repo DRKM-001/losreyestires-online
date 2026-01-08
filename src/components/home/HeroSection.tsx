@@ -9,9 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Car, CheckCircle, Send, MessageSquare, Sparkles } from 'lucide-react';
+import { Search, Car, CheckCircle, Send, Loader2, Phone, Mail } from 'lucide-react';
 import { 
   getAvailableYears, 
   getAvailableMakes, 
@@ -21,9 +20,10 @@ import {
 import { getTiresBySize } from '@/lib/api/tireraven';
 export function HeroSection() {
   const router = useRouter();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchType, setSearchType] = useState<'vehicle' | 'size'>('vehicle');
   const [tireCondition, setTireCondition] = useState<'new' | 'used' | 'both'>('new');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   
   // Vehicle search state
   const [selectedYear, setSelectedYear] = useState<string>('');
@@ -76,12 +76,16 @@ export function HeroSection() {
   }, [selectedYear, selectedMake]);
   
   // Handle RFI submission
-  const handleRFISubmit = async () => {
+  const handleRFISubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     // Validate required fields
     if (!name || !phone || !email) {
       alert('Please fill in your name, phone, and email');
       return;
     }
+    
+    setIsSubmitting(true);
     
     // Build request data
     const requestData = {
@@ -110,29 +114,29 @@ export function HeroSection() {
         throw new Error('Failed to submit request');
       }
       
-      const result = await response.json();
+      // Show success state
+      setShowSuccess(true);
       
-      // Show success message
-      alert('Thank you! We\'ll get back to you shortly with a quote.');
-      
-      // Close dialog
-      setIsDialogOpen(false);
-      
-      // Reset form
-      setName('');
-      setPhone('');
-      setEmail('');
-      setAdditionalInfo('');
-      setSelectedYear('');
-      setSelectedMake('');
-      setSelectedModel('');
-      setSelectedWidth('');
-      setSelectedAspect('');
-      setSelectedDiameter('');
+      // Reset form after delay
+      setTimeout(() => {
+        setName('');
+        setPhone('');
+        setEmail('');
+        setAdditionalInfo('');
+        setSelectedYear('');
+        setSelectedMake('');
+        setSelectedModel('');
+        setSelectedWidth('');
+        setSelectedAspect('');
+        setSelectedDiameter('');
+        setShowSuccess(false);
+      }, 3000);
       
     } catch (error) {
       console.error('RFI submission error:', error);
       alert('Sorry, there was an error submitting your request. Please try calling us at 619-440-6098 or emailing info@losreyestires.com');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -180,29 +184,70 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right side - Elegant Tire Finder Card */}
+          {/* Right side - Quote Request Card */}
           <Card className="lg:col-span-2 p-6 bg-white/95 backdrop-blur shadow-2xl border-0">
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <h3 className="text-2xl font-bold tracking-tight">
-                  Find Your Tires
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Search by vehicle or tire size
-                </p>
+            {showSuccess ? (
+              <div className="space-y-4 text-center py-8">
+                <div className="flex justify-center">
+                  <div className="rounded-full bg-green-100 p-3">
+                    <CheckCircle className="h-12 w-12 text-green-600" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-green-600 mb-2">Request Received!</h3>
+                  <p className="text-muted-foreground mb-4">
+                    We'll get back to you within 24 hours with a quote.
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Check your email for confirmation.
+                  </p>
+                </div>
               </div>
-            
-              <Tabs value={searchType} onValueChange={(val) => setSearchType(val as 'vehicle' | 'size')} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="vehicle" className="gap-2">
-                    <Car className="h-4 w-4" />
-                    Vehicle
-                  </TabsTrigger>
-                  <TabsTrigger value="size" className="gap-2">
-                    <Search className="h-4 w-4" />
-                    Size
-                  </TabsTrigger>
-                </TabsList>
+            ) : (
+              <form onSubmit={handleRFISubmit} className="space-y-5">
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-bold tracking-tight text-zinc-900">
+                    Request a Quote
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Get pricing in 24 hours • Free consultation
+                  </p>
+                </div>
+                {/* Tire Condition Selection */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">I'm looking for</Label>
+                  <RadioGroup 
+                    value={tireCondition} 
+                    onValueChange={(val) => setTireCondition(val as 'new' | 'used' | 'both')} 
+                    className="flex gap-3"
+                  >
+                    <div className="flex items-center space-x-2 flex-1">
+                      <RadioGroupItem value="new" id="new" />
+                      <Label htmlFor="new" className="font-normal cursor-pointer text-sm">New Tires</Label>
+                    </div>
+                    <div className="flex items-center space-x-2 flex-1">
+                      <RadioGroupItem value="used" id="used" />
+                      <Label htmlFor="used" className="font-normal cursor-pointer text-sm">Used Tires</Label>
+                    </div>
+                    <div className="flex items-center space-x-2 flex-1">
+                      <RadioGroupItem value="both" id="both" />
+                      <Label htmlFor="both" className="font-normal cursor-pointer text-sm">Both</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                {/* Vehicle/Size Selection */}
+                <Tabs value={searchType} onValueChange={(val) => setSearchType(val as 'vehicle' | 'size')} className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="vehicle" className="gap-2">
+                      <Car className="h-4 w-4" />
+                      By Vehicle
+                    </TabsTrigger>
+                    <TabsTrigger value="size" className="gap-2">
+                      <Search className="h-4 w-4" />
+                      By Size
+                    </TabsTrigger>
+                  </TabsList>
                 
                 <TabsContent value="vehicle" className="space-y-3">
                   <div className="grid grid-cols-3 gap-2">
@@ -298,137 +343,92 @@ export function HeroSection() {
                   </div>
                 </TabsContent>
               </Tabs>
-              
-              <div className="flex gap-2 pt-2">
-                <Button 
-                  size="lg"
-                  className="flex-1 bg-red-600 hover:bg-red-700"
-                  onClick={() => router.push('/tires')}
-                >
-                  <Search className="mr-2 h-4 w-4" />
-                  Browse
-                </Button>
-                
-                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button 
-                        size="lg"
-                        variant="outline"
-                        className="flex-1 border-2 border-red-600 text-red-600 hover:bg-red-50 hover:text-red-700"
-                      >
-                        <Sparkles className="mr-2 h-4 w-4" />
-                        Quote
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Request a Quote</DialogTitle>
-                        <DialogDescription>
-                          Tell us what you need and we'll get back to you with pricing
-                        </DialogDescription>
-                      </DialogHeader>
-                      
-                      <div className="space-y-6 py-4">
-                        {/* Tire Condition */}
-                        <div className="space-y-2">
-                          <Label>I'm interested in</Label>
-                          <RadioGroup value={tireCondition} onValueChange={(val) => setTireCondition(val as 'new' | 'used' | 'both')} className="flex gap-4">
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="new" id="dialog-new" />
-                              <Label htmlFor="dialog-new" className="font-normal cursor-pointer">New</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="used" id="dialog-used" />
-                              <Label htmlFor="dialog-used" className="font-normal cursor-pointer">Used</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="both" id="dialog-both" />
-                              <Label htmlFor="dialog-both" className="font-normal cursor-pointer">Both</Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                        
-                        {/* Vehicle/Size Info Display */}
-                        <div className="rounded-lg border bg-muted/50 p-3">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">Your Selection</p>
-                          {searchType === 'vehicle' ? (
-                            <p className="text-sm font-medium">
-                              {selectedYear && selectedMake && selectedModel 
-                                ? `${selectedYear} ${selectedMake} ${selectedModel}` 
-                                : 'No vehicle selected'}
-                            </p>
-                          ) : (
-                            <p className="text-sm font-medium">
-                              {selectedWidth && selectedAspect && selectedDiameter
-                                ? `${selectedWidth}/${selectedAspect}R${selectedDiameter}`
-                                : 'No size selected'}
-                            </p>
-                          )}
-                        </div>
-                        
-                        {/* Additional Info */}
-                        <div className="space-y-2">
-                          <Label htmlFor="additional">Additional Details</Label>
-                          <Textarea
-                            id="additional"
-                            placeholder="Budget, brand preference, quantity, special requirements..."
-                            value={additionalInfo}
-                            onChange={(e) => setAdditionalInfo(e.target.value)}
-                            className="resize-none"
-                            rows={3}
-                          />
-                        </div>
-                        
-                        {/* Contact Info */}
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="name">Name *</Label>
-                            <Input
-                              id="name"
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-                              required
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="phone">Phone *</Label>
-                              <Input
-                                id="phone"
-                                type="tel"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                required
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="email">Email *</Label>
-                              <Input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Submit */}
-                        <Button 
-                          size="lg"
-                          className="w-full bg-red-600 hover:bg-red-700"
-                          onClick={handleRFISubmit}
-                        >
-                          <Send className="mr-2 h-4 w-4" />
-                          Submit Request
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+
+              {/* Additional Notes */}
+              <div className="space-y-2">
+                <Label htmlFor="notes" className="text-sm font-medium">Additional Details (Optional)</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="Budget, brand preferences, quantity, special requirements..."
+                  value={additionalInfo}
+                  onChange={(e) => setAdditionalInfo(e.target.value)}
+                  className="resize-none h-20"
+                />
+              </div>
+
+              {/* Contact Information */}
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Your Contact Information</Label>
+                <div className="space-y-3">
+                  <Input
+                    type="text"
+                    placeholder="Full Name *"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    className="h-11"
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <Input
+                      type="tel"
+                      placeholder="Phone *"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                      className="h-11"
+                    />
+                    <Input
+                      type="email"
+                      placeholder="Email *"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="h-11"
+                    />
+                  </div>
                 </div>
               </div>
-            </Card>
+
+              {/* Submit Button */}
+              <Button 
+                type="submit"
+                size="lg"
+                className="w-full h-12 bg-red-600 hover:bg-red-700 text-base font-semibold"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Sending Request...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-5 w-5" />
+                    Get Free Quote
+                  </>
+                )}
+              </Button>
+
+              {/* Trust Signals */}
+              <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2 border-t">
+                <div className="flex items-center gap-1">
+                  <Phone className="h-3 w-3" />
+                  <span>24hr response</span>
+                </div>
+                <div className="w-1 h-1 rounded-full bg-zinc-300" />
+                <div className="flex items-center gap-1">
+                  <Mail className="h-3 w-3" />
+                  <span>Email confirmation</span>
+                </div>
+                <div className="w-1 h-1 rounded-full bg-zinc-300" />
+                <div className="flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3" />
+                  <span>No obligation</span>
+                </div>
+              </div>
+            </form>
+            )}
+          </Card>
         </div>
       </div>
     </section>
