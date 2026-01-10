@@ -1,103 +1,79 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Car, CheckCircle, Send, Loader2, Phone, Mail } from 'lucide-react';
-import { 
-  getAvailableYears, 
-  getAvailableMakes, 
-  getAvailableModels,
-  getTireSizesForVehicle 
-} from '@/lib/data/vehicles';
-import { getTiresBySize } from '@/lib/api/tireraven';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { CheckCircle, Send, Loader2, Phone, Mail, MessageSquare } from 'lucide-react';
 import { trackQuoteRequest } from '@/lib/analytics/ga4';
 export function HeroSection() {
-  const router = useRouter();
-  const [searchType, setSearchType] = useState<'vehicle' | 'size'>('vehicle');
-  const [tireCondition, setTireCondition] = useState<'new' | 'used' | 'both'>('new');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  // Step 1: What they're looking for
+  const [lookingFor, setLookingFor] = useState<string[]>([]);
+  const [description, setDescription] = useState<string>('');
   
-  // Vehicle search state
-  const [selectedYear, setSelectedYear] = useState<string>('');
-  const [selectedMake, setSelectedMake] = useState<string>('');
-  const [selectedModel, setSelectedModel] = useState<string>('');
-  
-  // Size search state
-  const [selectedWidth, setSelectedWidth] = useState<string>('');
-  const [selectedAspect, setSelectedAspect] = useState<string>('');
-  const [selectedDiameter, setSelectedDiameter] = useState<string>('');
-  
-  // RFI form state
+  // Step 2: Contact info (in dialog)
+  const [showContactDialog, setShowContactDialog] = useState(false);
   const [name, setName] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [additionalInfo, setAdditionalInfo] = useState<string>('');
   
-  // Available options (cascading)
-  const [availableMakes, setAvailableMakes] = useState<string[]>([]);
-  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  // State
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   
-  const years = getAvailableYears();
+  const lookingForOptions = [
+    { id: 'new-tires', label: 'New Tires' },
+    { id: 'used-tires', label: 'Used Tires' },
+    { id: 'wheels', label: 'Wheels' },
+    { id: 'other', label: 'Other' },
+  ];
   
-  // Update available makes when year changes
-  useEffect(() => {
-    if (selectedYear) {
-      const makes = getAvailableMakes(parseInt(selectedYear));
-      setAvailableMakes(makes);
-      setSelectedMake(''); // Reset make when year changes
-      setSelectedModel(''); // Reset model
-      setAvailableModels([]);
-    } else {
-      setAvailableMakes([]);
-      setSelectedMake('');
-      setSelectedModel('');
-      setAvailableModels([]);
+  const handleCheckboxChange = (optionId: string) => {
+    setLookingFor(prev => 
+      prev.includes(optionId)
+        ? prev.filter(id => id !== optionId)
+        : [...prev, optionId]
+    );
+  };
+  
+  const handleGetQuote = () => {
+    // Validate at least one checkbox
+    if (lookingFor.length === 0) {
+      alert('Please select at least one option');
+      return;
     }
-  }, [selectedYear]);
+    // Open contact dialog
+    setShowContactDialog(true);
+  };
   
-  // Update available models when make changes
-  useEffect(() => {
-    if (selectedYear && selectedMake) {
-      const models = getAvailableModels(parseInt(selectedYear), selectedMake);
-      setAvailableModels(models);
-      setSelectedModel(''); // Reset model when make changes
-    } else {
-      setAvailableModels([]);
-      setSelectedModel('');
-    }
-  }, [selectedYear, selectedMake]);
-  
-  // Handle RFI submission
-  const handleRFISubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate required fields
+  // Handle final submission
+  const handleSubmit = async () => {
+    // Validate contact fields
     if (!name || !phone || !email) {
-      alert('Please fill in your name, phone, and email');
+      alert('Please fill in all contact fields');
       return;
     }
     
     setIsSubmitting(true);
+    
+    const selectedLabels = lookingFor.map(id => 
+      lookingForOptions.find(opt => opt.id === id)?.label
+    ).join(', ');
     
     // Build request data
     const requestData = {
       name,
       phone,
       email,
-      tireCondition,
-      searchType,
-      vehicleInfo: searchType === 'vehicle' ? { year: selectedYear, make: selectedMake, model: selectedModel } : null,
-      sizeInfo: searchType === 'size' ? { width: selectedWidth, aspect: selectedAspect, diameter: selectedDiameter } : null,
-      additionalInfo,
+      tireCondition: 'custom',
+      searchType: 'custom',
+      vehicleInfo: null,
+      sizeInfo: null,
+      additionalInfo: `Looking for: ${selectedLabels}\n\n${description}`,
       timestamp: new Date().toISOString(),
     };
     
@@ -117,16 +93,11 @@ export function HeroSection() {
       
       // Track quote request in GA4
       trackQuoteRequest({
-        vehicle: searchType === 'vehicle' && selectedYear && selectedMake && selectedModel 
-          ? `${selectedYear} ${selectedMake} ${selectedModel}` 
-          : undefined,
-        tire_size: searchType === 'size' && selectedWidth && selectedAspect && selectedDiameter
-          ? `${selectedWidth}/${selectedAspect}R${selectedDiameter}`
-          : undefined,
-        condition: tireCondition,
+        condition: selectedLabels,
       });
       
-      // Show success state
+      // Close dialog and show success
+      setShowContactDialog(false);
       setShowSuccess(true);
       
       // Reset form after delay
@@ -134,22 +105,32 @@ export function HeroSection() {
         setName('');
         setPhone('');
         setEmail('');
-        setAdditionalInfo('');
-        setSelectedYear('');
-        setSelectedMake('');
-        setSelectedModel('');
-        setSelectedWidth('');
-        setSelectedAspect('');
-        setSelectedDiameter('');
+        setDescription('');
+        setLookingFor([]);
         setShowSuccess(false);
-      }, 3000);
+      }, 4000);
       
     } catch (error) {
       console.error('RFI submission error:', error);
-      alert('Sorry, there was an error submitting your request. Please try calling us at 619-440-6098 or emailing info@losreyestires.com');
+      alert('Sorry, there was an error. Please call us at 619-440-6098 or WhatsApp (619) 729-9468');
     } finally {
       setIsSubmitting(false);
     }
+  };
+  
+  // Send to WhatsApp
+  const handleWhatsApp = () => {
+    const selectedLabels = lookingFor.map(id => 
+      lookingForOptions.find(opt => opt.id === id)?.label
+    ).join(', ');
+    
+    const message = `Hi! I'd like a quote for:\n\nLooking for: ${selectedLabels}\n\n${description}\n\nName: ${name}\nPhone: ${phone}\nEmail: ${email}`;
+    
+    const whatsappUrl = `https://wa.me/16197299468?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+    
+    // Also submit to our system
+    handleSubmit();
   };
 
   return (
@@ -216,7 +197,7 @@ export function HeroSection() {
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleRFISubmit} className="space-y-5">
+              <div className="space-y-5">
                 <div className="space-y-1">
                   <h3 className="text-2xl font-bold tracking-tight text-zinc-900">
                     Request a Quote
@@ -225,222 +206,153 @@ export function HeroSection() {
                     Get pricing in 24 hours • Free consultation
                   </p>
                 </div>
-                {/* Tire Condition Selection */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">I'm looking for</Label>
-                  <RadioGroup 
-                    value={tireCondition} 
-                    onValueChange={(val) => setTireCondition(val as 'new' | 'used' | 'both')} 
-                    className="flex gap-3"
-                  >
-                    <div className="flex items-center space-x-2 flex-1">
-                      <RadioGroupItem value="new" id="new" />
-                      <Label htmlFor="new" className="font-normal cursor-pointer text-sm">New Tires</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 flex-1">
-                      <RadioGroupItem value="used" id="used" />
-                      <Label htmlFor="used" className="font-normal cursor-pointer text-sm">Used Tires</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 flex-1">
-                      <RadioGroupItem value="both" id="both" />
-                      <Label htmlFor="both" className="font-normal cursor-pointer text-sm">Both</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
 
-                {/* Vehicle/Size Selection */}
-                <Tabs value={searchType} onValueChange={(val) => setSearchType(val as 'vehicle' | 'size')} className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="vehicle" className="gap-2">
-                      <Car className="h-4 w-4" />
-                      By Vehicle
-                    </TabsTrigger>
-                    <TabsTrigger value="size" className="gap-2">
-                      <Search className="h-4 w-4" />
-                      By Size
-                    </TabsTrigger>
-                  </TabsList>
-                
-                <TabsContent value="vehicle" className="space-y-3">
-                  <div className="grid grid-cols-3 gap-2">
-                    <Select value={selectedYear} onValueChange={setSelectedYear}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Year" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {years.map((year) => (
-                          <SelectItem key={year} value={year.toString()}>
-                            {year}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select 
-                      value={selectedMake} 
-                      onValueChange={setSelectedMake}
-                      disabled={!selectedYear}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Make" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableMakes.map((make) => (
-                          <SelectItem key={make} value={make}>
-                            {make}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select 
-                      value={selectedModel} 
-                      onValueChange={setSelectedModel}
-                      disabled={!selectedMake}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Model" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableModels.map((model) => (
-                          <SelectItem key={model} value={model}>
-                            {model}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="size" className="space-y-3">
-                  <div className="grid grid-cols-3 gap-2">
-                    <Select value={selectedWidth} onValueChange={setSelectedWidth}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Width" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {['195', '205', '215', '225', '235', '245', '255', '265', '275', '285'].map((width) => (
-                          <SelectItem key={width} value={width}>
-                            {width}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select value={selectedAspect} onValueChange={setSelectedAspect}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Ratio" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {['40', '45', '50', '55', '60', '65', '70', '75'].map((aspect) => (
-                          <SelectItem key={aspect} value={aspect}>
-                            {aspect}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select value={selectedDiameter} onValueChange={setSelectedDiameter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Diameter" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {['15', '16', '17', '18', '19', '20', '21', '22'].map((diameter) => (
-                          <SelectItem key={diameter} value={diameter}>
-                            {diameter}&quot;
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </TabsContent>
-              </Tabs>
-
-              {/* Additional Notes */}
-              <div className="space-y-2">
-                <Label htmlFor="notes" className="text-sm font-medium">Additional Details (Optional)</Label>
-                <Textarea
-                  id="notes"
-                  placeholder="Budget, brand preferences, quantity, special requirements..."
-                  value={additionalInfo}
-                  onChange={(e) => setAdditionalInfo(e.target.value)}
-                  className="resize-none h-20"
-                />
-              </div>
-
-              {/* Contact Information */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Your Contact Information</Label>
+                {/* Checkbox Options */}
                 <div className="space-y-3">
-                  <Input
-                    type="text"
-                    placeholder="Full Name *"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    className="h-11"
-                  />
+                  <Label className="text-sm font-medium">I'm looking for:</Label>
                   <div className="grid grid-cols-2 gap-3">
-                    <Input
-                      type="tel"
-                      placeholder="Phone *"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      required
-                      className="h-11"
-                    />
-                    <Input
-                      type="email"
-                      placeholder="Email *"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="h-11"
-                    />
+                    {lookingForOptions.map((option) => (
+                      <div key={option.id} className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={option.id}
+                          checked={lookingFor.includes(option.id)}
+                          onCheckedChange={() => handleCheckboxChange(option.id)}
+                        />
+                        <Label 
+                          htmlFor={option.id} 
+                          className="text-sm font-normal cursor-pointer"
+                        >
+                          {option.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-2">
+                  <Label htmlFor="description" className="text-sm font-medium">Tell us what you need:</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="E.g., '4 new tires for 2020 Ford F-150' or 'Looking for used tires, any brand'..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="resize-none h-24"
+                  />
+                </div>
+
+                {/* Get Quote Button */}
+                <Button 
+                  onClick={handleGetQuote}
+                  size="lg"
+                  className="w-full h-12 bg-red-600 hover:bg-red-700 text-base font-semibold"
+                >
+                  <Send className="mr-2 h-5 w-5" />
+                  Get Free Quote
+                </Button>
+
+                {/* Trust Signals */}
+                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2 border-t">
+                  <div className="flex items-center gap-1">
+                    <Phone className="h-3 w-3" />
+                    <span>24hr response</span>
+                  </div>
+                  <div className="w-1 h-1 rounded-full bg-zinc-300" />
+                  <div className="flex items-center gap-1">
+                    <Mail className="h-3 w-3" />
+                    <span>Email confirmation</span>
+                  </div>
+                  <div className="w-1 h-1 rounded-full bg-zinc-300" />
+                  <div className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3" />
+                    <span>No obligation</span>
                   </div>
                 </div>
               </div>
-
-              {/* Submit Button */}
-              <Button 
-                type="submit"
-                size="lg"
-                className="w-full h-12 bg-red-600 hover:bg-red-700 text-base font-semibold"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Sending Request...
-                  </>
-                ) : (
-                  <>
-                    <Send className="mr-2 h-5 w-5" />
-                    Get Free Quote
-                  </>
-                )}
-              </Button>
-
-              {/* Trust Signals */}
-              <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2 border-t">
-                <div className="flex items-center gap-1">
-                  <Phone className="h-3 w-3" />
-                  <span>24hr response</span>
-                </div>
-                <div className="w-1 h-1 rounded-full bg-zinc-300" />
-                <div className="flex items-center gap-1">
-                  <Mail className="h-3 w-3" />
-                  <span>Email confirmation</span>
-                </div>
-                <div className="w-1 h-1 rounded-full bg-zinc-300" />
-                <div className="flex items-center gap-1">
-                  <CheckCircle className="h-3 w-3" />
-                  <span>No obligation</span>
-                </div>
-              </div>
-            </form>
             )}
           </Card>
+
+          {/* Contact Info Dialog */}
+          <Dialog open={showContactDialog} onOpenChange={setShowContactDialog}>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Your Contact Information</DialogTitle>
+                <DialogDescription>
+                  We'll use this to send you a quote within 24 hours.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="contact-name">Name *</Label>
+                  <Input
+                    id="contact-name"
+                    placeholder="John Doe"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="contact-phone">Phone *</Label>
+                  <Input
+                    id="contact-phone"
+                    type="tel"
+                    placeholder="(619) 555-1234"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="contact-email">Email *</Label>
+                  <Input
+                    id="contact-email"
+                    type="email"
+                    placeholder="john@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-3">
+                <Button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="w-full bg-red-600 hover:bg-red-700"
+                  size="lg"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="mr-2 h-4 w-4" />
+                      Send Quote Request
+                    </>
+                  )}
+                </Button>
+                
+                <Button
+                  onClick={handleWhatsApp}
+                  disabled={isSubmitting || !name || !phone}
+                  variant="outline"
+                  className="w-full border-green-600 text-green-600 hover:bg-green-50"
+                  size="lg"
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Send via WhatsApp
+                </Button>
+                
+                <p className="text-xs text-center text-muted-foreground">
+                  By submitting, you agree to receive quote information via email or WhatsApp.
+                </p>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </section>
