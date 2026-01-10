@@ -112,7 +112,7 @@ export function HeroSection() {
       
     } catch (error) {
       console.error('RFI submission error:', error);
-      alert('Sorry, there was an error. Please call us at 619-440-6098 or WhatsApp (619) 729-9468');
+      alert('Sorry, there was an error. Please call us at 619-440-6098 or WhatsApp (619) 991-9982');
     } finally {
       setIsSubmitting(false);
     }
@@ -126,7 +126,7 @@ export function HeroSection() {
     
     const message = `Hi! I'd like a quote for:\n\nLooking for: ${selectedLabels}\n\n${description}\n\nName: ${name}\nPhone: ${phone}\nEmail: ${email}`;
     
-    const whatsappUrl = `https://wa.me/16197299468?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/16199919982?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
     
     // Also submit to our system
@@ -274,17 +274,36 @@ export function HeroSection() {
 
           {/* Contact Info Dialog */}
           <Dialog open={showContactDialog} onOpenChange={setShowContactDialog}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
-                <DialogTitle>Your Contact Information</DialogTitle>
+                <DialogTitle>Review & Submit Quote Request</DialogTitle>
                 <DialogDescription>
-                  We'll use this to send you a quote within 24 hours.
+                  We'll send you a quote within 24 hours.
                 </DialogDescription>
               </DialogHeader>
               
-              <div className="space-y-4 py-4">
+              {/* Request Preview */}
+              <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-4 space-y-3">
+                <div>
+                  <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-1">Looking For</div>
+                  <div className="text-sm font-medium text-zinc-900">
+                    {lookingFor.map(id => 
+                      lookingForOptions.find(opt => opt.id === id)?.label
+                    ).join(', ')}
+                  </div>
+                </div>
+                {description && (
+                  <div>
+                    <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-1">Details</div>
+                    <div className="text-sm text-zinc-700 whitespace-pre-wrap">{description}</div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="space-y-4">
+                <div className="text-sm font-medium text-zinc-900 mb-2">Your Contact Information</div>
                 <div className="space-y-2">
-                  <Label htmlFor="contact-name">Name *</Label>
+                  <Label htmlFor="contact-name" className="text-xs">Name *</Label>
                   <Input
                     id="contact-name"
                     placeholder="John Doe"
@@ -294,7 +313,7 @@ export function HeroSection() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="contact-phone">Phone *</Label>
+                  <Label htmlFor="contact-phone" className="text-xs">Phone *</Label>
                   <Input
                     id="contact-phone"
                     type="tel"
@@ -305,7 +324,7 @@ export function HeroSection() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="contact-email">Email *</Label>
+                  <Label htmlFor="contact-email" className="text-xs">Email *</Label>
                   <Input
                     id="contact-email"
                     type="email"
