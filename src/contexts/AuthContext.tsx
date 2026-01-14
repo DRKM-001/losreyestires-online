@@ -62,8 +62,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const response = await authAPI.getProfile(token);
         if (response.success) {
-          setCustomer(response.data);
-          localStorage.setItem(CUSTOMER_KEY, JSON.stringify(response.data));
+          setCustomer(response.customer);
+          localStorage.setItem(CUSTOMER_KEY, JSON.stringify(response.customer));
         }
       } catch (error) {
         console.error('Failed to refresh profile:', error);
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(refreshInterval);
   }, [token]);
 
-  const saveAuthState = (authData: AuthResponse['data']) => {
+  const saveAuthState = (authData: AuthResponse) => {
     setToken(authData.token);
     setCustomer(authData.customer);
     localStorage.setItem(TOKEN_KEY, authData.token);
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authAPI.login({ email, password });
       if (response.success) {
-        saveAuthState(response.data);
+        saveAuthState(response);
       } else {
         throw new Error(response.message || 'Login failed');
       }
@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authAPI.register(data);
       if (response.success) {
-        saveAuthState(response.data);
+        saveAuthState(response);
       } else {
         throw new Error(response.message || 'Registration failed');
       }
@@ -140,8 +140,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authAPI.getProfile(token);
       if (response.success) {
-        setCustomer(response.data);
-        localStorage.setItem(CUSTOMER_KEY, JSON.stringify(response.data));
+        setCustomer(response.customer);
+        localStorage.setItem(CUSTOMER_KEY, JSON.stringify(response.customer));
       }
     } catch (error) {
       console.error('Failed to refresh profile:', error);

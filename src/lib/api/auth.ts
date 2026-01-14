@@ -20,11 +20,9 @@ export interface LoginData {
 
 export interface AuthResponse {
   success: boolean;
-  data: {
-    token: string;
-    expires_at: string;
-    customer: Customer;
-  };
+  token: string;
+  expires_at: string;
+  customer: Customer;
   message?: string;
 }
 
@@ -41,7 +39,7 @@ export interface Customer {
 
 export interface ProfileResponse {
   success: boolean;
-  data: Customer;
+  customer: Customer;
 }
 
 class AuthAPIError extends Error {
