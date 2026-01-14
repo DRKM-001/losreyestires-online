@@ -5,6 +5,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAuth } from '@/contexts/AuthContext';
+import { Loader2 } from 'lucide-react';
 
 interface LoginModalProps {
   open: boolean;
@@ -13,23 +15,27 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ open, onOpenChange, onSwitchToRegister }: LoginModalProps) {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setLoading(true);
     
-    // TODO: Connect to backend authentication
-    console.log('Login attempt:', { email, password });
-    
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await login(email, password);
       onOpenChange(false);
-      // TODO: Set user session/state
-    }, 1000);
+      setEmail('');
+      setPassword('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to login');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,6 +49,12 @@ export function LoginModal({ open, onOpenChange, onSwitchToRegister }: LoginModa
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          {error && (
+            <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg">
+              {error}
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -52,6 +64,7 @@ export function LoginModal({ open, onOpenChange, onSwitchToRegister }: LoginModa
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
@@ -64,6 +77,7 @@ export function LoginModal({ open, onOpenChange, onSwitchToRegister }: LoginModa
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
@@ -82,7 +96,14 @@ export function LoginModal({ open, onOpenChange, onSwitchToRegister }: LoginModa
             className="w-full bg-red-600 hover:bg-red-700 font-bold"
             disabled={loading}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin inline-block" />
+                Signing in...
+              </>
+            ) : (
+              'Sign In'
+            )}
           </Button>
 
           <div className="text-center text-sm text-zinc-600">
