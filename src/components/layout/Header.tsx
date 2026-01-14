@@ -452,31 +452,35 @@ export function Header() {
                   </Avatar>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-56" align="end">
+              <PopoverContent className="w-64 bg-white shadow-lg border border-zinc-200" align="end">
                 <div className="space-y-1">
-                  <div className="px-3 py-2 border-b">
-                    <p className="font-semibold text-sm">{customer.first_name} {customer.last_name}</p>
-                    <p className="text-xs text-zinc-500">{customer.email}</p>
+                  <div className="px-3 py-3 border-b border-zinc-200 bg-zinc-50">
+                    <p className="font-semibold text-sm text-zinc-900">{customer.first_name} {customer.last_name}</p>
+                    <p className="text-xs text-zinc-600 mt-0.5">{customer.email}</p>
                   </div>
-                  <Link href="/account" className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md">
-                    <User className="h-4 w-4" />
-                    My Account
-                  </Link>
-                  <Link href="/orders" className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md">
-                    <Package className="h-4 w-4" />
-                    My Orders
-                  </Link>
-                  <Link href="/account/settings" className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md">
-                    <Settings className="h-4 w-4" />
-                    Settings
-                  </Link>
-                  <button 
-                    onClick={handleLogout}
-                    className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md w-full text-left text-red-600"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </button>
+                  <div className="py-1">
+                    <Link href="/account" className="flex items-center gap-3 px-3 py-2.5 text-sm text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 rounded-md transition-colors">
+                      <User className="h-4 w-4" />
+                      My Account
+                    </Link>
+                    <Link href="/orders" className="flex items-center gap-3 px-3 py-2.5 text-sm text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 rounded-md transition-colors">
+                      <Package className="h-4 w-4" />
+                      My Orders
+                    </Link>
+                    <Link href="/account/settings" className="flex items-center gap-3 px-3 py-2.5 text-sm text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 rounded-md transition-colors">
+                      <Settings className="h-4 w-4" />
+                      Settings
+                    </Link>
+                  </div>
+                  <div className="border-t border-zinc-200 pt-1 pb-1">
+                    <button 
+                      onClick={handleLogout}
+                      className="flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md w-full text-left transition-colors"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </button>
+                  </div>
                 </div>
               </PopoverContent>
             </Popover>
