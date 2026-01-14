@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Newsletter } from "@/components/layout/Newsletter";
 import { SnapFinanceBanner } from "@/components/financing/SnapFinanceBanner";
 import { siteConfig } from "@/lib/metadata";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -109,11 +110,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        <main className="min-h-screen">{children}</main>
-        <SnapFinanceBanner />
-        <Newsletter />
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <main className="min-h-screen">{children}</main>
+          <SnapFinanceBanner />
+          <Newsletter />
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

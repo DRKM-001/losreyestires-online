@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { LoginModal } from '@/components/auth/LoginModal';
 import { RegisterModal } from '@/components/auth/RegisterModal';
 import { ReviewTicker } from '@/components/reviews/ReviewTicker';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -26,10 +27,7 @@ import {
 export function Header() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
-  
-  // TODO: Replace with actual auth state from context
-  const isLoggedIn = false;
-  const userName = 'John Doe';
+  const { customer, isAuthenticated, logout } = useAuth();
   
   // TODO: Replace with actual cart state from context
   const cartItemCount = 0;
@@ -43,6 +41,18 @@ export function Header() {
     { name: 'Financing', href: '/financing' },
     { name: 'Deals', href: '/deals' },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  const getInitials = (firstName: string, lastName: string) => {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
@@ -429,13 +439,13 @@ export function Header() {
           </div>
 
           {/* User Avatar */}
-          {isLoggedIn ? (
+          {isAuthenticated && customer ? (
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative hover:bg-zinc-100 rounded-full">
                   <Avatar className="h-9 w-9">
                     <AvatarFallback className="bg-red-600 text-white font-bold">
-                      {userName.split(' ').map(n => n[0]).join('')}
+                      {getInitials(customer.first_name, customer.last_name)}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -443,7 +453,8 @@ export function Header() {
               <PopoverContent className="w-56" align="end">
                 <div className="space-y-1">
                   <div className="px-3 py-2 border-b">
-                    <p className="font-semibold text-sm">{userName}</p>
+                    <p className="font-semibold text-sm">{customer.first_name} {customer.last_name}</p>
+                    <p className="text-xs text-zinc-500">{customer.email}</p>
                   </div>
                   <Link href="/account" className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md">
                     <User className="h-4 w-4" />
@@ -457,7 +468,10 @@ export function Header() {
                     <Settings className="h-4 w-4" />
                     Settings
                   </Link>
-                  <button className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md w-full text-left text-red-600">
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-100 rounded-md w-full text-left text-red-600"
+                  >
                     <LogOut className="h-4 w-4" />
                     Sign Out
                   </button>
