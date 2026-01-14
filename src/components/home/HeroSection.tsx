@@ -1,137 +1,136 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Car, CheckCircle, Send, MessageSquare, Sparkles } from 'lucide-react';
-import { 
-  getAvailableYears, 
-  getAvailableMakes, 
-  getAvailableModels,
-  getTireSizesForVehicle 
-} from '@/lib/data/vehicles';
-import { getTiresBySize } from '@/lib/api/tireraven';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { CheckCircle, Send, Loader2, Phone, Mail, MessageSquare } from 'lucide-react';
+import { trackQuoteRequest } from '@/lib/analytics/ga4';
 export function HeroSection() {
-  const router = useRouter();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [searchType, setSearchType] = useState<'vehicle' | 'size'>('vehicle');
-  const [tireCondition, setTireCondition] = useState<'new' | 'used' | 'both'>('new');
+  // Step 1: What they're looking for
+  const [lookingFor, setLookingFor] = useState<string[]>([]);
+  const [description, setDescription] = useState<string>('');
   
-  // Vehicle search state
-  const [selectedYear, setSelectedYear] = useState<string>('');
-  const [selectedMake, setSelectedMake] = useState<string>('');
-  const [selectedModel, setSelectedModel] = useState<string>('');
-  
-  // Size search state
-  const [selectedWidth, setSelectedWidth] = useState<string>('');
-  const [selectedAspect, setSelectedAspect] = useState<string>('');
-  const [selectedDiameter, setSelectedDiameter] = useState<string>('');
-  
-  // RFI form state
+  // Step 2: Contact info (in dialog)
+  const [showContactDialog, setShowContactDialog] = useState(false);
   const [name, setName] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [additionalInfo, setAdditionalInfo] = useState<string>('');
   
-  // Available options (cascading)
-  const [availableMakes, setAvailableMakes] = useState<string[]>([]);
-  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  // State
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   
-  const years = getAvailableYears();
+  const lookingForOptions = [
+    { id: 'new-tires', label: 'New Tires' },
+    { id: 'used-tires', label: 'Used Tires' },
+    { id: 'wheels', label: 'Wheels' },
+    { id: 'other', label: 'Other' },
+  ];
   
-  // Update available makes when year changes
-  useEffect(() => {
-    if (selectedYear) {
-      const makes = getAvailableMakes(parseInt(selectedYear));
-      setAvailableMakes(makes);
-      setSelectedMake(''); // Reset make when year changes
-      setSelectedModel(''); // Reset model
-      setAvailableModels([]);
-    } else {
-      setAvailableMakes([]);
-      setSelectedMake('');
-      setSelectedModel('');
-      setAvailableModels([]);
+  const handleCheckboxChange = (optionId: string) => {
+    setLookingFor(prev => 
+      prev.includes(optionId)
+        ? prev.filter(id => id !== optionId)
+        : [...prev, optionId]
+    );
+  };
+  
+  const handleGetQuote = () => {
+    // Validate at least one checkbox
+    if (lookingFor.length === 0) {
+      alert('Please select at least one option');
+      return;
     }
-  }, [selectedYear]);
+    // Open contact dialog
+    setShowContactDialog(true);
+  };
   
-  // Update available models when make changes
-  useEffect(() => {
-    if (selectedYear && selectedMake) {
-      const models = getAvailableModels(parseInt(selectedYear), selectedMake);
-      setAvailableModels(models);
-      setSelectedModel(''); // Reset model when make changes
-    } else {
-      setAvailableModels([]);
-      setSelectedModel('');
-    }
-  }, [selectedYear, selectedMake]);
-  
-  // Handle RFI submission
-  const handleRFISubmit = async () => {
-    // Validate required fields
+  // Handle final submission
+  const handleSubmit = async () => {
+    // Validate contact fields
     if (!name || !phone || !email) {
-      alert('Please fill in your name, phone, and email');
+      alert('Please fill in all contact fields');
       return;
     }
     
-    // Build inquiry details
-    let inquiry = `Tire Condition: ${tireCondition}\n`;
+    setIsSubmitting(true);
     
-    if (searchType === 'vehicle') {
-      if (selectedYear && selectedMake && selectedModel) {
-        inquiry += `Vehicle: ${selectedYear} ${selectedMake} ${selectedModel}\n`;
-      }
-    } else {
-      if (selectedWidth && selectedAspect && selectedDiameter) {
-        inquiry += `Tire Size: ${selectedWidth}/${selectedAspect}R${selectedDiameter}\n`;
-      }
-    }
+    const selectedLabels = lookingFor.map(id => 
+      lookingForOptions.find(opt => opt.id === id)?.label
+    ).join(', ');
     
-    if (additionalInfo) {
-      inquiry += `Additional Info: ${additionalInfo}\n`;
-    }
-    
-    // TODO: Send to backend/email service
+    // Build request data
     const requestData = {
       name,
       phone,
       email,
-      tireCondition,
-      searchType,
-      vehicleInfo: searchType === 'vehicle' ? { year: selectedYear, make: selectedMake, model: selectedModel } : null,
-      sizeInfo: searchType === 'size' ? { width: selectedWidth, aspect: selectedAspect, diameter: selectedDiameter } : null,
-      additionalInfo,
+      tireCondition: 'custom',
+      searchType: 'custom',
+      vehicleInfo: null,
+      sizeInfo: null,
+      additionalInfo: `Looking for: ${selectedLabels}\n\n${description}`,
       timestamp: new Date().toISOString(),
     };
     
-    console.log('RFI Submission:', requestData);
+    try {
+      // Submit to API
+      const response = await fetch('/api/rfi', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit request');
+      }
+      
+      // Track quote request in GA4
+      trackQuoteRequest({
+        condition: selectedLabels,
+      });
+      
+      // Close dialog and show success
+      setShowContactDialog(false);
+      setShowSuccess(true);
+      
+      // Reset form after delay
+      setTimeout(() => {
+        setName('');
+        setPhone('');
+        setEmail('');
+        setDescription('');
+        setLookingFor([]);
+        setShowSuccess(false);
+      }, 4000);
+      
+    } catch (error) {
+      console.error('RFI submission error:', error);
+      alert('Sorry, there was an error. Please call us at 619-440-6098 or WhatsApp (619) 991-9982');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  // Send to WhatsApp
+  const handleWhatsApp = () => {
+    const selectedLabels = lookingFor.map(id => 
+      lookingForOptions.find(opt => opt.id === id)?.label
+    ).join(', ');
     
-    // For now, just show success message
-    alert('Thank you! We\'ll get back to you shortly with a quote.');
+    const message = `Hi! I'd like a quote for:\n\nLooking for: ${selectedLabels}\n\n${description}\n\nName: ${name}\nPhone: ${phone}\nEmail: ${email}`;
     
-    // Close dialog
-    setIsDialogOpen(false);
+    const whatsappUrl = `https://wa.me/16199919982?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
     
-    // Reset form
-    setName('');
-    setPhone('');
-    setEmail('');
-    setAdditionalInfo('');
-    setSelectedYear('');
-    setSelectedMake('');
-    setSelectedModel('');
-    setSelectedWidth('');
-    setSelectedAspect('');
-    setSelectedDiameter('');
+    // Also submit to our system
+    handleSubmit();
   };
 
   return (
@@ -165,268 +164,214 @@ export function HeroSection() {
             <div className="flex flex-wrap gap-3 mb-8">
               <div className="flex items-center gap-2 text-zinc-200">
                 <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="font-medium">Family Owned Since 2005</span>
+              </div>
+              <div className="flex items-center gap-2 text-zinc-200">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="font-medium">San Diego's Trusted Experts</span>
+              </div>
+              <div className="flex items-center gap-2 text-zinc-200">
+                <CheckCircle className="h-5 w-5 text-green-500" />
                 <span className="font-medium">Free Installation</span>
-              </div>
-              <div className="flex items-center gap-2 text-zinc-200">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="font-medium">Lifetime Balance & Rotation</span>
-              </div>
-              <div className="flex items-center gap-2 text-zinc-200">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="font-medium">Financing Available</span>
               </div>
             </div>
           </div>
 
-          {/* Right side - Elegant Tire Finder Card */}
+          {/* Right side - Quote Request Card */}
           <Card className="lg:col-span-2 p-6 bg-white/95 backdrop-blur shadow-2xl border-0">
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <h3 className="text-2xl font-bold tracking-tight">
-                  Find Your Tires
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Search by vehicle or tire size
-                </p>
-              </div>
-            
-              <Tabs value={searchType} onValueChange={(val) => setSearchType(val as 'vehicle' | 'size')} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="vehicle" className="gap-2">
-                    <Car className="h-4 w-4" />
-                    Vehicle
-                  </TabsTrigger>
-                  <TabsTrigger value="size" className="gap-2">
-                    <Search className="h-4 w-4" />
-                    Size
-                  </TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="vehicle" className="space-y-3">
-                  <div className="grid grid-cols-3 gap-2">
-                    <Select value={selectedYear} onValueChange={setSelectedYear}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Year" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {years.map((year) => (
-                          <SelectItem key={year} value={year.toString()}>
-                            {year}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select 
-                      value={selectedMake} 
-                      onValueChange={setSelectedMake}
-                      disabled={!selectedYear}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Make" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableMakes.map((make) => (
-                          <SelectItem key={make} value={make}>
-                            {make}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select 
-                      value={selectedModel} 
-                      onValueChange={setSelectedModel}
-                      disabled={!selectedMake}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Model" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableModels.map((model) => (
-                          <SelectItem key={model} value={model}>
-                            {model}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+            {showSuccess ? (
+              <div className="space-y-4 text-center py-8">
+                <div className="flex justify-center">
+                  <div className="rounded-full bg-green-100 p-3">
+                    <CheckCircle className="h-12 w-12 text-green-600" />
                   </div>
-                </TabsContent>
-                
-                <TabsContent value="size" className="space-y-3">
-                  <div className="grid grid-cols-3 gap-2">
-                    <Select value={selectedWidth} onValueChange={setSelectedWidth}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Width" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {['195', '205', '215', '225', '235', '245', '255', '265', '275', '285'].map((width) => (
-                          <SelectItem key={width} value={width}>
-                            {width}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select value={selectedAspect} onValueChange={setSelectedAspect}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Ratio" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {['40', '45', '50', '55', '60', '65', '70', '75'].map((aspect) => (
-                          <SelectItem key={aspect} value={aspect}>
-                            {aspect}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select value={selectedDiameter} onValueChange={setSelectedDiameter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Diameter" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {['15', '16', '17', '18', '19', '20', '21', '22'].map((diameter) => (
-                          <SelectItem key={diameter} value={diameter}>
-                            {diameter}&quot;
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </TabsContent>
-              </Tabs>
-              
-              <div className="flex gap-2 pt-2">
-                <Button 
-                  size="lg"
-                  className="flex-1 bg-red-600 hover:bg-red-700"
-                  onClick={() => router.push('/tires')}
-                >
-                  <Search className="mr-2 h-4 w-4" />
-                  Browse
-                </Button>
-                
-                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button 
-                        size="lg"
-                        variant="outline"
-                        className="flex-1 border-2 border-red-600 text-red-600 hover:bg-red-50 hover:text-red-700"
-                      >
-                        <Sparkles className="mr-2 h-4 w-4" />
-                        Quote
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Request a Quote</DialogTitle>
-                        <DialogDescription>
-                          Tell us what you need and we'll get back to you with pricing
-                        </DialogDescription>
-                      </DialogHeader>
-                      
-                      <div className="space-y-6 py-4">
-                        {/* Tire Condition */}
-                        <div className="space-y-2">
-                          <Label>I'm interested in</Label>
-                          <RadioGroup value={tireCondition} onValueChange={(val) => setTireCondition(val as 'new' | 'used' | 'both')} className="flex gap-4">
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="new" id="dialog-new" />
-                              <Label htmlFor="dialog-new" className="font-normal cursor-pointer">New</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="used" id="dialog-used" />
-                              <Label htmlFor="dialog-used" className="font-normal cursor-pointer">Used</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="both" id="dialog-both" />
-                              <Label htmlFor="dialog-both" className="font-normal cursor-pointer">Both</Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                        
-                        {/* Vehicle/Size Info Display */}
-                        <div className="rounded-lg border bg-muted/50 p-3">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">Your Selection</p>
-                          {searchType === 'vehicle' ? (
-                            <p className="text-sm font-medium">
-                              {selectedYear && selectedMake && selectedModel 
-                                ? `${selectedYear} ${selectedMake} ${selectedModel}` 
-                                : 'No vehicle selected'}
-                            </p>
-                          ) : (
-                            <p className="text-sm font-medium">
-                              {selectedWidth && selectedAspect && selectedDiameter
-                                ? `${selectedWidth}/${selectedAspect}R${selectedDiameter}`
-                                : 'No size selected'}
-                            </p>
-                          )}
-                        </div>
-                        
-                        {/* Additional Info */}
-                        <div className="space-y-2">
-                          <Label htmlFor="additional">Additional Details</Label>
-                          <Textarea
-                            id="additional"
-                            placeholder="Budget, brand preference, quantity, special requirements..."
-                            value={additionalInfo}
-                            onChange={(e) => setAdditionalInfo(e.target.value)}
-                            className="resize-none"
-                            rows={3}
-                          />
-                        </div>
-                        
-                        {/* Contact Info */}
-                        <div className="space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="name">Name *</Label>
-                            <Input
-                              id="name"
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-                              required
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="phone">Phone *</Label>
-                              <Input
-                                id="phone"
-                                type="tel"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                required
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="email">Email *</Label>
-                              <Input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Submit */}
-                        <Button 
-                          size="lg"
-                          className="w-full bg-red-600 hover:bg-red-700"
-                          onClick={handleRFISubmit}
-                        >
-                          <Send className="mr-2 h-4 w-4" />
-                          Submit Request
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-green-600 mb-2">Request Received!</h3>
+                  <p className="text-muted-foreground mb-4">
+                    We'll get back to you within 24 hours with a quote.
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Check your email for confirmation.
+                  </p>
                 </div>
               </div>
-            </Card>
+            ) : (
+              <div className="space-y-5">
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-bold tracking-tight text-zinc-900">
+                    Request a Quote
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Get pricing in 24 hours • Free consultation
+                  </p>
+                </div>
+
+                {/* Checkbox Options */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">I'm looking for:</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {lookingForOptions.map((option) => (
+                      <div key={option.id} className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={option.id}
+                          checked={lookingFor.includes(option.id)}
+                          onCheckedChange={() => handleCheckboxChange(option.id)}
+                        />
+                        <Label 
+                          htmlFor={option.id} 
+                          className="text-sm font-normal cursor-pointer"
+                        >
+                          {option.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-2">
+                  <Label htmlFor="description" className="text-sm font-medium">Tell us what you need:</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="E.g., '4 new tires for 2020 Ford F-150' or 'Looking for used tires, any brand'..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="resize-none h-24"
+                  />
+                </div>
+
+                {/* Get Quote Button */}
+                <Button 
+                  onClick={handleGetQuote}
+                  size="lg"
+                  className="w-full h-12 bg-red-600 hover:bg-red-700 text-base font-semibold"
+                >
+                  <Send className="mr-2 h-5 w-5" />
+                  Get Free Quote
+                </Button>
+
+                {/* Trust Signals */}
+                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2 border-t">
+                  <div className="flex items-center gap-1">
+                    <Phone className="h-3 w-3" />
+                    <span>24hr response</span>
+                  </div>
+                  <div className="w-1 h-1 rounded-full bg-zinc-300" />
+                  <div className="flex items-center gap-1">
+                    <Mail className="h-3 w-3" />
+                    <span>Email confirmation</span>
+                  </div>
+                  <div className="w-1 h-1 rounded-full bg-zinc-300" />
+                  <div className="flex items-center gap-1">
+                    <CheckCircle className="h-3 w-3" />
+                    <span>No obligation</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </Card>
+
+          {/* Contact Info Dialog */}
+          <Dialog open={showContactDialog} onOpenChange={setShowContactDialog}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Review & Submit Quote Request</DialogTitle>
+                <DialogDescription>
+                  We'll send you a quote within 24 hours.
+                </DialogDescription>
+              </DialogHeader>
+              
+              {/* Request Preview */}
+              <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-4 space-y-3">
+                <div>
+                  <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-1">Looking For</div>
+                  <div className="text-sm font-medium text-zinc-900">
+                    {lookingFor.map(id => 
+                      lookingForOptions.find(opt => opt.id === id)?.label
+                    ).join(', ')}
+                  </div>
+                </div>
+                {description && (
+                  <div>
+                    <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-1">Details</div>
+                    <div className="text-sm text-zinc-700 whitespace-pre-wrap">{description}</div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="space-y-4">
+                <div className="text-sm font-medium text-zinc-900 mb-2">Your Contact Information</div>
+                <div className="space-y-2">
+                  <Label htmlFor="contact-name" className="text-xs">Name *</Label>
+                  <Input
+                    id="contact-name"
+                    placeholder="John Doe"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="contact-phone" className="text-xs">Phone *</Label>
+                  <Input
+                    id="contact-phone"
+                    type="tel"
+                    placeholder="(619) 555-1234"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="contact-email" className="text-xs">Email *</Label>
+                  <Input
+                    id="contact-email"
+                    type="email"
+                    placeholder="john@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-3">
+                <Button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="w-full bg-red-600 hover:bg-red-700"
+                  size="lg"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="mr-2 h-4 w-4" />
+                      Send Quote Request
+                    </>
+                  )}
+                </Button>
+                
+                <Button
+                  onClick={handleWhatsApp}
+                  disabled={isSubmitting || !name || !phone}
+                  variant="outline"
+                  className="w-full border-green-600 text-green-600 hover:bg-green-50"
+                  size="lg"
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Send via WhatsApp
+                </Button>
+                
+                <p className="text-xs text-center text-muted-foreground">
+                  By submitting, you agree to receive quote information via email or WhatsApp.
+                </p>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </section>

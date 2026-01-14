@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, MessageCircle, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { GoogleIcon } from '@/components/icons/GoogleIcon';
 
 export function Footer() {
   const footerLinks = {
@@ -24,6 +25,7 @@ export function Footer() {
       { name: 'Contact Us', href: '/contact' },
       { name: 'Find a Store', href: '/locations' },
       { name: 'Financing Options', href: '/financing' },
+      { name: 'Tire & Wheel Encyclopedia', href: '/encyclopedia' },
       { name: 'Shipping Info', href: '/shipping' },
       { name: 'Returns', href: '/returns' },
       { name: 'FAQ', href: '/faq' },
@@ -54,7 +56,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-zinc-400 mb-4">
-              Founded by Polo Reyes in the early 2000s. Your trusted source for quality tires and wheels in San Diego.
+              <span className="text-zinc-300 font-semibold">Family Owned Since 2005.</span> Founded by Polo Reyes, Los Reyes Tires has been San Diego's trusted source for quality tires, wheels, and expert service for over 19 years.
             </p>
             <div className="space-y-2.5 text-sm">
               <a href="tel:619-440-6098" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
@@ -135,12 +137,35 @@ export function Footer() {
 
         <Separator className="my-8 bg-zinc-700" />
 
+        {/* Review CTA */}
+        <div className="mb-6">
+          <a
+            href="https://g.page/r/CVxUx3jWbjPzEAE/review"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-zinc-900 rounded-lg font-semibold hover:bg-zinc-100 transition-colors"
+          >
+            <GoogleIcon className="h-5 w-5" />
+            <span>Review Us on Google</span>
+            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+          </a>
+        </div>
+
         {/* Bottom bar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-zinc-400">
             © {new Date().getFullYear()} Los Reyes Tires. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
+            <a href="https://www.yelp.com/biz/los-reyes-tire-shop-el-cajon" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity" aria-label="Yelp">
+              <Image
+                src="/yelp_logos/Burst/yelp_burst.svg"
+                alt="Yelp"
+                width={20}
+                height={20}
+                className="h-5 w-5"
+              />
+            </a>
             <a href="https://wa.me/16197299468" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="WhatsApp">
               <MessageCircle className="h-5 w-5" />
             </a>

@@ -12,6 +12,7 @@ import { FilterSidebar } from '@/components/catalog/FilterSidebar';
 import { tires as fallbackTires, tireTypes } from '@/lib/data/tires';
 import { getAllTires, getTireBrands, getTireSizes, type Tire } from '@/lib/api/tireraven';
 import { TypographyH1, TypographyP } from '@/components/ui/typography';
+import { trackViewItemList } from '@/lib/analytics/ga4';
 
 export default function TiresPage() {
   const [tires, setTires] = useState<Tire[]>(fallbackTires);
@@ -138,6 +139,32 @@ export default function TiresPage() {
     return filtered;
   }, [searchQuery, selectedFilters, priceRange, sortBy]);
 
+  // Track product list views in GA4
+  useEffect(() => {
+    if (filteredProducts.length > 0 && !loading) {
+      // Determine list name based on filters
+      let listName = 'All Tires';
+      if (searchQuery) {
+        listName = `Search: ${searchQuery}`;
+      } else if (selectedFilters.type?.length > 0) {
+        listName = `${selectedFilters.type[0]} Tires`;
+      }
+      
+      // Track up to 20 items to avoid huge payloads
+      const itemsToTrack = filteredProducts.slice(0, 20).map(tire => ({
+        item_id: tire.id,
+        item_name: tire.name,
+        item_brand: tire.brand,
+        item_category: 'Tires',
+        item_category2: tire.type,
+        item_variant: 'New',
+        price: tire.price,
+      }));
+      
+      trackViewItemList(itemsToTrack, listName);
+    }
+  }, [filteredProducts, loading, searchQuery, selectedFilters.type]);
+
   const handleFilterChange = (key: string, value: string) => {
     setSelectedFilters(prev => {
       const current = prev[key] || [];
@@ -254,7 +281,7 @@ export default function TiresPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredProducts.map(tire => (
+              {filteredProducts.map((tire, index) => (
                 <ProductCard
                   key={tire.id}
                   product={{
@@ -273,6 +300,8 @@ export default function TiresPage() {
                     speedRating: tire.speedRating,
                     features: tire.features,
                   }}
+                  listName={searchQuery ? `Search: ${searchQuery}` : (selectedFilters.type?.length > 0 ? `${selectedFilters.type[0]} Tires` : 'All Tires')}
+                  index={index}
                 />
               ))}
             </div>

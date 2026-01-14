@@ -68,7 +68,7 @@ export function Header() {
               <MessageCircle className="h-4 w-4" />
               <span className="hidden sm:inline font-semibold">WhatsApp</span>
             </a>
-            <span className="hidden lg:inline text-zinc-600 font-medium">El Cajon, CA | Open 7 Days a Week</span>
+            <span className="hidden lg:inline text-zinc-600 font-medium">🏆 Family Owned Since 2005 | Serving San Diego</span>
           </div>
           <ReviewTicker />
           <div className="flex items-center gap-6 font-semibold text-zinc-700">
@@ -102,8 +102,9 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <NavigationMenu className="hidden lg:flex">
-          <NavigationMenuList>
+        <div suppressHydrationWarning>
+          <NavigationMenu className="hidden lg:flex">
+            <NavigationMenuList>
             {/* Tires Dropdown */}
             <NavigationMenuItem>
               <NavigationMenuTrigger className="text-sm font-bold">Tires</NavigationMenuTrigger>
@@ -424,6 +425,7 @@ export function Header() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        </div>
 
         {/* Search & Actions */}
         <div className="flex items-center gap-2">
