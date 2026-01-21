@@ -1,7 +1,9 @@
 // API Client for External Authentication
 // Integrates with TireRaven ERP Customer Portal API
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_TIRERAVEN_API_BASE || 'http://localhost:3000/api/external/v1';
+const isProduction = process.env.NODE_ENV === 'production';
+const API_BASE_URL = process.env.NEXT_PUBLIC_TIRERAVEN_API_BASE ||
+  (isProduction ? 'https://api.tireraven.com/api/external/v1' : 'http://localhost:3000/api/external/v1');
 const API_KEY = process.env.NEXT_PUBLIC_TIRERAVEN_API_KEY || '';
 
 export interface RegisterData {
@@ -58,7 +60,7 @@ async function fetchAPI<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     'X-API-Key': API_KEY,
