@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  turbopack: {},
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -27,17 +28,6 @@ const nextConfig: NextConfig = {
         hostname: 'summit4x4company.com',
       },
     ],
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        stream: false,
-        crypto: false,
-        buffer: false,
-      };
-    }
-    return config;
   },
 };
 
