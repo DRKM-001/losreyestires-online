@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { authAPI } from '@/lib/api/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Package, Calendar, DollarSign, MapPin } from 'lucide-react';
@@ -8,9 +9,11 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 export default function OrdersPage() {
-  const { customer, isAuthenticated, isLoading } = useAuth();
+  const { customer, isAuthenticated, isLoading, token } = useAuth();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -21,6 +24,28 @@ export default function OrdersPage() {
       router.push('/');
     }
   }, [mounted, isLoading, isAuthenticated, router]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (!token) return;
+
+      try {
+        setIsLoadingOrders(true);
+        const response = await authAPI.getOrders(token);
+        if (response.success && response.orders) {
+          setOrders(response.orders);
+        }
+      } catch (error) {
+        console.error('Failed to fetch orders:', error);
+      } finally {
+        setIsLoadingOrders(false);
+      }
+    };
+
+    if (isAuthenticated && token) {
+      fetchOrders();
+    }
+  }, [isAuthenticated, token]);
 
   if (!mounted || isLoading) {
     return (
@@ -34,9 +59,6 @@ export default function OrdersPage() {
     return null;
   }
 
-  // TODO: Replace with actual orders from API
-  const orders: any[] = [];
-
   return (
     <div className="min-h-screen bg-zinc-50 py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,7 +69,11 @@ export default function OrdersPage() {
         </div>
 
         {/* Orders List */}
-        {orders.length === 0 ? (
+        {isLoadingOrders ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+          </div>
+        ) : orders.length === 0 ? (
           <Card className="p-12">
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-zinc-100 rounded-full mb-4">
@@ -67,25 +93,24 @@ export default function OrdersPage() {
           </Card>
         ) : (
           <div className="space-y-4">
-            {/* Order cards will be mapped here */}
             {orders.map((order: any) => (
               <Card key={order.id} className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-lg font-semibold text-zinc-900">
-                        Order #{order.id}
+                        Order #{order.invoice_number || order.id}
                       </h3>
-                      <Badge variant="secondary">{order.status}</Badge>
+                      <Badge variant="secondary" className="capitalize">{order.status}</Badge>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-zinc-600">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        {order.date}
+                        {new Date(order.created_at).toLocaleDateString()}
                       </div>
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4" />
-                        ${order.total}
+                        ${order.total_amount?.toFixed(2)}
                       </div>
                     </div>
                   </div>

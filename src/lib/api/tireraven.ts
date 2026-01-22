@@ -2,7 +2,7 @@
 // API Documentation: https://api.tireraven.com
 
 const TIRERAVEN_API_BASE = process.env.NEXT_PUBLIC_TIRERAVEN_API_BASE || 'https://api.tireraven.com/api/external/v1';
-const TIRERAVEN_API_KEY = process.env.NEXT_PUBLIC_TIRERAVEN_API_KEY;
+const TIRERAVEN_API_KEY = process.env.NEXT_PUBLIC_TIRERAVEN_API_KEY || 'tireraven_live_c74cb1a7cd499ce4b006a6ab6936058c0e3f209c758988a6279b91fa9865fa73';
 
 // TireRaven API Response Types
 export interface TireRavenBrand {
