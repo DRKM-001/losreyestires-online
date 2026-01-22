@@ -4,7 +4,7 @@
 const isProduction = process.env.NODE_ENV === 'production';
 const API_BASE_URL = process.env.NEXT_PUBLIC_TIRERAVEN_API_BASE ||
   (isProduction ? 'https://api.tireraven.com/api/external/v1' : 'http://localhost:3000/api/external/v1');
-const API_KEY = process.env.NEXT_PUBLIC_TIRERAVEN_API_KEY || 'tireraven_live_c74cb1a7cd499ce4b006a6ab6936058c0e3f209c758988a6279b91fa9865fa73';
+const API_KEY = process.env.NEXT_PUBLIC_TIRERAVEN_API_KEY || '';
 
 export interface RegisterData {
   email: string;
