@@ -20,18 +20,6 @@ import { ProductQuantity } from '@/components/products/ProductQuantity';
 
 export const runtime = 'edge';
 
-// Generate static paths for all products
-export function generateStaticParams() {
-  // TODO: Replace with API call to fetch all product IDs from ERP
-  // For now, return the sample products from homepage
-  return [
-    { id: '1' },
-    { id: '2' },
-    { id: '3' },
-    { id: '4' },
-  ];
-}
-
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   // TODO: Replace with API call to ERP backend using params.id
   const product: Product = {
@@ -105,8 +93,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <Star
                       key={i}
                       className={`h-5 w-5 ${i < Math.floor(product.rating)
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-gray-300'
                         }`}
                     />
                   ))}
