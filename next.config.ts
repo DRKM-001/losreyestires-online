@@ -29,6 +29,23 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config: any, { isServer, nextRuntime }: any) => {
+    // Fixes npm packages that depend on `node:stream` module
+    if (!isServer || nextRuntime === 'edge') {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        stream: false,
+        crypto: false,
+        buffer: false,
+        util: false,
+        net: false,
+        tls: false,
+        fs: false,
+        child_process: false,
+      };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
