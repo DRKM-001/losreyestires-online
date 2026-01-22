@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'edge';
+
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
-    
+
     const {
       name,
       phone,
@@ -52,11 +54,11 @@ Condition: ${tireCondition.toUpperCase()}
 ${vehicleOrSizeLabel ? `${vehicleOrSizeLabel}: ${vehicleOrSizeInfo}` : ''}
 ${additionalInfo ? `\nNOTES:\n${additionalInfo}` : ''}
 
-TIMESTAMP: ${new Date(timestamp).toLocaleString('en-US', { 
-  timeZone: 'America/Los_Angeles',
-  dateStyle: 'short',
-  timeStyle: 'short'
-})}
+TIMESTAMP: ${new Date(timestamp).toLocaleString('en-US', {
+      timeZone: 'America/Los_Angeles',
+      dateStyle: 'short',
+      timeStyle: 'short'
+    })}
 
 SOURCE: losreyestires.com
 --- END QUOTE REQUEST ---
@@ -136,11 +138,11 @@ SOURCE: losreyestires.com
       </div>
     </div>
     <div class="footer">
-      <div>Submitted ${new Date(timestamp).toLocaleString('en-US', { 
-        timeZone: 'America/Los_Angeles',
-        dateStyle: 'medium',
-        timeStyle: 'short'
-      })}</div>
+      <div>Submitted ${new Date(timestamp).toLocaleString('en-US', {
+      timeZone: 'America/Los_Angeles',
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    })}</div>
       <div>From: losreyestires.com</div>
     </div>
   </div>
@@ -178,7 +180,7 @@ SOURCE: losreyestires.com
 
       // 2. Send confirmation email to customer
       const customerSubject = 'Quote Request Received - Los Reyes Tires';
-      
+
       const customerTextBody = `
 Hi ${name},
 
@@ -346,9 +348,9 @@ Los Reyes Tires Team
     }
 
     return NextResponse.json(
-      { 
-        success: true, 
-        message: 'Quote request submitted successfully' 
+      {
+        success: true,
+        message: 'Quote request submitted successfully'
       },
       { status: 200 }
     );

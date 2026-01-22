@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Star, 
-  ShoppingCart, 
-  Check, 
-  Shield, 
-  Truck, 
+import {
+  Star,
+  ShoppingCart,
+  Check,
+  Shield,
+  Truck,
   MapPin,
   Phone,
   ChevronLeft,
@@ -17,6 +17,8 @@ import {
 import { Product } from '@/lib/types';
 import { ProductGallery } from '@/components/products/ProductGallery';
 import { ProductQuantity } from '@/components/products/ProductQuantity';
+
+export const runtime = 'edge';
 
 // Generate static paths for all products
 export function generateStaticParams() {
@@ -56,7 +58,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     ],
   };
 
-  const discount = product.salePrice 
+  const discount = product.salePrice
     ? Math.round(((product.price - product.salePrice) / product.price) * 100)
     : 0;
 
@@ -95,18 +97,17 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               <h1 className="text-3xl md:text-4xl font-black text-zinc-900 mb-3">
                 {product.name}
               </h1>
-              
+
               {/* Rating */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`h-5 w-5 ${
-                        i < Math.floor(product.rating)
+                      className={`h-5 w-5 ${i < Math.floor(product.rating)
                           ? 'fill-yellow-400 text-yellow-400'
                           : 'text-gray-300'
-                      }`}
+                        }`}
                     />
                   ))}
                 </div>
@@ -224,7 +225,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         {/* Product Details */}
         <div className="max-w-4xl">
           <h2 className="text-2xl font-black mb-6">Product Details</h2>
-          
+
           {/* Features */}
           {product.features && product.features.length > 0 && (
             <div className="mb-8">
@@ -244,10 +245,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <div className="mb-8">
             <h3 className="text-xl font-bold mb-4">Description</h3>
             <p className="text-zinc-700 leading-relaxed">
-              The {product.brand} {product.name} is designed to deliver exceptional performance 
-              in all driving conditions. Built with advanced technology and premium materials, 
-              this tire offers outstanding tread life, superior handling, and a comfortable ride. 
-              Whether you're commuting daily or taking long road trips, you can count on reliable 
+              The {product.brand} {product.name} is designed to deliver exceptional performance
+              in all driving conditions. Built with advanced technology and premium materials,
+              this tire offers outstanding tread life, superior handling, and a comfortable ride.
+              Whether you're commuting daily or taking long road trips, you can count on reliable
               performance and safety.
             </p>
           </div>
@@ -257,7 +258,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             <CardContent className="p-6">
               <h3 className="text-xl font-bold mb-3">Professional Installation Available</h3>
               <p className="text-zinc-700 mb-4">
-                Get your tires professionally mounted, balanced, and installed at our El Cajon location. 
+                Get your tires professionally mounted, balanced, and installed at our El Cajon location.
                 Our expert technicians ensure proper fitment and optimal performance.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
