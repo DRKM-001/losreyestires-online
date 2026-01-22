@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { Package, Calendar, DollarSign, MapPin } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 export default function OrdersPage() {
   const { customer, isAuthenticated, isLoading, token } = useAuth();
@@ -114,9 +115,12 @@ export default function OrdersPage() {
                       </div>
                     </div>
                   </div>
-                  <button className="text-red-600 font-semibold hover:underline">
+                  <Link
+                    href={`/orders/${order.id}`}
+                    className="text-red-600 font-semibold hover:underline"
+                  >
                     View Details
-                  </button>
+                  </Link>
                 </div>
 
                 {/* Order items preview */}

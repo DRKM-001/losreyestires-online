@@ -231,6 +231,18 @@ export const authAPI = {
       },
     });
   },
+
+  /**
+   * Get single order details
+   */
+  getOrder: async (token: string, orderId: string): Promise<any> => {
+    return fetchAPI(`/customer/orders/${orderId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
 };
 
 export { AuthAPIError };
