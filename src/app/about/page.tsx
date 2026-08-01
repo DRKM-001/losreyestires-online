@@ -78,8 +78,8 @@ export default function AboutPage() {
                   perfect solution for their vehicle.
                 </p>
                 <p className="text-lg">
-                  Today, Los Reyes Tires continues that family legacy, specializing in everything from premium new 
-                  tires to quality used options, with a particular expertise in off-road wheels and San Diego's lift culture.
+                  Today, Los Reyes Tires continues that family legacy, helping customers with new and used tires and
+                  discussing current wheel options for their vehicles.
                 </p>
               </div>
             </div>
@@ -148,12 +148,12 @@ export default function AboutPage() {
 
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-3">Wheel Specialists</h3>
+                  <h3 className="text-xl font-bold mb-3">Wheel Inquiries</h3>
                   <ul className="space-y-2 text-zinc-700">
-                    <li>• Custom off-road wheels</li>
-                    <li>• Lift kits & accessories</li>
-                    <li>• Wheel customization</li>
-                    <li>• Off-road culture experts</li>
+                    <li>• Discuss wheel options</li>
+                    <li>• Share your vehicle details</li>
+                    <li>• Check current availability</li>
+                    <li>• Visit or call the El Cajon team</li>
                   </ul>
                 </CardContent>
               </Card>

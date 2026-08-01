@@ -2,14 +2,14 @@ import { Metadata } from 'next';
 
 export const siteConfig = {
   name: 'Los Reyes Tires',
-  description: 'Los Reyes Tires in El Cajon, CA - Your trusted source for new and used tires, off-road wheels, and expert tire services. Founded by Polo Reyes. Open 7 days a week.',
+  description: 'Los Reyes Tires in El Cajon, CA offers new and used tires, wheel inquiries, and tire hauling. Family owned since 2005 and open 7 days a week.',
   url: 'https://losreyestires.com',
   ogImage: '/losreyes_000.png',
   keywords: [
     'tires El Cajon',
     'used tires San Diego',
     'new tires El Cajon',
-    'off-road wheels',
+    'wheels El Cajon',
     'tire shop El Cajon',
     'Los Reyes Tires',
     'cheap tires San Diego',
@@ -18,9 +18,8 @@ export const siteConfig = {
     'tire repair',
     'semi-new tires',
     'second-life tires',
-    'off-road specialists',
-    'lift kits San Diego',
     'custom wheels El Cajon',
+    'tire hauling San Diego',
   ],
   authors: [{ name: 'Los Reyes Tires' }],
   creator: 'Los Reyes Tires',
@@ -39,7 +38,7 @@ export const siteConfig = {
     locale: 'en_US',
     url: 'https://losreyestires.com',
     title: 'Los Reyes Tires - Quality Tires & Expert Service in El Cajon, CA',
-    description: 'New & used tires, off-road wheels, and professional tire services in El Cajon. Founded by Polo Reyes. Open Mon-Sat 7AM-7PM, Sun 8AM-3PM. Call 619-440-6098',
+    description: 'New and used tires, wheel inquiries, and tire hauling in El Cajon. Family owned since 2005. Open Mon-Sat 7AM-7PM, Sun 8AM-3PM. Call 619-440-6098.',
     siteName: 'Los Reyes Tires',
     images: [
       {
@@ -53,7 +52,7 @@ export const siteConfig = {
   twitter: {
     card: 'summary_large_image',
     title: 'Los Reyes Tires - Quality Tires & Expert Service',
-    description: 'New & used tires, off-road wheels in El Cajon, CA. Open 7 days. Call 619-440-6098',
+    description: 'New and used tires, wheel inquiries, and tire hauling in El Cajon, CA. Open 7 days. Call 619-440-6098.',
     images: ['/losreyes_000.png'],
     creator: '@losreyestires',
   },

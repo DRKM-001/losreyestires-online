@@ -4,10 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Star, ShoppingCart } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { Product } from '@/lib/types';
-import { trackSelectItem, trackAddToCart } from '@/lib/analytics/ga4';
 
 interface ProductCardProps {
   product: Product;
@@ -15,60 +13,18 @@ interface ProductCardProps {
   index?: number;      // Position in the list
 }
 
-export function ProductCard({ product, listName = 'Product List', index }: ProductCardProps) {
-  const discount = product.salePrice 
-    ? Math.round(((product.price - product.salePrice) / product.price) * 100)
-    : 0;
-
-  // Track when user clicks product to view details
-  const handleProductClick = () => {
-    trackSelectItem(
-      {
-        item_id: product.id,
-        item_name: product.name,
-        item_brand: product.brand,
-        item_category: product.category || 'Tires',
-        item_variant: 'New',
-        price: product.salePrice || product.price,
-      },
-      listName,
-      index
-    );
-  };
-
-  // Track when user adds item to cart
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Don't navigate to product page
-    e.stopPropagation();
-    
-    if (!product.inStock) return;
-    
-    trackAddToCart({
-      item_id: product.id,
-      item_name: product.name,
-      item_brand: product.brand,
-      item_category: product.category || 'Tires',
-      item_variant: 'New',
-      price: product.salePrice || product.price,
-      quantity: 1,
-    });
-    
-    // TODO: Add actual cart logic here
-    // For now, just show feedback
-    alert(`${product.name} added to cart!`);
-  };
-
+export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Card className="group overflow-hidden h-full flex flex-col transition-all hover:shadow-xl border-zinc-200">
-      <Link href={`/products/${product.id}`} className="relative" onClick={handleProductClick}>
+    <Card className="group flex h-full flex-col overflow-hidden rounded-xl border-zinc-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
+      <div className="relative">
         {/* Image Container - 6:5 aspect ratio (slightly wider than tall) */}
-        <div className="relative aspect-[6/5] overflow-hidden bg-gradient-to-br from-zinc-50 to-zinc-100">
+        <div className="relative aspect-[6/5] overflow-hidden border-b border-zinc-100 bg-zinc-50">
           {product.images[0] && product.images[0] !== '/placeholder-tire.jpg' ? (
             <Image
               src={product.images[0]}
               alt={product.name}
               fill
-              className="object-contain p-6 transition-transform group-hover:scale-110"
+              className="object-contain p-6 transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center p-8">
@@ -100,29 +56,11 @@ export function ProductCard({ product, listName = 'Product List', index }: Produ
             </div>
           )}
           
-          {/* Status Badges - Top Right */}
-          <div className="absolute top-3 right-3 flex flex-col gap-1.5">
-            {discount > 0 && (
-              <Badge className="bg-red-600 hover:bg-red-600 font-bold text-xs shadow-md">
-                -{discount}%
-              </Badge>
-            )}
-            {!product.inStock && (
-              <Badge variant="secondary" className="bg-zinc-900 hover:bg-zinc-900 text-white font-bold text-xs shadow-md">
-                Sold Out
-              </Badge>
-            )}
-            {product.inStock && product.features?.some(f => f.includes('in stock')) && (
-              <Badge className="bg-green-600 hover:bg-green-600 font-bold text-xs shadow-md">
-                In Stock
-              </Badge>
-            )}
-          </div>
         </div>
-      </Link>
+      </div>
 
       <CardContent className="flex-1 p-4 space-y-2">
-        <Link href={`/products/${product.id}`} onClick={handleProductClick}>
+        <div>
           {/* Brand */}
           <p className="text-xs font-bold text-red-600 uppercase tracking-wide mb-1">
             {product.brand}
@@ -139,64 +77,29 @@ export function ProductCard({ product, listName = 'Product List', index }: Produ
               {product.size}
             </div>
           )}
-        </Link>
-
-        {/* Rating */}
-        {product.rating > 0 && (
-          <div className="flex items-center gap-1.5">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-3.5 w-3.5 ${
-                    i < Math.floor(product.rating)
-                      ? 'fill-yellow-400 text-yellow-400'
-                      : 'fill-zinc-200 text-zinc-200'
-                  }`}
-                />
-              ))}
-            </div>
-            {product.reviewCount > 0 && (
-              <span className="text-xs text-zinc-500 font-medium">
-                ({product.reviewCount})
-              </span>
-            )}
-          </div>
-        )}
+        </div>
 
         {/* Price */}
         <div className="pt-1">
-          {product.salePrice ? (
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-red-600">
-                ${product.salePrice.toFixed(2)}
-              </span>
-              <span className="text-sm text-zinc-400 line-through font-medium">
-                ${product.price.toFixed(2)}
-              </span>
-            </div>
-          ) : (
+          {product.price > 0 ? (
             <span className="text-2xl font-black text-zinc-900">
               ${product.price.toFixed(2)}
             </span>
+          ) : (
+            <span className="text-base font-bold text-zinc-900">Ask for current pricing</span>
           )}
-          <p className="text-xs text-zinc-500 mt-0.5">per tire</p>
+          <p className="mt-1 text-xs leading-5 text-zinc-500">
+            {product.price > 0 ? 'Listed price · confirm with the shop' : 'Pricing is not listed for this item'}
+          </p>
         </div>
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
-        <Button 
-          size="lg"
-          onClick={handleAddToCart}
-          className={`w-full font-bold ${
-            product.inStock 
-              ? 'bg-red-600 hover:bg-red-700 shadow-md hover:shadow-lg' 
-              : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
-          }`}
-          disabled={!product.inStock}
-        >
-          <ShoppingCart className="mr-2 h-4 w-4" />
-          {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+        <Button asChild size="lg" className="h-12 w-full bg-red-600 font-bold hover:bg-red-700">
+          <Link href="/#quote">
+            <MessageCircle className="mr-2 h-4 w-4" aria-hidden="true" />
+            Check Availability
+          </Link>
         </Button>
       </CardFooter>
     </Card>

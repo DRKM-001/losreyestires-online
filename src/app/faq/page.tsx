@@ -35,8 +35,8 @@ const faqs = [
     answer: 'We carry all major tire brands including Michelin, Goodyear, Bridgestone, Continental, BFGoodrich, and many more.',
   },
   {
-    question: 'Do you specialize in off-road tires and wheels?',
-    answer: 'Absolutely! We specialize in off-road wheels, custom wheels, and lift kits. We are part of the off-road culture.',
+    question: 'Can I ask about wheel options?',
+    answer: 'Yes. Share your vehicle details and the shop can discuss current wheel options and availability with you.',
   },
   {
     question: 'Can you repair a flat tire?',

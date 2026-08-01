@@ -45,7 +45,7 @@ export default function ReturnsPage() {
                 </div>
                 <h3 className="text-lg font-bold mb-2">Easy Exchanges</h3>
                 <p className="text-sm text-zinc-600">
-                  Wrong size or changed your mind? We'll help you find the right fit.
+                  Wrong size or changed your mind? We’ll help you find the right fit.
                 </p>
               </CardContent>
             </Card>
@@ -80,7 +80,7 @@ export default function ReturnsPage() {
                 <li>• <strong>New tires</strong> - Unmounted, unused, and in original condition</li>
                 <li>• <strong>Wheels</strong> - Unused and in original packaging</li>
                 <li>• <strong>Accessories</strong> - Unopened and in original packaging</li>
-                <li>• <strong>Wheel & tire packages</strong> - Unmounted and unused</li>
+                <li>• <strong>Wheel orders</strong> - Unmounted and unused</li>
               </ul>
             </div>
 
@@ -124,7 +124,7 @@ export default function ReturnsPage() {
                 </li>
                 <li>
                   <strong>2. Get Authorization</strong>
-                  <p className="ml-4 mt-1">We'll provide you with a Return Authorization (RA) number and instructions.</p>
+                  <p className="ml-4 mt-1">We’ll provide you with a Return Authorization (RA) number and instructions.</p>
                 </li>
                 <li>
                   <strong>3. Ship or Drop Off</strong>
@@ -188,7 +188,7 @@ export default function ReturnsPage() {
               <h3 className="text-xl font-bold mb-3">Damaged or Defective Items</h3>
               <p className="text-zinc-700">
                 If you receive damaged or defective items, contact us immediately at 619-440-6098. 
-                We'll arrange for a replacement or refund at no cost to you. Please inspect your 
+                We’ll arrange for a replacement or refund at no cost to you. Please inspect your
                 order upon delivery and report any issues within 48 hours.
               </p>
             </div>
@@ -235,7 +235,7 @@ export default function ReturnsPage() {
                 <h3 className="font-bold mb-2">Can I return tires if I already mounted them?</h3>
                 <p className="text-sm text-zinc-600">
                   No, once tires are mounted they cannot be returned. Make sure you have the correct size 
-                  before installation. We're happy to verify fitment before mounting.
+                  before installation. We’re happy to verify fitment before mounting.
                 </p>
               </CardContent>
             </Card>

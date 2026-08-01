@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
 import { TypographyH1, TypographyH2, TypographyP, TypographyLead } from '@/components/ui/typography';
+import { SNAP_FINANCE_APPLICATION_URL } from '@/lib/financing';
 
 export const metadata: Metadata = {
   title: 'Flexible Financing Options',
@@ -55,10 +56,11 @@ export default function FinancingPage() {
               Quick application process with decisions in minutes.
             </TypographyP>
             <Link
-              href="https://bk.snapfinance.com/origination?paramId=3w%2FEWVFzVGcQioSdKn1vuqdr2hNr3A1xiMt4CtG%2BqOWAXpAyz%2Bp5YK2lEkK1hZ0tog9ZSjNG2GyQln5HQrzShOzYiaK%2FnFnEZXfXtyBXVEw%3D"
+              href={SNAP_FINANCE_APPLICATION_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="transition-transform hover:scale-105 inline-block"
+              aria-label="Apply through Snap Finance (opens in a new tab)"
             >
               <Image
                 src="https://assets.snapfinance.com/app/images/apply_image_17.jpeg"

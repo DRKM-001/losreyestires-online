@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: siteConfig.metadataBase,
   title: {
-    default: siteConfig.name + ' - New & Used Tires, Off-Road Wheels | El Cajon, CA',
+    default: siteConfig.name + ' - New & Used Tires, Wheels & Tire Hauling | El Cajon, CA',
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,

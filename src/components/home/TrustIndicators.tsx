@@ -1,43 +1,43 @@
-import { Shield, Truck, Award, HeadphonesIcon } from 'lucide-react';
+import { CalendarDays, Clock, MapPin, MessageCircle } from 'lucide-react';
 
 export function TrustIndicators() {
   const features = [
     {
-      icon: Truck,
-      title: 'New & Used Tires',
-      description: 'Quality options for every budget',
+      icon: CalendarDays,
+      title: 'Family owned',
+      description: 'Serving customers since 2005',
     },
     {
-      icon: Shield,
-      title: 'Expert Service',
-      description: 'Professional installation & repairs',
+      icon: MapPin,
+      title: 'One local shop',
+      description: '1245 N 1st St, El Cajon',
     },
     {
-      icon: Award,
-      title: 'Off-Road Specialists',
-      description: 'Custom wheels & lift culture',
+      icon: MessageCircle,
+      title: 'Human help',
+      description: 'Call or message the shop directly',
     },
     {
-      icon: HeadphonesIcon,
+      icon: Clock,
       title: 'Open 7 Days',
       description: 'Mon-Sat 7AM-7PM | Sun 8AM-3PM',
     },
   ];
 
   return (
-    <section className="py-10 border-y bg-zinc-50">
+    <section className="border-b bg-white py-8 sm:py-10" aria-label="Shop information">
       <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-7 lg:grid-cols-4 lg:gap-8">
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
-              <div key={feature.title} className="flex items-center gap-4">
+              <div key={feature.title} className="flex items-start gap-3">
                 <div className="flex-shrink-0">
-                  <Icon className="h-8 w-8 text-red-600" />
+                  <Icon className="mt-0.5 h-6 w-6 text-red-600" aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm mb-0.5 text-zinc-900">{feature.title}</h3>
-                  <p className="text-xs text-zinc-600">{feature.description}</p>
+                  <h2 className="mb-1 text-sm font-bold text-zinc-900">{feature.title}</h2>
+                  <p className="text-xs leading-5 text-zinc-600">{feature.description}</p>
                 </div>
               </div>
             );

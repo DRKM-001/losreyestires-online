@@ -1,240 +1,75 @@
-'use client';
-
-import { useState, useMemo } from 'react';
-import { Search, SlidersHorizontal } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import Link from 'next/link';
+import { MapPin, MessageCircle, Phone, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ProductCard } from '@/components/products/ProductCard';
-import { FilterSidebar } from '@/components/catalog/FilterSidebar';
-import { wheels, wheelBrands, wheelSizes, wheelFinishes, wheelBoltPatterns } from '@/lib/data/wheels';
-import { TypographyH1, TypographyP } from '@/components/ui/typography';
+import { Card, CardContent } from '@/components/ui/card';
+import { generatePageMetadata } from '@/lib/metadata';
+
+export const metadata = generatePageMetadata({
+  title: 'Wheel Options in El Cajon',
+  description: 'Contact Los Reyes Tires to ask about current wheel options in El Cajon, CA. Call 619-440-6098 or request availability online.',
+  path: '/wheels',
+  keywords: ['wheels El Cajon', 'wheel options El Cajon', 'custom wheels El Cajon'],
+});
 
 export default function WheelsPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('featured');
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({
-    brand: [],
-    size: [],
-    finish: [],
-    boltPattern: [],
-  });
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
-
-  const maxPrice = 500;
-
-  // Filter configuration
-  const filterGroups = [
-    {
-      title: 'Brand',
-      key: 'brand',
-      options: wheelBrands.map(brand => ({
-        value: brand,
-        label: brand,
-        count: wheels.filter(w => w.brand === brand).length,
-      })),
-    },
-    {
-      title: 'Size',
-      key: 'size',
-      options: wheelSizes.map(size => ({
-        value: size,
-        label: size,
-        count: wheels.filter(w => w.size === size).length,
-      })),
-    },
-    {
-      title: 'Finish',
-      key: 'finish',
-      options: wheelFinishes.map(finish => ({
-        value: finish.value,
-        label: finish.label,
-        count: wheels.filter(w => w.finish === finish.value).length,
-      })),
-    },
-    {
-      title: 'Bolt Pattern',
-      key: 'boltPattern',
-      options: wheelBoltPatterns.map(pattern => ({
-        value: pattern,
-        label: pattern,
-        count: wheels.filter(w => w.boltPattern === pattern).length,
-      })),
-    },
-  ];
-
-  // Filter products
-  const filteredProducts = useMemo(() => {
-    let filtered = wheels;
-
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        wheel =>
-          wheel.name.toLowerCase().includes(query) ||
-          wheel.brand.toLowerCase().includes(query) ||
-          wheel.size.toLowerCase().includes(query)
-      );
-    }
-
-    // Category filters
-    Object.entries(selectedFilters).forEach(([key, values]) => {
-      if (values.length > 0) {
-        filtered = filtered.filter(wheel => values.includes((wheel as any)[key]));
-      }
-    });
-
-    // Price filter
-    filtered = filtered.filter(wheel => wheel.price >= priceRange[0] && wheel.price <= priceRange[1]);
-
-    // Sort
-    if (sortBy === 'price-low') {
-      filtered = [...filtered].sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-high') {
-      filtered = [...filtered].sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'rating') {
-      filtered = [...filtered].sort((a, b) => b.rating - a.rating);
-    } else if (sortBy === 'name') {
-      filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    return filtered;
-  }, [searchQuery, selectedFilters, priceRange, sortBy]);
-
-  const handleFilterChange = (key: string, value: string) => {
-    setSelectedFilters(prev => {
-      const current = prev[key] || [];
-      const newValues = current.includes(value)
-        ? current.filter(v => v !== value)
-        : [...current, value];
-      return { ...prev, [key]: newValues };
-    });
-  };
-
-  const handleClearFilters = () => {
-    setSelectedFilters({ brand: [], size: [], finish: [], boltPattern: [] });
-    setPriceRange([0, maxPrice]);
-    setSearchQuery('');
-  };
-
   return (
-    <div className="container py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <TypographyH1>Shop Wheels</TypographyH1>
-        <TypographyP className="text-zinc-600 mt-2">
-          Upgrade your ride with premium wheels. Professional mounting and balancing included.
-        </TypographyP>
-      </div>
-
-      {/* Search & Sort Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
-          <Input
-            type="search"
-            placeholder="Search by brand, size, or name..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <div className="flex gap-2">
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="featured">Featured</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="rating">Highest Rated</SelectItem>
-              <SelectItem value="name">Name (A-Z)</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Mobile Filter Button */}
-          <Sheet>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button variant="outline" size="icon">
-                <SlidersHorizontal className="h-4 w-4" />
+    <div className="min-h-screen bg-zinc-50">
+      <section className="bg-gradient-to-br from-zinc-950 to-zinc-800 py-16 text-white md:py-20">
+        <div className="container">
+          <div className="max-w-3xl">
+            <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-red-400">Wheel inquiries</p>
+            <h1 className="text-4xl font-black md:text-5xl">Find the right wheel setup with local help</h1>
+            <p className="mt-5 text-lg text-zinc-300 md:text-xl">
+              Tell us about your vehicle and the look or use you have in mind. Our El Cajon team will check current options and help with fitment.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button asChild size="lg" className="bg-red-600 font-bold hover:bg-red-700">
+                <Link href="/#quote">
+                  <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                  Check Wheel Availability
+                </Link>
               </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-80 overflow-y-auto">
-              <div className="mt-6">
-                <FilterSidebar
-                  filters={filterGroups}
-                  selectedFilters={selectedFilters}
-                  priceRange={priceRange}
-                  maxPrice={maxPrice}
-                  onFilterChange={handleFilterChange}
-                  onPriceChange={setPriceRange}
-                  onClearAll={handleClearFilters}
-                />
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-      </div>
-
-      <div className="flex gap-8">
-        {/* Desktop Sidebar */}
-        <aside className="hidden lg:block w-64 flex-shrink-0">
-          <div className="sticky top-24">
-            <FilterSidebar
-              filters={filterGroups}
-              selectedFilters={selectedFilters}
-              priceRange={priceRange}
-              maxPrice={maxPrice}
-              onFilterChange={handleFilterChange}
-              onPriceChange={setPriceRange}
-              onClearAll={handleClearFilters}
-            />
-          </div>
-        </aside>
-
-        {/* Product Grid */}
-        <div className="flex-1">
-          <div className="mb-4 text-sm text-zinc-600">
-            Showing {filteredProducts.length} of {wheels.length} wheels
-          </div>
-
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-zinc-600 mb-4">No wheels found matching your criteria.</p>
-              <Button onClick={handleClearFilters} variant="outline">
-                Clear Filters
+              <Button asChild size="lg" variant="outline" className="border-white bg-transparent font-bold text-white hover:bg-white hover:text-zinc-900">
+                <a href="tel:619-440-6098">
+                  <Phone className="h-5 w-5" aria-hidden="true" />
+                  Call 619-440-6098
+                </a>
               </Button>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredProducts.map(wheel => (
-                <ProductCard
-                  key={wheel.id}
-                  product={{
-                    id: wheel.id,
-                    name: wheel.name,
-                    brand: wheel.brand,
-                    price: wheel.price,
-                    salePrice: wheel.originalPrice ? wheel.price : undefined,
-                    images: [wheel.image],
-                    category: 'wheels',
-                    inStock: wheel.stock > 0,
-                    rating: wheel.rating,
-                    reviewCount: wheel.reviewCount,
-                    size: wheel.size,
-                    boltPattern: wheel.boltPattern,
-                    offset: wheel.offset,
-                    features: wheel.features,
-                  }}
-                />
-              ))}
-            </div>
-          )}
+          </div>
         </div>
-      </div>
+      </section>
+
+      <section className="py-14 md:py-16">
+        <div className="container">
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardContent className="p-7">
+                <Wrench className="h-8 w-8 text-red-600" aria-hidden="true" />
+                <h2 className="mt-4 text-2xl font-black">Start with your vehicle</h2>
+                <p className="mt-3 text-zinc-600">
+                  Share the year, make, model, current tire size, and how you use the vehicle. We will help narrow the wheel options to discuss.
+                </p>
+                <Button asChild variant="link" className="mt-3 h-auto p-0 font-bold text-red-600">
+                  <Link href="/#quote">Send vehicle details →</Link>
+                </Button>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-7">
+                <MapPin className="h-8 w-8 text-red-600" aria-hidden="true" />
+                <h2 className="mt-4 text-2xl font-black">Talk with the local team</h2>
+                <p className="mt-3 text-zinc-600">
+                  Visit the El Cajon shop or call before you drive over to confirm current availability and discuss your setup.
+                </p>
+                <Button asChild variant="link" className="mt-3 h-auto p-0 font-bold text-red-600">
+                  <Link href="/locations">Location and hours →</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

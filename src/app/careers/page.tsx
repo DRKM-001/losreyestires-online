@@ -13,7 +13,7 @@ const openPositions = [
     title: 'Tire Technician',
     type: 'Full-Time',
     location: 'El Cajon, CA',
-    description: 'Experienced tire technician needed for mounting, balancing, and installation services. Off-road and custom wheel experience a plus.',
+    description: 'Experienced tire technician needed for mounting, balancing, and installation services. Wheel experience is a plus.',
     requirements: [
       '1+ years tire installation experience',
       'Ability to lift 50+ lbs',
@@ -26,7 +26,7 @@ const openPositions = [
     title: 'Sales Associate',
     type: 'Full-Time',
     location: 'El Cajon, CA',
-    description: 'Help customers find the right tires and wheels for their vehicles. Great opportunity for someone passionate about automotive and off-road culture.',
+    description: 'Help customers find the right tires and discuss wheel options for their vehicles. Great opportunity for someone passionate about automotive service.',
     requirements: [
       'Excellent customer service skills',
       'Automotive or tire knowledge preferred',
@@ -87,7 +87,7 @@ export default function CareersPage() {
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Join Our Team</h1>
             <p className="text-xl text-zinc-300 mb-8">
               Los Reyes Tires is a family-owned business built on hard work, integrity, and a passion 
-              for the automotive and off-road community. Founded by Polo Reyes, we're looking for 
+              for the local automotive community. Founded by Polo Reyes, we’re looking for
               dedicated individuals to join our growing team in El Cajon, CA.
             </p>
           </div>
@@ -185,14 +185,14 @@ export default function CareersPage() {
                 <div>
                   <h3 className="font-semibold text-lg mb-2">2. Speak with Management</h3>
                   <p className="text-muted-foreground">
-                    Talk to our team about the position you're interested in and share your experience.
+                    Talk to our team about the position you’re interested in and share your experience.
                   </p>
                 </div>
 
                 <div>
                   <h3 className="font-semibold text-lg mb-2">3. Interview</h3>
                   <p className="text-muted-foreground">
-                    We'll schedule an interview to get to know you better and discuss the role in detail.
+                    We’ll schedule an interview to get to know you better and discuss the role in detail.
                   </p>
                 </div>
 
@@ -200,7 +200,7 @@ export default function CareersPage() {
                   <h3 className="font-semibold text-lg mb-2">What to Bring:</h3>
                   <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                     <li>Resume or work history</li>
-                    <li>Valid driver's license</li>
+                    <li>Valid driver’s license</li>
                     <li>References (if available)</li>
                     <li>Certifications or licenses (if applicable)</li>
                   </ul>
@@ -217,7 +217,7 @@ export default function CareersPage() {
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Join Our Team?</h2>
             <p className="text-xl text-zinc-300 mb-8">
-              We're always looking for talented, hardworking individuals who are passionate about 
+              We’re always looking for talented, hardworking individuals who are passionate about
               automotive services and customer satisfaction.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

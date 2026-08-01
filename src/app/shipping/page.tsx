@@ -121,12 +121,12 @@ export default function ShippingPage() {
                 <li>• <strong>Orders under $500:</strong> Starting at $49.99 per set of 4 tires</li>
                 <li>• <strong>Express shipping:</strong> Additional $99.99</li>
                 <li>• <strong>Single tire shipping:</strong> Starting at $19.99</li>
-                <li>• <strong>Wheel & tire packages:</strong> Custom quote based on size and weight</li>
+                <li>• <strong>Wheel orders:</strong> Shipping details depend on size and weight</li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-3">What's Included</h3>
+              <h3 className="text-xl font-bold mb-3">What’s Included</h3>
               <p className="text-zinc-700 mb-3">
                 All shipments include:
               </p>
@@ -141,8 +141,8 @@ export default function ShippingPage() {
             <div>
               <h3 className="text-xl font-bold mb-3">Tracking Your Order</h3>
               <p className="text-zinc-700">
-                Once your order ships, you'll receive an email with a tracking number. You can track your 
-                shipment directly through the carrier's website. For questions about your order status, 
+                Once your order ships, you’ll receive an email with a tracking number. You can track your
+                shipment directly through the carrier’s website. For questions about your order status,
                 contact us at 619-440-6098.
               </p>
             </div>

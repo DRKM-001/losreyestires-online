@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/products/ProductCard';
 import { Product } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
-import { getAllTires, type Tire } from '@/lib/api/tireraven';
+import { fetchTires, isValidTire, mapTireRavenItemToTire, type Tire } from '@/lib/api/tireraven';
 
 export function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,7 +16,10 @@ export function FeaturedProducts() {
     async function loadLatestProducts() {
       try {
         setLoading(true);
-        const tires = await getAllTires(1); // Fetch first page only
+        const response = await fetchTires({ page: 1, per_page: 4 });
+        const tires = response.success
+          ? response.data.filter(isValidTire).map(mapTireRavenItemToTire)
+          : [];
         
         if (tires.length > 0) {
           // Take the first 4 products (or however many are available)
@@ -28,26 +31,21 @@ export function FeaturedProducts() {
             name: tire.name,
             brand: tire.brand,
             price: tire.price,
-            salePrice: tire.originalPrice ? tire.price : undefined,
             images: [tire.image],
             category: 'tires',
             inStock: tire.stock > 0,
-            rating: tire.rating,
-            reviewCount: tire.reviewCount,
+            rating: 0,
+            reviewCount: 0,
             size: tire.size,
             loadIndex: tire.loadIndex,
             speedRating: tire.speedRating,
-            features: tire.features,
+            features: [],
           }));
           
           setProducts(mappedProducts);
-        } else {
-          // Fallback to placeholder data if API returns nothing
-          setProducts(getFallbackProducts());
         }
       } catch (error) {
         console.error('Error loading featured products:', error);
-        setProducts(getFallbackProducts());
       } finally {
         setLoading(false);
       }
@@ -56,115 +54,56 @@ export function FeaturedProducts() {
     loadLatestProducts();
   }, []);
 
-  // Fallback data if API is unavailable
-  const getFallbackProducts = (): Product[] => [
-    {
-      id: '1',
-      name: 'Michelin Defender T+H All-Season Tire',
-      brand: 'Michelin',
-      price: 189.99,
-      salePrice: 159.99,
-      images: ['/placeholder-tire.jpg'],
-      category: 'tires',
-      inStock: true,
-      rating: 4.5,
-      reviewCount: 342,
-      size: '225/65R17',
-      loadIndex: '102',
-      speedRating: 'H',
-      warranty: '80,000 miles',
-      features: ['All-Season Traction', 'Long Tread Life', 'Comfortable Ride'],
-    },
-    {
-      id: '2',
-      name: 'Bridgestone Turanza QuietTrack',
-      brand: 'Bridgestone',
-      price: 179.99,
-      images: ['/placeholder-tire.jpg'],
-      category: 'tires',
-      inStock: true,
-      rating: 4.7,
-      reviewCount: 218,
-      size: '235/55R18',
-      loadIndex: '100',
-      speedRating: 'V',
-      warranty: '70,000 miles',
-    },
-    {
-      id: '3',
-      name: 'Goodyear Wrangler All-Terrain Adventure',
-      brand: 'Goodyear',
-      price: 199.99,
-      salePrice: 174.99,
-      images: ['/placeholder-tire.jpg'],
-      category: 'tires',
-      inStock: true,
-      rating: 4.6,
-      reviewCount: 156,
-      size: 'LT265/70R17',
-      loadIndex: '121',
-      speedRating: 'S',
-      warranty: '60,000 miles',
-    },
-    {
-      id: '4',
-      name: 'Continental CrossContact LX25',
-      brand: 'Continental',
-      price: 169.99,
-      images: ['/placeholder-tire.jpg'],
-      category: 'tires',
-      inStock: false,
-      rating: 4.4,
-      reviewCount: 89,
-      size: '225/60R18',
-      loadIndex: '100',
-      speedRating: 'H',
-      warranty: '70,000 miles',
-    },
-  ];
-
   return (
-    <section className="py-12 md:py-16 bg-zinc-50">
+    <section className="bg-white py-12 sm:py-16">
       <div className="container">
-        <div className="flex items-center justify-between mb-8">
+        <div className="mb-8 flex items-end justify-between gap-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-black mb-1 text-zinc-900">New Products</h2>
-            <p className="text-sm text-zinc-600">
-              Shop our latest arrivals
+            <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-red-600">Browse online</p>
+            <h2 className="text-3xl font-black tracking-tight text-zinc-900 sm:text-4xl">Current tire listings</h2>
+            <p className="mt-3 text-sm leading-6 text-zinc-600">
+              Confirm availability with our local team
             </p>
           </div>
-          <Link href="/products">
-            <Button className="hidden sm:flex bg-red-600 hover:bg-red-700 font-bold">
-              Shop All
+          <Button asChild className="hidden h-11 bg-red-600 font-bold hover:bg-red-700 sm:inline-flex">
+            <Link href="/tires">
+              View Inventory
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {loading ? (
             // Loading skeleton
             Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-lg p-4 shadow animate-pulse">
+              <div key={i} className="animate-pulse rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
                 <div className="bg-zinc-200 h-48 rounded mb-4"></div>
                 <div className="bg-zinc-200 h-4 rounded mb-2"></div>
                 <div className="bg-zinc-200 h-4 rounded w-2/3"></div>
               </div>
             ))
-          ) : (
+          ) : products.length > 0 ? (
             products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))
+          ) : (
+            <div className="col-span-full rounded-xl border border-zinc-200 bg-zinc-50 p-8 text-center">
+              <p className="text-zinc-600">Online inventory is unavailable right now. Contact the shop to check current options.</p>
+              <Button asChild className="mt-4 bg-red-600 font-bold hover:bg-red-700">
+                <Link href="/#quote">Check Availability</Link>
+              </Button>
+            </div>
           )}
         </div>
 
         <div className="mt-8 text-center sm:hidden">
-          <Link href="/products">
-            <Button className="bg-red-600 hover:bg-red-700 font-bold">
-              Shop All Products
+          <Button asChild className="h-12 w-full bg-red-600 font-bold hover:bg-red-700">
+            <Link href="/tires">
+              View Inventory
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

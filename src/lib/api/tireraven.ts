@@ -1,9 +1,6 @@
 // TireRaven API Integration
 // API Documentation: https://api.tireraven.com
 
-const TIRERAVEN_API_BASE = process.env.NEXT_PUBLIC_TIRERAVEN_API_BASE || 'https://api.tireraven.com/api/external/v1';
-const TIRERAVEN_API_KEY = process.env.NEXT_PUBLIC_TIRERAVEN_API_KEY || 'tireraven_live_c74cb1a7cd499ce4b006a6ab6936058c0e3f209c758988a6279b91fa9865fa73';
-
 // TireRaven API Response Types
 export interface TireRavenBrand {
   id: number;
@@ -16,12 +13,9 @@ export interface TireRavenItem {
   nav: string; // Full product name
   size: string; // Tire size (e.g., "225/65R17")
   pattern: string; // Pattern/model name
-  supply: string; // Supply description
   available: boolean;
   stock_quantity: number;
   price: string; // Retail price (customer-facing)
-  ddp: string; // DDP/Cost price (wholesale/dealer price)
-  location: string;
   type: string | null;
   brand: TireRavenBrand;
 }
@@ -35,17 +29,10 @@ export interface TireRavenPagination {
   prev_page: number | null;
 }
 
-export interface TireRavenMeta {
-  timestamp: string;
-  tenant: string;
-  api_version: string;
-}
-
 export interface TireRavenResponse {
   success: boolean;
   data: TireRavenItem[];
   pagination: TireRavenPagination;
-  meta: TireRavenMeta;
 }
 
 // Our internal Tire type mapping
@@ -69,13 +56,14 @@ export interface Tire {
 }
 
 /**
- * Fetch all tires from TireRaven API
+ * Fetch customer-safe inventory from the same-origin server boundary.
  */
 export async function fetchTires(params?: {
   page?: number;
   per_page?: number;
   size?: string;
   brand?: string;
+  signal?: AbortSignal;
 }): Promise<TireRavenResponse> {
   const searchParams = new URLSearchParams();
 
@@ -84,17 +72,16 @@ export async function fetchTires(params?: {
   if (params?.size) searchParams.append('size', params.size);
   if (params?.brand) searchParams.append('brand', params.brand);
 
-  const url = `${TIRERAVEN_API_BASE}/items${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
+  const url = `/api/inventory${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
 
   const response = await fetch(url, {
-    headers: {
-      'X-API-Key': TIRERAVEN_API_KEY || '',
-    },
-    next: { revalidate: 300 }, // Cache for 5 minutes
+    headers: { Accept: 'application/json' },
+    cache: 'no-store',
+    signal: params?.signal,
   });
 
   if (!response.ok) {
-    throw new Error(`TireRaven API error: ${response.status} ${response.statusText}`);
+    throw new Error(`Inventory service error: ${response.status} ${response.statusText}`);
   }
 
   return response.json();
@@ -126,21 +113,16 @@ export function mapTireRavenItemToTire(item: TireRavenItem): Tire {
     type = 'summer';
   }
 
-  // Generate features based on available data
+  // Keep display features limited to descriptive data. Inventory status is
+  // intentionally confirmed through the shop rather than converted to claims.
   const features: string[] = [];
-  if (item.stock_quantity > 0) {
-    features.push(`${item.stock_quantity} in stock`);
-  }
-  if (item.available) {
-    features.push('Available for immediate delivery');
-  }
   if (loadIndex !== '—') {
     features.push(`Load Index: ${loadIndex}`);
   }
 
   // price field is the retail price (customer-facing)
-  // ddp is the dealer/cost price (not shown to customers)
-  const retailPrice = parseFloat(item.price || '0');
+  const parsedPrice = parseFloat(item.price || '0');
+  const retailPrice = Number.isFinite(parsedPrice) && parsedPrice > 0 ? parsedPrice : 0;
 
   return {
     id: `tireraven-${item.id}`,
@@ -148,7 +130,7 @@ export function mapTireRavenItemToTire(item: TireRavenItem): Tire {
     brand: item.brand?.name || 'Unknown Brand',
     image: '/placeholder-tire.jpg', // TODO: Add tire images
     price: retailPrice, // Retail price for customers ($62 not $37)
-    rating: 4.0, // Default rating - could be enhanced with reviews
+    rating: 0, // Only show ratings when a verified source is connected
     reviewCount: 0,
     size: item.size || 'UNKNOWN',
     type,
@@ -164,10 +146,11 @@ export function mapTireRavenItemToTire(item: TireRavenItem): Tire {
 /**
  * Check if an item is a valid tire (not accessories like valve stems)
  */
-function isValidTire(item: TireRavenItem): boolean {
+export function isValidTire(item: TireRavenItem): boolean {
   // Filter out non-tire items
   if (!item.size || item.size === 'UNKNOWN') return false;
   if (!item.brand || !item.brand.name) return false;
+  if (!item.pattern && !item.nav) return false;
 
   // Check if it looks like a tire size (has pattern like 225/65R17 or LT265/70R17)
   const tirePattern = /^(P|LT)?\d{3}\/\d{2}R\d{2}$/i;

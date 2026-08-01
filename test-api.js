@@ -1,8 +1,13 @@
 // Quick test script for TireRaven API
 // Run with: node test-api.js
 
-const TIRERAVEN_API_KEY = 'tireraven_live_c74cb1a7cd499ce4b006a6ab6936058c0e3f209c758988a6279b91fa9865fa73';
-const TIRERAVEN_API_BASE = 'https://api.tireraven.com/api/external/v1';
+const TIRERAVEN_API_KEY = process.env.TIRERAVEN_API_KEY;
+const TIRERAVEN_API_BASE = process.env.TIRERAVEN_API_BASE || 'https://api.tireraven.com/api/external/v1';
+
+if (!TIRERAVEN_API_KEY) {
+  console.error('TIRERAVEN_API_KEY is required. Provide it as a local environment variable.');
+  process.exit(1);
+}
 
 async function testAPI() {
   try {

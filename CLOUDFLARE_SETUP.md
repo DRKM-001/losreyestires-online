@@ -1,202 +1,50 @@
-# Cloudflare Pages Environment Variables Setup
+# Production environment setup
 
-## Required Environment Variable for TireRaven API
+All credentials used by this application are server-only. Do not create any `NEXT_PUBLIC_*` credential variables.
 
-To enable the TireRaven API integration on your Cloudflare Pages deployment, you need to add the API key as an environment variable.
+## Required variables
 
----
+Configure these as encrypted secrets in the production and preview environments that need the associated feature:
 
-## Step-by-Step Instructions
+| Variable | Required for | Notes |
+| --- | --- | --- |
+| `TIRERAVEN_API_KEY` | Inventory and customer APIs | Server-only. Rotate the previously committed keys before use. |
+| `RESEND_API_KEY` | Quote/contact delivery | Server-only Resend API key. |
+| `RFI_EMAIL_TO` | Quote/contact delivery | Fixed Los Reyes-owned recipient address. |
+| `RFI_EMAIL_FROM` | Quote/contact delivery | Verified Resend sender, for example `Los Reyes Tires <quotes@verified-domain.example>`. |
 
-### 1. **Log in to Cloudflare Dashboard**
-Visit: https://dash.cloudflare.com
+Optional variables:
 
-### 2. **Navigate to Your Pages Project**
-1. Click on "Workers & Pages" in the left sidebar
-2. Select your project: `losreyestires-onlineshop`
+| Variable | Purpose |
+| --- | --- |
+| `TIRERAVEN_API_BASE` | Overrides the default `https://api.tireraven.com/api/external/v1` endpoint. |
+| `SITE_ORIGIN` | Adds the canonical site origin to the RFI same-origin allowlist, e.g. `https://losreyestires.com`. |
 
-### 3. **Go to Settings**
-Click on the "Settings" tab at the top of the project page
+If inventory credentials are absent, the catalog returns an honest unavailable state. If any required mail variable is absent, lead forms return a temporary-unavailable error and show the shop phone fallback.
 
-### 4. **Add Environment Variable**
-1. Scroll down to "Environment Variables" section
-2. Click "Add variable" or "Edit variables"
-3. Add the following:
+## Required post-deploy actions
 
-```
-Variable name: NEXT_PUBLIC_TIRERAVEN_API_KEY
-Value: tireraven_live_e561279385760a19fd9ce9b9c177419cca92f6cec9afbd97f83b647e424373c7
-```
+1. Rotate every TireRaven key that previously appeared in this repository or its Git history. Removing a key from the current files does not invalidate it.
+2. Configure the server-only variables above. Never use a `NEXT_PUBLIC_` prefix for credentials.
+3. Verify the `RFI_EMAIL_FROM` domain with Resend and submit test leads from both the homepage and contact page.
+4. Confirm delivery to `RFI_EMAIL_TO`, reply-to behavior, and operational monitoring for failed mail.
+5. Add edge rate limiting for `/api/rfi`, `/api/customer/*`, and `/api/inventory` before public launch.
+6. Add Cloudflare Turnstile to public lead forms and verify its token server-side. Turnstile is **not implemented** in the current code.
+7. Decide where leads are durably persisted. The current implementation sends one email to the configured shop address; it does **not** store leads in a database or CRM.
+8. Verify response security headers and form behavior on the final custom domain.
 
-4. Select which environments to apply to:
-   - ✅ **Production** (recommended)
-   - ✅ **Preview** (optional, for testing)
+## Newsletter
 
-5. Click "Save"
+Email collection is disabled. The prior Mailchimp audience could not be shown to be Los Reyes-owned. Re-enable newsletter signup only after the owner supplies and verifies the correct audience and consent flow.
 
-### 5. **Redeploy Your Site**
-After adding the environment variable, you need to trigger a new deployment:
+## Local verification
 
-**Option A: Via Git Push**
-```bash
-git commit --allow-empty -m "Trigger redeploy for env vars"
-git push origin main
-```
-
-**Option B: Via Cloudflare Dashboard**
-1. Go to "Deployments" tab
-2. Click "Retry deployment" on the latest deployment
-3. Or click "Create deployment" to make a new one
-
----
-
-## Verification
-
-### Check if Environment Variable is Set
-
-After redeployment, verify the API is working:
-
-1. **Visit your live site**: https://6c9058b7.losreyestires-onlineshop.pages.dev/tires
-2. **Open browser console** (F12 → Console tab)
-3. **Look for this message**: `"Loaded X tires from TireRaven API"`
-4. **Verify tire data** shows real products from your inventory
-
-### Expected Console Output
-```
-Loaded 10 tires from TireRaven API
-```
-
-### Expected Page Behavior
-- Loading spinner appears briefly
-- Tire cards populate with real inventory
-- Brands: BLACKHAWK, MOMO, CAPRICORN
-- Real pricing: $38 - $115
-- Stock quantities visible
-
----
-
-## Alternative: Use Cloudflare Wrangler CLI
-
-If you have Wrangler CLI installed:
+Use environment variables without committing them:
 
 ```bash
-# Install Wrangler (if not installed)
-npm install -g wrangler
-
-# Login to Cloudflare
-wrangler login
-
-# Set environment variable
-wrangler pages project set-env \
-  --project-name=losreyestires-onlineshop \
-  --environment=production \
-  NEXT_PUBLIC_TIRERAVEN_API_KEY=tireraven_live_e561279385760a19fd9ce9b9c177419cca92f6cec9afbd97f83b647e424373c7
+TIRERAVEN_API_KEY=... node test-api.js
+npm run lint
+npx tsc --noEmit
 ```
 
----
-
-## Troubleshooting
-
-### Issue: API key not working
-**Possible causes:**
-- Environment variable not saved correctly
-- Site not redeployed after adding variable
-- Typo in variable name (must be exact: `NEXT_PUBLIC_TIRERAVEN_API_KEY`)
-- API key expired or invalid
-
-**Solutions:**
-1. Double-check variable name spelling
-2. Verify variable is set for "Production" environment
-3. Trigger a new deployment
-4. Check browser console for error messages
-
-### Issue: Still seeing fallback data
-**Possible causes:**
-- API key not set in Cloudflare
-- Build cache issue
-- API endpoint unreachable
-
-**Solutions:**
-1. Clear Cloudflare Pages build cache:
-   - Go to Settings → Build cache
-   - Click "Clear cache and redeploy"
-2. Verify API key is correct
-3. Test API manually: `curl -H "X-API-Key: YOUR_KEY" https://api.tireraven.com/api/external/v1/items`
-
-### Issue: Build fails after adding variable
-**Possible causes:**
-- Invalid API key format
-- Network issue during build
-
-**Solutions:**
-1. Check build logs in Cloudflare Pages dashboard
-2. Verify API key doesn't contain special characters that need escaping
-3. Try wrapping value in quotes if it contains special characters
-
----
-
-## Security Notes
-
-⚠️ **Important Security Practices**
-
-1. **Never commit API keys to Git**
-   - `.env.local` is in `.gitignore` ✅
-   - API key is stored securely in Cloudflare
-
-2. **Use `NEXT_PUBLIC_` prefix carefully**
-   - This makes the variable available in browser
-   - It's safe for read-only API keys
-   - Don't use this prefix for sensitive write keys
-
-3. **Rotate keys regularly**
-   - Get new API key from TireRaven periodically
-   - Update in both `.env.local` and Cloudflare Pages
-   - Old deployments will need to be redeployed
-
-4. **Monitor API usage**
-   - Check TireRaven dashboard for unusual activity
-   - Set up rate limiting if available
-   - Monitor Cloudflare Pages logs
-
----
-
-## Verification Checklist
-
-Before considering the setup complete, verify:
-
-- [ ] Environment variable added in Cloudflare Pages dashboard
-- [ ] Variable name is exactly: `NEXT_PUBLIC_TIRERAVEN_API_KEY`
-- [ ] Variable value is the correct API key
-- [ ] Variable is set for "Production" environment
-- [ ] Site has been redeployed after adding variable
-- [ ] Browser console shows: "Loaded X tires from TireRaven API"
-- [ ] Tire catalog shows real products (BLACKHAWK, MOMO, etc.)
-- [ ] Pricing matches TireRaven inventory ($38-$115)
-- [ ] Stock quantities are visible on product cards
-
----
-
-## Next Steps After Setup
-
-Once the environment variable is working:
-
-1. **Test the tire finder**
-   - Try searching by vehicle (e.g., 2024 Toyota Camry)
-   - Verify it shows relevant tire sizes
-   - Check that results come from real inventory
-
-2. **Monitor performance**
-   - Check page load times on /tires
-   - Verify API caching is working (5-minute cache)
-   - Look for any console errors
-
-3. **Add more inventory**
-   - Expand your TireRaven catalog
-   - New tires will automatically appear on the site
-   - No code changes needed!
-
----
-
-**Setup Complete! 🎉**
-
-Your Los Reyes Tires online shop is now fully integrated with the TireRaven API and will display real-time inventory to customers.
+Never paste secret values into documentation, source files, screenshots, or support messages.

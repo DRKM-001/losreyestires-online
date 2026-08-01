@@ -1,183 +1,151 @@
-import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, MessageCircle, Star } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
+import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { BrandWordmark } from '@/components/layout/BrandWordmark';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
+import { Separator } from '@/components/ui/separator';
 
-export function Footer() {
-  const footerLinks = {
-    shop: [
-      { name: 'Tires by Vehicle', href: '/tires/by-vehicle' },
-      { name: 'Tires by Size', href: '/tires/by-size' },
+const footerGroups = [
+  {
+    title: 'Shop & Services',
+    links: [
+      { name: 'Shop Tires', href: '/tires' },
       { name: 'Wheels', href: '/wheels' },
-      { name: 'Tire & Wheel Packages', href: '/packages' },
-      { name: 'Special Offers', href: '/deals' },
-    ],
-    services: [
-      { name: 'Tire Installation', href: '/services/installation' },
-      { name: 'Wheel Alignment', href: '/services/alignment' },
-      { name: 'Tire Rotation', href: '/services/rotation' },
-      { name: 'Balancing', href: '/services/balancing' },
+      { name: 'Check Availability', href: '/#quote' },
       { name: 'Tire Hauling', href: '/hauling' },
-      { name: 'Schedule Appointment', href: '/schedule' },
     ],
-    support: [
-      { name: 'Contact Us', href: '/contact' },
-      { name: 'Find a Store', href: '/locations' },
+  },
+  {
+    title: 'Visit & Help',
+    links: [
+      { name: 'Contact the Shop', href: '/contact' },
+      { name: 'El Cajon Location', href: '/locations' },
       { name: 'Financing Options', href: '/financing' },
-      { name: 'Tire & Wheel Encyclopedia', href: '/encyclopedia' },
-      { name: 'Shipping Info', href: '/shipping' },
-      { name: 'Returns', href: '/returns' },
-      { name: 'FAQ', href: '/faq' },
+      { name: 'Warranty Information', href: '/warranty' },
+      { name: 'Frequently Asked Questions', href: '/faq' },
     ],
-    company: [
-      { name: 'About Us', href: '/about' },
-      { name: 'Careers', href: '/careers' },
-      { name: 'Warranty Info', href: '/warranty' },
+  },
+  {
+    title: 'Information',
+    links: [
+      { name: 'About Los Reyes', href: '/about' },
+      { name: 'Tire & Wheel Encyclopedia', href: '/encyclopedia' },
       { name: 'Privacy Policy', href: '/privacy' },
       { name: 'Terms of Service', href: '/terms' },
       { name: 'Messaging Terms', href: '/messaging-terms' },
     ],
-  };
+  },
+];
 
+const contactLinkClass =
+  'flex min-h-11 items-center gap-3 rounded-sm text-sm text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500';
+
+export function Footer() {
   return (
-    <footer className="bg-zinc-900 text-white">
-      <div className="container py-12 md:py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Brand & Contact */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center mb-4">
-              <Image
-                src="/losreyes_000White.png"
-                alt="Los Reyes Tires"
-                width={200}
-                height={80}
-                className="h-16 w-auto brightness-0 invert"
-              />
+    <footer className="border-t border-zinc-800 bg-zinc-950 text-white">
+      <div className="container py-12 sm:py-14">
+        <div className="grid gap-11 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)] lg:gap-16">
+          <div>
+            <Link
+              href="/"
+              className="inline-flex min-h-11 items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-4 focus-visible:ring-offset-zinc-950"
+              aria-label="Los Reyes Tires home"
+            >
+              <BrandWordmark inverse size="footer" />
             </Link>
-            <p className="text-sm text-zinc-400 mb-4">
-              <span className="text-zinc-300 font-semibold">Family Owned Since 2005.</span> Founded by Polo Reyes, Los Reyes Tires has been San Diego's trusted source for quality tires, wheels, and expert service for over 19 years.
+            <p className="mt-4 max-w-sm text-sm leading-6 text-zinc-400">
+              Family owned since 2005. Local tire and wheel help in El Cajon.
             </p>
-            <div className="space-y-2.5 text-sm">
-              <a href="tel:619-440-6098" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
-                <Phone className="h-4 w-4" />
+
+            <address className="mt-5 space-y-0.5 not-italic">
+              <a href="tel:619-440-6098" className={contactLinkClass}>
+                <Phone className="h-4 w-4 shrink-0 text-red-500" aria-hidden="true" />
                 619-440-6098
               </a>
-              <a href="https://wa.me/16197299468" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp: (619) 729-9468
+              <a
+                href="https://wa.me/16197299468"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={contactLinkClass}
+              >
+                <MessageCircle className="h-4 w-4 shrink-0 text-red-500" aria-hidden="true" />
+                WhatsApp the shop
+                <span className="sr-only"> (opens in a new tab)</span>
               </a>
-              <a href="mailto:info@losreyestires.com" className="flex items-center gap-2 hover:text-red-500 transition-colors text-zinc-300">
-                <Mail className="h-4 w-4" />
-                info@losreyestires.com
+              <a href="mailto:info@losreyestires.com" className={contactLinkClass}>
+                <Mail className="h-4 w-4 shrink-0 text-red-500" aria-hidden="true" />
+                <span className="break-all">info@losreyestires.com</span>
               </a>
-              <div className="flex items-center gap-2 text-zinc-400">
-                <MapPin className="h-4 w-4" />
-                <span>1245 N 1st St, El Cajon, CA 92021</span>
+              <div className="flex min-h-11 items-start gap-3 pt-2 text-sm leading-5 text-zinc-400">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-red-500" aria-hidden="true" />
+                <span>1245 N 1st St<br />El Cajon, CA 92021 · Open 7 days</span>
               </div>
-            </div>
+            </address>
           </div>
 
-          {/* Shop */}
-          <div>
-            <h3 className="font-bold mb-4 text-sm text-white">Shop</h3>
-            <ul className="space-y-2.5 text-sm">
-              {footerLinks.shop.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-zinc-400 hover:text-red-500 transition-colors">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h3 className="font-bold mb-4 text-sm text-white">Services</h3>
-            <ul className="space-y-2.5 text-sm">
-              {footerLinks.services.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-zinc-400 hover:text-red-500 transition-colors">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h3 className="font-bold mb-4 text-sm text-white">Support</h3>
-            <ul className="space-y-2.5 text-sm">
-              {footerLinks.support.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-zinc-400 hover:text-red-500 transition-colors">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h3 className="font-bold mb-4 text-sm text-white">Company</h3>
-            <ul className="space-y-2.5 text-sm">
-              {footerLinks.company.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-zinc-400 hover:text-red-500 transition-colors">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <nav className="grid gap-8 sm:grid-cols-3" aria-label="Footer navigation">
+            {footerGroups.map((group) => (
+              <section key={group.title} aria-labelledby={`footer-${group.title.toLowerCase().replaceAll(' ', '-')}`}>
+                <h2
+                  id={`footer-${group.title.toLowerCase().replaceAll(' ', '-')}`}
+                  className="text-xs font-black uppercase tracking-[0.16em] text-zinc-100"
+                >
+                  {group.title}
+                </h2>
+                <ul className="mt-3 space-y-0.5">
+                  {group.links.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className="inline-flex min-h-11 items-center rounded-sm py-1 text-sm leading-5 text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </nav>
         </div>
 
-        <Separator className="my-8 bg-zinc-700" />
+        <Separator className="my-10 bg-zinc-800" />
 
-        {/* Review CTA */}
-        <div className="mb-6">
-          <a
-            href="https://g.page/r/CVxUx3jWbjPzEAE/review"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-zinc-900 rounded-lg font-semibold hover:bg-zinc-100 transition-colors"
-          >
-            <GoogleIcon className="h-5 w-5" />
-            <span>Review Us on Google</span>
-            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-          </a>
-        </div>
-
-        {/* Bottom bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-zinc-400">
-            © {new Date().getFullYear()} Los Reyes Tires. All rights reserved.
-          </p>
-          <div className="flex items-center gap-5">
-            <a href="https://www.yelp.com/biz/los-reyes-tire-shop-el-cajon" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity" aria-label="Yelp">
-              <Image
-                src="/yelp_logos/Burst/yelp_burst.svg"
-                alt="Yelp"
-                width={20}
-                height={20}
-                className="h-5 w-5"
-              />
-            </a>
-            <a href="https://wa.me/16197299468" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="WhatsApp">
-              <MessageCircle className="h-5 w-5" />
-            </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="Facebook">
-              <Facebook className="h-5 w-5" />
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="Instagram">
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-red-500 transition-colors" aria-label="Twitter">
-              <Twitter className="h-5 w-5" />
-            </a>
+        <div>
+          <div className="flex flex-col gap-5 text-sm sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-zinc-500">© {new Date().getFullYear()} Los Reyes Tires. All rights reserved.</p>
+            <nav className="flex flex-wrap items-center gap-x-5 gap-y-1" aria-label="External profiles and feedback">
+              <a
+                href="https://g.page/r/CVxUx3jWbjPzEAE/review"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 rounded-sm text-sm font-bold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+              >
+                <GoogleIcon className="h-4 w-4" />
+                Review on Google
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+              <a
+                href="https://www.yelp.com/biz/los-reyes-tire-shop-el-cajon"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 rounded-sm text-sm text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+              >
+                <Image src="/yelp_logos/Burst/yelp_burst.svg" alt="" width={16} height={16} className="h-4 w-4" />
+                Yelp
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+              <a
+                href="https://wa.me/16197299468"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 rounded-sm text-sm text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                WhatsApp
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </nav>
           </div>
         </div>
       </div>

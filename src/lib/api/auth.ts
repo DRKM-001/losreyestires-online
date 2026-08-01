@@ -1,10 +1,7 @@
 // API Client for External Authentication
 // Integrates with TireRaven ERP Customer Portal API
 
-const isProduction = process.env.NODE_ENV === 'production';
-const API_BASE_URL = process.env.NEXT_PUBLIC_TIRERAVEN_API_BASE ||
-  (isProduction ? 'https://api.tireraven.com/api/external/v1' : 'http://localhost:3000/api/external/v1');
-const API_KEY = process.env.NEXT_PUBLIC_TIRERAVEN_API_KEY || '';
+const API_BASE_URL = '/api/customer';
 
 export interface RegisterData {
   email: string;
@@ -44,6 +41,18 @@ export interface ProfileResponse {
   customer: Customer;
 }
 
+export interface OrdersResponse {
+  success: boolean;
+  orders?: Array<Record<string, unknown>>;
+  message?: string;
+}
+
+export interface OrderResponse {
+  success: boolean;
+  order?: Record<string, unknown>;
+  message?: string;
+}
+
 class AuthAPIError extends Error {
   constructor(
     message: string,
@@ -63,7 +72,6 @@ async function fetchAPI<T>(
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-    'X-API-Key': API_KEY,
     ...options.headers,
   };
 
@@ -223,8 +231,8 @@ export const authAPI = {
   /**
    * Get customer orders
    */
-  getOrders: async (token: string, page: number = 1, perPage: number = 20): Promise<any> => {
-    return fetchAPI(`/customer/orders?page=${page}&per_page=${perPage}`, {
+  getOrders: async (token: string, page: number = 1, perPage: number = 20): Promise<OrdersResponse> => {
+    return fetchAPI<OrdersResponse>(`/customer/orders?page=${page}&per_page=${perPage}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -235,8 +243,8 @@ export const authAPI = {
   /**
    * Get single order details
    */
-  getOrder: async (token: string, orderId: string): Promise<any> => {
-    return fetchAPI(`/customer/orders/${orderId}`, {
+  getOrder: async (token: string, orderId: string): Promise<OrderResponse> => {
+    return fetchAPI<OrderResponse>(`/customer/orders/${orderId}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

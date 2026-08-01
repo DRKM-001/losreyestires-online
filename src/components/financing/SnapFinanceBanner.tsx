@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { SNAP_FINANCE_APPLICATION_URL } from '@/lib/financing';
 import Link from 'next/link';
 
 export function SnapFinanceBanner() {
@@ -11,15 +12,16 @@ export function SnapFinanceBanner() {
               Flexible Financing Options Available
             </h2>
             <p className="text-zinc-600 text-lg">
-              Get the tires and wheels you need today with affordable payment plans. Apply in minutes!
+              Review available terms and apply securely on the Snap Finance website.
             </p>
           </div>
           
           <Link
-            href="https://bk.snapfinance.com/origination?paramId=3w%2FEWVFzVGcQioSdKn1vuqdr2hNr3A1xiMt4CtG%2BqOWAXpAyz%2Bp5YK2lEkK1hZ0tog9ZSjNG2GyQln5HQrzShOzYiaK%2FnFnEZXfXtyBXVEw%3D"
+            href={SNAP_FINANCE_APPLICATION_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="transition-transform hover:scale-105"
+            aria-label="Apply through Snap Finance (opens in a new tab)"
           >
             <Image
               src="https://assets.snapfinance.com/app/images/apply_image_17.jpeg"
