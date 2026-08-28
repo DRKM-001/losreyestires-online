@@ -159,7 +159,7 @@ export default function OrderDetailsClient({ id }: { id: string }) {
                                     <div className="mt-3 text-sm text-zinc-600 space-y-1">
                                         <p>📍 Ensenada, Baja California</p>
                                         <p>📞 +52 (646) 123-4567</p>
-                                        <p>✉️ info@losreyestires.com</p>
+                                        <p>✉️ sales@losreyestires.com</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
@@ -305,7 +305,7 @@ export default function OrderDetailsClient({ id }: { id: string }) {
                                             <p className="font-bold text-red-600">Los Reyes Tires</p>
                                             <p>Ensenada, Baja California</p>
                                             <p>Phone: +52 (646) 123-4567</p>
-                                            <p>Email: info@losreyestires.com</p>
+                                            <p>Email: sales@losreyestires.com</p>
                                             <p className="mt-4 text-xs text-zinc-500 italic">
                                                 Thank you for your business!
                                             </p>

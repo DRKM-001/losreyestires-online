@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/financing',
     '/tires',
     '/wheels',
+    '/fleet',
     '/hauling',
     '/encyclopedia',
     '/faq',

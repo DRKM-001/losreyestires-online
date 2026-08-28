@@ -12,6 +12,7 @@ const footerGroups = [
       { name: 'Shop Tires', href: '/tires' },
       { name: 'Wheels', href: '/wheels' },
       { name: 'Check Availability', href: '/#quote' },
+      { name: 'Fleet Service', href: '/fleet' },
       { name: 'Tire Hauling', href: '/hauling' },
     ],
   },
@@ -72,9 +73,9 @@ export function Footer() {
                 WhatsApp the shop
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
-              <a href="mailto:info@losreyestires.com" className={contactLinkClass}>
+              <a href="mailto:sales@losreyestires.com" className={contactLinkClass}>
                 <Mail className="h-4 w-4 shrink-0 text-red-500" aria-hidden="true" />
-                <span className="break-all">info@losreyestires.com</span>
+                <span className="break-all">sales@losreyestires.com</span>
               </a>
               <div className="flex min-h-11 items-start gap-3 pt-2 text-sm leading-5 text-zinc-400">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-red-500" aria-hidden="true" />
@@ -113,7 +114,21 @@ export function Footer() {
 
         <div>
           <div className="flex flex-col gap-5 text-sm sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-zinc-500">© {new Date().getFullYear()} Los Reyes Tires. All rights reserved.</p>
+            <div className="space-y-1">
+              <p className="text-zinc-500">© {new Date().getFullYear()} Los Reyes Tires. All rights reserved.</p>
+              <p className="text-xs text-zinc-600">
+                Developed by{' '}
+                <a
+                  href="https://drkm.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-sm font-medium text-zinc-500 transition-colors hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                >
+                  DRKM Systems
+                  <span className="sr-only"> at DRKM.io (opens in a new tab)</span>
+                </a>
+              </p>
+            </div>
             <nav className="flex flex-wrap items-center gap-x-5 gap-y-1" aria-label="External profiles and feedback">
               <a
                 href="https://g.page/r/CVxUx3jWbjPzEAE/review"

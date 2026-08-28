@@ -255,7 +255,7 @@ export default function TermsOfServicePage() {
               Phone: <a href="tel:619-440-6098" className="text-primary hover:underline">619-440-6098</a>
             </p>
             <p>
-              Email: <a href="mailto:info@losreyestires.com" className="text-primary hover:underline">info@losreyestires.com</a>
+              Email: <a href="mailto:sales@losreyestires.com" className="text-primary hover:underline">sales@losreyestires.com</a>
             </p>
             <p className="mt-2">
               Hours: Mon-Sat 7AM-7PM, Sun 8AM-3PM

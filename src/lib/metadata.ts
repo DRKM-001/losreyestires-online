@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 
 export const siteConfig = {
   name: 'Los Reyes Tires',
-  description: 'Los Reyes Tires in El Cajon, CA offers new and used tires, wheel inquiries, and tire hauling. Family owned since 2005 and open 7 days a week.',
+  description: 'Los Reyes Tires in El Cajon, CA offers new and used tires, wheel inquiries, fleet tire service, and tire hauling. Family owned since 2005 and open 7 days a week.',
   url: 'https://losreyestires.com',
   ogImage: '/losreyes_000.png',
   keywords: [
@@ -20,6 +20,8 @@ export const siteConfig = {
     'second-life tires',
     'custom wheels El Cajon',
     'tire hauling San Diego',
+    'fleet tire service El Cajon',
+    'commercial fleet tires San Diego',
   ],
   authors: [{ name: 'Los Reyes Tires' }],
   creator: 'Los Reyes Tires',
@@ -38,7 +40,7 @@ export const siteConfig = {
     locale: 'en_US',
     url: 'https://losreyestires.com',
     title: 'Los Reyes Tires - Quality Tires & Expert Service in El Cajon, CA',
-    description: 'New and used tires, wheel inquiries, and tire hauling in El Cajon. Family owned since 2005. Open Mon-Sat 7AM-7PM, Sun 8AM-3PM. Call 619-440-6098.',
+    description: 'New and used tires, wheel inquiries, fleet tire service, and tire hauling in El Cajon. Family owned since 2005. Open Mon-Sat 7AM-7PM, Sun 8AM-3PM. Call 619-440-6098.',
     siteName: 'Los Reyes Tires',
     images: [
       {
@@ -52,7 +54,7 @@ export const siteConfig = {
   twitter: {
     card: 'summary_large_image',
     title: 'Los Reyes Tires - Quality Tires & Expert Service',
-    description: 'New and used tires, wheel inquiries, and tire hauling in El Cajon, CA. Open 7 days. Call 619-440-6098.',
+    description: 'New and used tires, wheel inquiries, fleet tire service, and tire hauling in El Cajon, CA. Open 7 days. Call 619-440-6098.',
     images: ['/losreyes_000.png'],
     creator: '@losreyestires',
   },

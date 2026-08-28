@@ -63,8 +63,8 @@ export default function ContactPage() {
                     <Mail className="mt-0.5 h-5 w-5 text-red-600" aria-hidden="true" />
                     <div>
                       <h3 className="font-bold mb-1">Email</h3>
-                      <a href="mailto:info@losreyestires.com" className="inline-flex min-h-11 items-center break-all font-semibold text-zinc-700 hover:text-red-600">
-                        info@losreyestires.com
+                      <a href="mailto:sales@losreyestires.com" className="inline-flex min-h-11 items-center break-all font-semibold text-zinc-700 hover:text-red-600">
+                        sales@losreyestires.com
                       </a>
                     </div>
                   </div>

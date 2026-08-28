@@ -3,11 +3,19 @@
 import { useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ExternalLink, MapPin, Menu, MessageCircle, Phone } from 'lucide-react';
+import { Building2, CircleDot, ExternalLink, MapPin, Menu, MessageCircle, Phone, Settings, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BrandWordmark } from '@/components/layout/BrandWordmark';
 import { cn } from '@/lib/utils';
 import { SNAP_FINANCE_APPLICATION_URL } from '@/lib/financing';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
 import {
   Sheet,
   SheetClose,
@@ -21,8 +29,28 @@ import {
 const navigation = [
   { name: 'Tires', href: '/tires' },
   { name: 'Wheels', href: '/wheels' },
-  { name: 'Tire Hauling', href: '/hauling' },
   { name: 'El Cajon Shop', href: '/locations' },
+];
+
+const primaryServices = [
+  {
+    name: 'Fleet Service',
+    description: 'Tire support for local business vehicles and fleet needs.',
+    href: '/fleet',
+    icon: Building2,
+  },
+  {
+    name: 'Tire Hauling',
+    description: 'Commercial waste-tire pickup and hauling inquiries.',
+    href: '/hauling',
+    icon: Truck,
+  },
+];
+
+const serviceLinks = [
+  { name: 'Tire Availability', href: '/tires', icon: CircleDot },
+  { name: 'Wheel Inquiries', href: '/wheels', icon: Settings },
+  { name: 'Contact the Shop', href: '/contact', icon: MessageCircle },
 ];
 
 const phoneHref = 'tel:619-440-6098';
@@ -118,22 +146,99 @@ export function Header() {
           <BrandWordmark inverse={isTransparent} />
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                'rounded-md px-3 py-2 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2',
-                isTransparent
-                  ? 'text-white hover:bg-white/10 hover:text-white focus-visible:ring-white'
-                  : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus-visible:ring-red-600'
-              )}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </nav>
+        <NavigationMenu className="hidden lg:flex" aria-label="Primary navigation">
+          <NavigationMenuList>
+            {navigation.slice(0, 2).map((item) => (
+              <NavigationMenuItem key={item.name}>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      'block rounded-md px-3 py-2 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2',
+                      isTransparent
+                        ? 'text-white hover:bg-white/10 hover:text-white focus-visible:ring-white'
+                        : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus-visible:ring-red-600'
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ))}
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger
+                className={cn(
+                  'h-9 bg-transparent px-3 text-sm font-bold focus-visible:ring-2',
+                  isTransparent
+                    ? 'text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white focus-visible:ring-white'
+                    : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus:bg-zinc-100 focus:text-red-600 data-[state=open]:bg-zinc-100 data-[state=open]:text-red-600 focus-visible:ring-red-600'
+                )}
+              >
+                Services
+              </NavigationMenuTrigger>
+              <NavigationMenuContent className="w-[36rem] border-zinc-200 bg-white p-3 text-zinc-950 shadow-xl">
+                <div className="grid grid-cols-[1.35fr_1fr] gap-3">
+                  <div className="grid gap-2">
+                    {primaryServices.map((service) => {
+                      const Icon = service.icon;
+                      return (
+                        <NavigationMenuLink asChild key={service.name}>
+                          <Link href={service.href} className="group flex min-h-24 flex-row gap-3 rounded-lg border border-zinc-200 p-4 hover:border-red-200 hover:bg-red-50/60 focus:bg-red-50/60">
+                            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-600 group-hover:bg-white">
+                              <Icon className="h-5 w-5" aria-hidden="true" />
+                            </span>
+                            <span>
+                              <span className="block font-black text-zinc-950">{service.name}</span>
+                              <span className="mt-1 block text-sm leading-5 text-zinc-600">{service.description}</span>
+                            </span>
+                          </Link>
+                        </NavigationMenuLink>
+                      );
+                    })}
+                  </div>
+                  <div className="rounded-lg bg-zinc-50 p-3">
+                    <p className="px-2 pb-2 text-xs font-black uppercase tracking-[0.14em] text-zinc-500">Shop help</p>
+                    {serviceLinks.map((service) => {
+                      const Icon = service.icon;
+                      return (
+                        <NavigationMenuLink asChild key={service.name}>
+                          <Link href={service.href} className="flex min-h-11 flex-row items-center gap-3 rounded-md px-2 py-2 font-bold text-zinc-700 hover:bg-white hover:text-red-600 focus:bg-white focus:text-red-600">
+                            <Icon className="h-4 w-4 text-red-600" aria-hidden="true" />
+                            {service.name}
+                          </Link>
+                        </NavigationMenuLink>
+                      );
+                    })}
+                    <NavigationMenuLink asChild>
+                      <Link href="/#quote" className="mt-2 flex min-h-11 flex-row items-center justify-center rounded-md bg-red-600 px-3 py-2 font-bold text-white hover:bg-red-700 hover:text-white focus:bg-red-700 focus:text-white">
+                        Check Availability
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            {navigation.slice(2).map((item) => (
+              <NavigationMenuItem key={item.name}>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      'block rounded-md px-3 py-2 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2',
+                      isTransparent
+                        ? 'text-white hover:bg-white/10 hover:text-white focus-visible:ring-white'
+                        : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus-visible:ring-red-600'
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ))}
+          </NavigationMenuList>
+        </NavigationMenu>
 
         <div className="flex items-center gap-2">
           <Button
@@ -184,7 +289,36 @@ export function Header() {
                 <SheetDescription>Local tire and wheel help in El Cajon.</SheetDescription>
               </SheetHeader>
               <nav className="mt-6 flex flex-col" aria-label="Mobile navigation">
-                {navigation.map((item) => (
+                {navigation.slice(0, 2).map((item) => (
+                  <SheetClose asChild key={item.name}>
+                    <Link
+                      href={item.href}
+                      className="flex min-h-12 items-center border-b border-zinc-100 py-3 text-lg font-bold text-zinc-800 transition-colors hover:text-red-600"
+                    >
+                      {item.name}
+                    </Link>
+                  </SheetClose>
+                ))}
+                <div className="border-b border-zinc-100 py-4">
+                  <p className="mb-2 text-xs font-black uppercase tracking-[0.14em] text-zinc-500">Services</p>
+                  <div className="grid gap-1">
+                    {primaryServices.map((service) => {
+                      const Icon = service.icon;
+                      return (
+                        <SheetClose asChild key={service.name}>
+                          <Link
+                            href={service.href}
+                            className="flex min-h-12 items-center gap-3 rounded-md px-2 py-2 text-base font-bold text-zinc-800 transition-colors hover:bg-zinc-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+                          >
+                            <Icon className="h-5 w-5 text-red-600" aria-hidden="true" />
+                            {service.name}
+                          </Link>
+                        </SheetClose>
+                      );
+                    })}
+                  </div>
+                </div>
+                {navigation.slice(2).map((item) => (
                   <SheetClose asChild key={item.name}>
                     <Link
                       href={item.href}

@@ -45,7 +45,7 @@ export default function HaulingPage() {
               Licensed & Insured
             </Badge>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6">
-              San Diego's Trusted Tire Hauling Service
+              San Diego&apos;s Trusted Tire Hauling Service
             </h1>
             <p className="text-2xl md:text-3xl text-red-400 mb-4 font-bold">
               Local. Fast. Always Reliable.
@@ -54,13 +54,17 @@ export default function HaulingPage() {
               Licensed California waste tire hauler and registered tire facility. Serving San Diego County with eco-friendly tire recycling since the early 2000s.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-lg font-bold h-14 px-8">
-                <Phone className="mr-2 h-5 w-5" />
-                Call for Free Estimate
+              <Button asChild size="lg" className="bg-red-600 hover:bg-red-700 text-lg font-bold h-14 px-8">
+                <a href="tel:619-440-6098">
+                  <Phone className="mr-2 h-5 w-5" aria-hidden="true" />
+                  Call About Hauling
+                </a>
               </Button>
-              <Button size="lg" variant="outline" className="bg-white hover:bg-zinc-100 text-zinc-900 text-lg font-bold h-14 px-8 border-2">
-                <Calendar className="mr-2 h-5 w-5" />
-                Schedule Pickup
+              <Button asChild size="lg" variant="outline" className="bg-white hover:bg-zinc-100 text-zinc-900 text-lg font-bold h-14 px-8 border-2">
+                <Link href="/contact">
+                  <Calendar className="mr-2 h-5 w-5" aria-hidden="true" />
+                  Send Hauling Inquiry
+                </Link>
               </Button>
             </div>
           </div>
@@ -307,18 +311,20 @@ export default function HaulingPage() {
             Ready to Schedule Your Tire Pickup?
           </h2>
           <p className="text-xl text-red-100 mb-8 max-w-2xl mx-auto">
-            Get a free estimate today. No obligation, competitive pricing, and fast service.
+            Tell us about your tire volume, pickup needs, and location so the shop can confirm availability and next steps.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white hover:bg-zinc-100 text-red-600 text-lg font-bold h-14 px-8">
-              <Phone className="mr-2 h-5 w-5" />
-              Call (619) XXX-XXXX
+            <Button asChild size="lg" className="bg-white hover:bg-zinc-100 text-red-600 text-lg font-bold h-14 px-8">
+              <a href="tel:619-440-6098">
+                <Phone className="mr-2 h-5 w-5" aria-hidden="true" />
+                Call 619-440-6098
+              </a>
             </Button>
-            <Link href="/contact">
-              <Button size="lg" variant="outline" className="bg-transparent border-2 border-white hover:bg-white hover:text-red-600 text-white text-lg font-bold h-14 px-8">
+            <Button asChild size="lg" variant="outline" className="bg-transparent border-2 border-white hover:bg-white hover:text-red-600 text-white text-lg font-bold h-14 px-8">
+              <Link href="/contact">
                 Contact Us Online
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
