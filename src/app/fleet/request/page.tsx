@@ -9,6 +9,7 @@ export const metadata = generatePageMetadata({
   description: 'Apply for a fleet service account with Los Reyes Tires in El Cajon. Share your business details, billing contact, and fleet needs — the shop reviews every application directly.',
   path: '/fleet/request',
   keywords: ['fleet account application El Cajon', 'commercial tire account San Diego', 'fleet tire service application El Cajon'],
+  images: [{ url: '/og/fleet-og.jpg', alt: 'Los Reyes Tires — fleet tire service for business vehicles in El Cajon, CA' }],
 });
 
 const nextSteps = [

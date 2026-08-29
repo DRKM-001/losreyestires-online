@@ -9,6 +9,7 @@ export const metadata = generatePageMetadata({
   description: 'Talk with Los Reyes Tires about tire support for your local business vehicles or fleet. Share your vehicle types, tire sizes, and service needs for a direct availability conversation.',
   path: '/fleet',
   keywords: ['fleet tire service El Cajon', 'commercial fleet tires San Diego', 'business vehicle tires El Cajon'],
+  images: [{ url: '/og/fleet-og.jpg', alt: 'Los Reyes Tires — fleet tire service for business vehicles in El Cajon, CA' }],
 });
 
 const phoneHref = 'tel:619-440-6098';
