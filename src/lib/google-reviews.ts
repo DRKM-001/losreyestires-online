@@ -115,7 +115,9 @@ export async function fetchGoogleReviews(): Promise<GoogleReviewsResult> {
         'X-Goog-Api-Key': apiKey,
         'X-Goog-FieldMask': GOOGLE_REVIEW_FIELD_MASK,
       },
-      cache: 'no-store',
+      // Fetched once at build time so pages using reviews stay fully static.
+      // Reviews refresh on every deploy.
+      cache: 'force-cache',
       signal: AbortSignal.timeout(5000),
     });
 
