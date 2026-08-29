@@ -93,7 +93,8 @@ export function generatePageMetadata({
   const allKeywords = [...siteConfig.keywords, ...keywords];
 
   return {
-    title: `${title} | Los Reyes Tires`,
+    // The root layout's title template appends "| Los Reyes Tires".
+    title,
     description,
     keywords: allKeywords,
     authors: siteConfig.authors,
