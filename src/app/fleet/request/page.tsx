@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { ArrowLeft, Clock, MessageCircle, Phone } from 'lucide-react';
+import { ArrowLeft, Clock, FileDown, MessageCircle, Phone } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { FleetInquiryForm } from '@/components/fleet/FleetInquiryForm';
 import { generatePageMetadata } from '@/lib/metadata';
 
@@ -53,6 +54,19 @@ export default function FleetRequestPage() {
                   </li>
                 ))}
               </ol>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+              <h2 className="text-lg font-bold text-zinc-950">Prefer a paper form?</h2>
+              <p className="mt-2 text-sm leading-6 text-zinc-600">
+                Download the fillable PDF, complete it, and email it to sales@losreyestires.com — or bring it to the shop.
+              </p>
+              <Button asChild variant="outline" className="mt-4 h-11 w-full font-bold">
+                <a href="/fleet-account-application.pdf" download>
+                  <FileDown className="h-4 w-4" aria-hidden="true" />
+                  Download PDF Application
+                </a>
+              </Button>
             </div>
 
             <div className="rounded-2xl border border-zinc-200 bg-white p-6">
