@@ -240,7 +240,7 @@ export function FleetInquiryForm() {
         <div className="grid gap-4 sm:grid-cols-[2fr_1fr_1fr]">
           <div className="space-y-2">
             <Label htmlFor="fleet-form-city">City *</Label>
-            <Input id="fleet-form-city" name="city" autoComplete="address-level2" required maxLength={60} placeholder="El Cajon" className="h-11 bg-white" />
+            <Input id="fleet-form-city" name="city" autoComplete="address-level2" required maxLength={60} className="h-11 bg-white" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="fleet-form-state">State *</Label>
@@ -248,13 +248,13 @@ export function FleetInquiryForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="fleet-form-zip">ZIP *</Label>
-            <Input id="fleet-form-zip" name="zip" autoComplete="postal-code" inputMode="numeric" required maxLength={10} placeholder="92021" className="h-11 bg-white" />
+            <Input id="fleet-form-zip" name="zip" autoComplete="postal-code" inputMode="numeric" required maxLength={10} className="h-11 bg-white" />
           </div>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="fleet-form-website">Website</Label>
-          <Input id="fleet-form-website" name="website" type="url" maxLength={100} placeholder="https:// (optional)" className="h-11 bg-white" />
+          <Input id="fleet-form-website" name="website" inputMode="url" autoComplete="url" maxLength={100} placeholder="yourcompany.com (optional)" className="h-11 bg-white" />
         </div>
       </fieldset>
 
