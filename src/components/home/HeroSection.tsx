@@ -142,7 +142,8 @@ export function HeroSection() {
         priority
         className="object-cover object-center"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/95 via-zinc-950/75 to-zinc-950/40" aria-hidden="true" />
+      <div className="absolute inset-0 hidden bg-gradient-to-r from-zinc-950/95 via-zinc-950/75 to-zinc-950/40 lg:block" aria-hidden="true" />
+      <div className="absolute inset-0 bg-zinc-950/80 lg:hidden" aria-hidden="true" />
 
       <div className="container relative pb-10 pt-24 sm:pb-14 sm:pt-40 lg:pb-20 lg:pt-44">
         <div className="grid items-center gap-8 lg:grid-cols-5 lg:gap-12">

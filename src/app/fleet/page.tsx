@@ -47,10 +47,9 @@ export default function FleetPage() {
           alt=""
           fill
           priority
-          className="object-cover object-right"
+          className="hidden object-cover object-right lg:block"
         />
-        {/* fade removed for comparison — restore: bg-gradient-to-r from-white/55 via-white/35 to-transparent */}
-        <div className="container relative py-20 sm:py-28 lg:py-40">
+        <div className="container relative py-14 sm:py-16 lg:py-40">
           <div className="max-w-xl">
             <div className="mb-4 flex flex-wrap items-center gap-3">
               <span className="bg-red-600 py-1 pl-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-white [clip-path:polygon(0_0,100%_0,calc(100%-10px)_100%,0_100%)]">
@@ -75,6 +74,15 @@ export default function FleetPage() {
             </div>
             <p className="mt-5 text-sm text-zinc-500">Family owned since 2005 · Open 7 days · 1245 N 1st St</p>
           </div>
+
+          <Image
+            src="/fleet_imgs/fleet02.png"
+            alt="White work trucks and vans of the kinds serviced by Los Reyes Tires"
+            width={1916}
+            height={821}
+            priority
+            className="mt-10 w-full lg:hidden"
+          />
         </div>
       </section>
 
