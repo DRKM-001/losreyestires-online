@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Barlow_Condensed, Geist_Mono, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Newsletter } from "@/components/layout/Newsletter";
-import { SnapFinanceBanner } from "@/components/financing/SnapFinanceBanner";
+import { MarketingSections } from "@/components/layout/MarketingSections";
 import { siteConfig } from "@/lib/metadata";
 import { AuthProvider } from "@/contexts/AuthContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: 'swap',
+});
+
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
+  subsets: ["latin"],
+  display: 'swap',
+  weight: ['500', '600', '700', '800'],
+  style: ['normal', 'italic'],
 });
 
 const geistMono = Geist_Mono({
@@ -109,7 +116,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${barlowCondensed.variable} ${geistMono.variable} antialiased`}
       >
         {/* Google Analytics */}
         <Script
@@ -128,8 +135,7 @@ export default function RootLayout({
         <AuthProvider>
           <Header />
           <main className="min-h-screen">{children}</main>
-          <SnapFinanceBanner />
-          <Newsletter />
+          <MarketingSections />
           <Footer />
         </AuthProvider>
       </body>

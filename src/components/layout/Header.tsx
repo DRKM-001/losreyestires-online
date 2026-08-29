@@ -78,6 +78,7 @@ export function Header() {
   );
   const isHome = pathname === '/';
   const isTransparent = isHome && !hasScrolled;
+  const hideFinancing = pathname.startsWith('/fleet/request');
 
   return (
     <header
@@ -154,7 +155,7 @@ export function Header() {
                   <Link
                     href={item.href}
                     className={cn(
-                      'block rounded-md px-3 py-2 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2',
+                      'block rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2',
                       isTransparent
                         ? 'text-white hover:bg-white/10 hover:text-white focus-visible:ring-white'
                         : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus-visible:ring-red-600'
@@ -169,7 +170,7 @@ export function Header() {
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 className={cn(
-                  'h-9 bg-transparent px-3 text-sm font-bold focus-visible:ring-2',
+                  'h-9 bg-transparent px-3 text-sm font-semibold uppercase tracking-wide focus-visible:ring-2',
                   isTransparent
                     ? 'text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white focus-visible:ring-white'
                     : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus:bg-zinc-100 focus:text-red-600 data-[state=open]:bg-zinc-100 data-[state=open]:text-red-600 focus-visible:ring-red-600'
@@ -226,7 +227,7 @@ export function Header() {
                   <Link
                     href={item.href}
                     className={cn(
-                      'block rounded-md px-3 py-2 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2',
+                      'block rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2',
                       isTransparent
                         ? 'text-white hover:bg-white/10 hover:text-white focus-visible:ring-white'
                         : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus-visible:ring-red-600'
@@ -241,27 +242,29 @@ export function Header() {
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-          <Button
-            asChild
-            variant="outline"
-            className={cn(
-              'hidden w-40 md:inline-flex',
-              isTransparent && 'border-white/70 bg-transparent text-white hover:bg-white hover:text-zinc-950'
-            )}
-          >
-            {isTransparent ? (
-              <a href={phoneHref}>
-                <Phone className="h-4 w-4" aria-hidden="true" />
-                Call Now
-              </a>
-            ) : (
-              <a href={SNAP_FINANCE_APPLICATION_URL} target="_blank" rel="noopener noreferrer">
-                Apply for Financing
-                <ExternalLink aria-hidden="true" />
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            )}
-          </Button>
+          {!hideFinancing && (
+            <Button
+              asChild
+              variant="outline"
+              className={cn(
+                'hidden w-40 md:inline-flex',
+                isTransparent && 'border-white/70 bg-transparent text-white hover:bg-white hover:text-zinc-950'
+              )}
+            >
+              {isTransparent ? (
+                <a href={phoneHref}>
+                  <Phone className="h-4 w-4" aria-hidden="true" />
+                  Call Now
+                </a>
+              ) : (
+                <a href={SNAP_FINANCE_APPLICATION_URL} target="_blank" rel="noopener noreferrer">
+                  Apply for Financing
+                  <ExternalLink aria-hidden="true" />
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              )}
+            </Button>
+          )}
           <Button asChild className="h-11 bg-red-600 px-3 font-bold hover:bg-red-700 sm:px-4">
             <Link href="/#quote">
               <span className="sm:hidden">Availability</span>
@@ -293,7 +296,7 @@ export function Header() {
                   <SheetClose asChild key={item.name}>
                     <Link
                       href={item.href}
-                      className="flex min-h-12 items-center border-b border-zinc-100 py-3 text-lg font-bold text-zinc-800 transition-colors hover:text-red-600"
+                      className="flex min-h-12 items-center border-b border-zinc-100 py-3 text-lg font-bold uppercase tracking-wide text-zinc-800 transition-colors hover:text-red-600"
                     >
                       {item.name}
                     </Link>
@@ -322,7 +325,7 @@ export function Header() {
                   <SheetClose asChild key={item.name}>
                     <Link
                       href={item.href}
-                      className="flex min-h-12 items-center border-b border-zinc-100 py-3 text-lg font-bold text-zinc-800 transition-colors hover:text-red-600"
+                      className="flex min-h-12 items-center border-b border-zinc-100 py-3 text-lg font-bold uppercase tracking-wide text-zinc-800 transition-colors hover:text-red-600"
                     >
                       {item.name}
                     </Link>
@@ -342,13 +345,15 @@ export function Header() {
                     WhatsApp
                   </a>
                 </Button>
-                <Button asChild variant="outline" className="h-11 font-bold">
-                  <a href={SNAP_FINANCE_APPLICATION_URL} target="_blank" rel="noopener noreferrer">
-                    Apply for Financing
-                    <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                    <span className="sr-only"> (opens in a new tab)</span>
-                  </a>
-                </Button>
+                {!hideFinancing && (
+                  <Button asChild variant="outline" className="h-11 font-bold">
+                    <a href={SNAP_FINANCE_APPLICATION_URL} target="_blank" rel="noopener noreferrer">
+                      Apply for Financing
+                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </Button>
+                )}
                 <SheetClose asChild>
                   <Button asChild variant="outline" className="h-11 font-bold">
                     <Link href="/#quote">Check Availability</Link>

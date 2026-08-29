@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -134,15 +135,28 @@ export function HeroSection() {
 
   return (
     <section id="quote" className="relative scroll-mt-24 overflow-hidden bg-zinc-950 text-white">
-      <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-[radial-gradient(circle_at_center,rgba(220,38,38,0.18),transparent_65%)] lg:block" aria-hidden="true" />
+      <Image
+        src="/mainhero_web.jpg"
+        alt=""
+        fill
+        priority
+        className="object-cover object-center"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/95 via-zinc-950/75 to-zinc-950/40" aria-hidden="true" />
 
       <div className="container relative pb-10 pt-24 sm:pb-14 sm:pt-40 lg:pb-20 lg:pt-44">
         <div className="grid items-center gap-8 lg:grid-cols-5 lg:gap-12">
           <div className="lg:col-span-3">
-            <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-red-400">Local tire help in El Cajon</p>
-            <h1 className="max-w-3xl text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-              Tires, wheels, and a real person to help.
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <span className="bg-red-600 py-1 pl-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-white [clip-path:polygon(0_0,100%_0,calc(100%-10px)_100%,0_100%)]">
+                Family tire shop
+              </span>
+              <span className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-300">El Cajon, CA</span>
+            </div>
+            <h1 className="max-w-3xl text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
+              Tires, wheels, and <span className="italic text-red-500">a real person</span> to help
             </h1>
+            <div className="mt-5 h-1 w-24 bg-red-600" aria-hidden="true" />
             <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-300 sm:text-xl">
               Tell the Los Reyes team what you drive and what you need. We’ll check current options and follow up with availability and pricing.
             </p>

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'edge';
 
 const MAX_BODY_BYTES = 16 * 1024;
-const ALLOWED_CONDITIONS = new Set(['custom', 'new', 'used', 'wheels', 'other', 'contact request']);
+const ALLOWED_CONDITIONS = new Set(['custom', 'new', 'used', 'wheels', 'other', 'contact request', 'fleet']);
 const ALLOWED_SEARCH_TYPES = new Set(['custom', 'vehicle', 'size']);
 
 interface ValidatedLead {
@@ -227,10 +227,63 @@ function buildEmail(lead: ValidatedLead) {
 </html>`.trim();
 
   return {
-    subject: `${lead.tireCondition === 'contact request' ? 'Contact Request' : 'Quote Request'} — ${lead.name}`,
+    subject: `${lead.tireCondition === 'contact request' ? 'Contact Request' : lead.tireCondition === 'fleet' ? 'Fleet Inquiry' : 'Quote Request'} — ${lead.name}`,
     text,
     html,
   };
+}
+
+function buildConfirmationEmail(lead: ValidatedLead) {
+  const isFleet = lead.tireCondition === 'fleet';
+  const requestNoun = isFleet
+    ? 'fleet account application'
+    : lead.tireCondition === 'contact request' ? 'message' : 'request';
+
+  const subject = isFleet
+    ? 'We received your fleet account application — Los Reyes Tires'
+    : `We received your ${requestNoun} — Los Reyes Tires`;
+
+  const followUpLine = isFleet
+    ? 'The shop reviews every application personally and will follow up directly to confirm availability, pricing, and your account details.'
+    : 'The shop will check current options and follow up directly with availability and pricing.';
+
+  const text = [
+    `Hi ${lead.name},`,
+    '',
+    `Thanks — Los Reyes Tires has received your ${requestNoun}.`,
+    followUpLine,
+    '',
+    'If you need anything sooner:',
+    'Call: 619-440-6098',
+    'Visit: 1245 N 1st St, El Cajon, CA 92021',
+    'Hours: Mon-Sat 7AM-7PM, Sun 8AM-3PM',
+    '',
+    'Los Reyes Tires — family owned since 2005',
+  ].join('\n');
+
+  const html = `
+<!doctype html>
+<html lang="en">
+  <body style="margin:0;background:#f4f4f5;color:#18181b;font-family:Arial,sans-serif;">
+    <div style="max-width:640px;margin:24px auto;background:#fff;border:1px solid #e4e4e7;">
+      <div style="background:#dc2626;color:#fff;padding:20px 24px;"><strong>Los Reyes Tires</strong></div>
+      <div style="padding:24px;line-height:1.6;">
+        <p>Hi ${escapeHtml(lead.name)},</p>
+        <p>Thanks — we&rsquo;ve received your ${escapeHtml(requestNoun)}.</p>
+        <p>${escapeHtml(followUpLine)}</p>
+        <div style="margin-top:18px;padding:14px;background:#fafafa;border-left:3px solid #dc2626;">
+          <strong>If you need anything sooner</strong><br>
+          Call: <a href="tel:6194406098">619-440-6098</a><br>
+          Visit: 1245 N 1st St, El Cajon, CA 92021<br>
+          Hours: Mon&ndash;Sat 7AM&ndash;7PM &middot; Sun 8AM&ndash;3PM
+        </div>
+        <p style="margin-top:22px;color:#71717a;font-size:12px;">Los Reyes Tires &mdash; family owned since 2005</p>
+      </div>
+    </div>
+  </body>
+</html>`.trim();
+
+  return { subject, text, html };
 }
 
 export async function POST(request: NextRequest) {
@@ -241,11 +294,12 @@ export async function POST(request: NextRequest) {
   try {
     const lead = validateLead(await readJsonBody(request));
     const apiKey = process.env.RESEND_API_KEY;
-    const emailTo = process.env.RFI_EMAIL_TO;
-    const emailFrom = process.env.RFI_EMAIL_FROM;
+    // All inquiries deliver to the shop's sales inbox unless explicitly overridden.
+    const emailTo = process.env.RFI_EMAIL_TO || 'sales@losreyestires.com';
+    const emailFrom = process.env.RFI_EMAIL_FROM || 'Los Reyes Tires <no-reply@losreyestires.com>';
 
-    if (!apiKey || !emailTo || !emailFrom) {
-      console.error('RFI route unavailable: RESEND_API_KEY, RFI_EMAIL_TO, and RFI_EMAIL_FROM are required');
+    if (!apiKey) {
+      console.error('RFI route unavailable: RESEND_API_KEY is required');
       return jsonError('Lead delivery is temporarily unavailable', 503);
     }
 
@@ -269,6 +323,32 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       console.error(`RFI email provider failed with status ${response.status}`);
       return jsonError('Lead delivery is temporarily unavailable', 502);
+    }
+
+    // Confirmation email to the submitter. The shop notification above is the
+    // critical send — a confirmation failure is logged but never fails the request.
+    try {
+      const confirmation = buildConfirmationEmail(lead);
+      const confirmationResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: emailFrom,
+          to: lead.email,
+          reply_to: emailTo,
+          subject: confirmation.subject,
+          text: confirmation.text,
+          html: confirmation.html,
+        }),
+      });
+      if (!confirmationResponse.ok) {
+        console.error(`RFI confirmation email failed with status ${confirmationResponse.status}`);
+      }
+    } catch (confirmationError) {
+      console.error('RFI confirmation email failed', confirmationError);
     }
 
     return NextResponse.json({ success: true, message: 'Request submitted successfully' }, {

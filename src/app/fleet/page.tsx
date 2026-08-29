@@ -1,7 +1,7 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { Building2, CheckCircle2, CircleDot, ClipboardList, MessageCircle, Phone, Route, Truck } from 'lucide-react';
+import { ArrowRight, CircleDot, ClipboardList, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { generatePageMetadata } from '@/lib/metadata';
 
 export const metadata = generatePageMetadata({
@@ -12,183 +12,154 @@ export const metadata = generatePageMetadata({
 });
 
 const phoneHref = 'tel:619-440-6098';
-const whatsAppHref = 'https://wa.me/16197299468';
 
-const serviceCards = [
+const services = [
   {
     title: 'Fleet tire requests',
-    description: 'Share the vehicles, tire sizes, quantities, and timing you need. The shop will confirm available options directly.',
+    description: 'Share the vehicles, tire sizes, quantities, and timing you need. The shop confirms available options directly.',
     icon: CircleDot,
   },
   {
     title: 'Planning for repeat needs',
-    description: 'Tell us how your vehicles are used and what usually needs attention so we can discuss a practical service approach.',
+    description: 'Tell us how your vehicles are used and what usually needs attention, and we set a practical service rhythm.',
     icon: ClipboardList,
   },
   {
     title: 'Hauling coordination',
-    description: 'If your operation also accumulates waste tires, ask whether our separate tire hauling service fits your needs.',
+    description: 'If your operation accumulates waste tires, ask whether our separate tire hauling service fits your needs.',
     icon: Truck,
   },
 ];
 
-const requestDetails = [
-  'Business name and best contact person',
-  'Number and types of vehicles',
-  'Known tire sizes and quantities',
-  'New or used tire preference, if any',
-  'Timing and any recurring service needs',
+const steps = [
+  ['1', 'Send the fleet basics', 'Vehicle types, tire sizes, quantities, timing, and the best way to reach you.'],
+  ['2', 'We confirm what fits', 'The shop reviews the request and replies with the products and services that can support it.'],
+  ['3', 'Schedule the work', 'Arrange the shop visit or follow-up directly with the team once the details are clear.'],
 ];
 
 export default function FleetPage() {
   return (
     <main className="min-h-screen bg-white">
-      <section className="border-b border-zinc-800 bg-zinc-950 py-16 text-white sm:py-20 lg:py-24">
-        <div className="container grid items-center gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)] lg:gap-16">
-          <div className="max-w-3xl">
-            <p className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-red-400">Fleet service</p>
-            <h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
-              Local tire support for your business vehicles
+      <section className="relative overflow-hidden border-b border-zinc-100">
+        <Image
+          src="/fleet_imgs/fleet02.png"
+          alt=""
+          fill
+          priority
+          className="object-cover object-right"
+        />
+        {/* fade removed for comparison — restore: bg-gradient-to-r from-white/55 via-white/35 to-transparent */}
+        <div className="container relative py-20 sm:py-28 lg:py-40">
+          <div className="max-w-xl">
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <span className="bg-red-600 py-1 pl-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-white [clip-path:polygon(0_0,100%_0,calc(100%-10px)_100%,0_100%)]">
+                Fleet service
+              </span>
+              <span className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">El Cajon, CA</span>
+            </div>
+            <h1 className="max-w-xl text-4xl font-bold tracking-tight text-zinc-950 sm:text-5xl lg:text-6xl">
+              Tire support for <span className="italic text-red-600">your business vehicles</span>
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-300 sm:text-xl">
-              Tell us what your fleet runs, what tire sizes you need, and what is coming up. Our El Cajon team will confirm how we can help based on your actual vehicles and current availability.
+            <div className="mt-5 h-1 w-24 bg-red-600" aria-hidden="true" />
+            <p className="mt-6 max-w-md text-lg font-medium leading-8 text-zinc-800">
+              Vans, pickups, box trucks, and everything in between. Send the basics once — the shop replies with real availability and pricing.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8">
               <Button asChild size="lg" className="h-12 bg-red-600 px-6 font-bold hover:bg-red-700">
-                <Link href="/contact">
-                  <MessageCircle className="h-5 w-5" aria-hidden="true" />
-                  Discuss Your Fleet
+                <Link href="/fleet/request">
+                  Request Fleet Service
+                  <ArrowRight className="h-5 w-5" aria-hidden="true" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="h-12 border-zinc-600 bg-transparent px-6 font-bold text-white hover:bg-white hover:text-zinc-950">
-                <a href={phoneHref}>
-                  <Phone className="h-5 w-5" aria-hidden="true" />
-                  Call 619-440-6098
-                </a>
-              </Button>
             </div>
-          </div>
-
-          <div className="rounded-2xl border border-zinc-700 bg-zinc-900 p-6 shadow-2xl sm:p-8">
-            <div className="flex size-12 items-center justify-center rounded-xl bg-red-600 text-white">
-              <Building2 className="h-6 w-6" aria-hidden="true" />
-            </div>
-            <h2 className="mt-5 text-2xl font-black">Start with the fleet basics</h2>
-            <p className="mt-2 text-sm leading-6 text-zinc-400">A few details help the shop give you a useful, accurate answer.</p>
-            <ul className="mt-5 space-y-3">
-              {requestDetails.map((detail) => (
-                <li key={detail} className="flex gap-3 text-sm leading-6 text-zinc-200">
-                  <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-red-400" aria-hidden="true" />
-                  {detail}
-                </li>
-              ))}
-            </ul>
+            <p className="mt-5 text-sm text-zinc-500">Family owned since 2005 · Open 7 days · 1245 N 1st St</p>
           </div>
         </div>
       </section>
 
-      <section className="bg-zinc-50 py-14 sm:py-18" aria-labelledby="fleet-help-heading">
+      <section className="bg-zinc-50 py-16 sm:py-20" aria-labelledby="fleet-help-heading">
         <div className="container">
           <div className="max-w-2xl">
-            <p className="mb-2 text-sm font-black uppercase tracking-[0.16em] text-red-600">How we can help</p>
-            <h2 id="fleet-help-heading" className="text-3xl font-black tracking-tight text-zinc-950 sm:text-4xl">
+            <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-red-600">What we handle</p>
+            <h2 id="fleet-help-heading" className="text-3xl font-bold tracking-tight text-zinc-950 sm:text-4xl">
               Fleet support built around real needs
             </h2>
-            <p className="mt-3 text-base leading-7 text-zinc-600">
-              We do not assume every fleet needs the same program. Start with a direct conversation, then confirm the products and service path that fit.
-            </p>
           </div>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {serviceCards.map((service) => {
+          <div className="mt-12 grid gap-10 sm:grid-cols-3 sm:gap-8">
+            {services.map((service) => {
               const Icon = service.icon;
               return (
-                <Card key={service.title} className="border-zinc-200 bg-white shadow-sm">
-                  <CardHeader>
-                    <div className="flex size-11 items-center justify-center rounded-lg bg-red-50 text-red-600">
-                      <Icon className="h-6 w-6" aria-hidden="true" />
-                    </div>
-                    <CardTitle className="mt-3 text-xl font-black">{service.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm leading-6 text-zinc-600">{service.description}</p>
-                  </CardContent>
-                </Card>
+                <div key={service.title}>
+                  <div className="flex size-11 items-center justify-center bg-red-600 text-white">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <h3 className="mt-4 text-xl font-bold text-zinc-950">{service.title}</h3>
+                  <p className="mt-2 max-w-xs text-sm leading-6 text-zinc-600">{service.description}</p>
+                </div>
               );
             })}
           </div>
         </div>
       </section>
 
-      <section className="py-14 sm:py-18" aria-labelledby="fleet-process-heading">
-        <div className="container grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start lg:gap-16">
-          <div>
-            <p className="mb-2 text-sm font-black uppercase tracking-[0.16em] text-red-600">Simple next step</p>
-            <h2 id="fleet-process-heading" className="text-3xl font-black tracking-tight text-zinc-950 sm:text-4xl">
-              Talk to the people who will help you
+      <section className="py-16 sm:py-20" aria-labelledby="fleet-process-heading">
+        <div className="container">
+          <div className="max-w-2xl">
+            <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-red-600">How it works</p>
+            <h2 id="fleet-process-heading" className="text-3xl font-bold tracking-tight text-zinc-950 sm:text-4xl">
+              One request, a direct answer
             </h2>
-            <p className="mt-4 text-base leading-7 text-zinc-600">
-              Fleet inquiries go through the local shop, so the details can be checked before any product, availability, or scheduling commitment is made.
-            </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Button asChild className="h-11 bg-red-600 font-bold hover:bg-red-700">
-                <Link href="/contact">Send Fleet Details</Link>
-              </Button>
-              <Button asChild variant="outline" className="h-11 font-bold">
-                <a href={whatsAppHref} target="_blank" rel="noopener noreferrer">
-                  WhatsApp the Shop
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </Button>
-            </div>
           </div>
 
-          <ol className="grid gap-4">
-            {[
-              ['1', 'Share the fleet details', 'Send the vehicle types, tire sizes, quantities, timing, and the best way to reach you.'],
-              ['2', 'Confirm the available path', 'The shop reviews the request and confirms which products or services can support it.'],
-              ['3', 'Choose the next step', 'Once the details are clear, arrange the appropriate shop visit or follow-up directly with the team.'],
-            ].map(([number, title, description]) => (
-              <li key={number} className="flex gap-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-zinc-950 text-sm font-black text-white">{number}</span>
-                <div>
-                  <h3 className="font-black text-zinc-950">{title}</h3>
-                  <p className="mt-1 text-sm leading-6 text-zinc-600">{description}</p>
-                </div>
+          <ol className="mt-12 grid gap-10 sm:grid-cols-3 sm:gap-8">
+            {steps.map(([number, title, description]) => (
+              <li key={number}>
+                <span className="flex size-10 items-center justify-center rounded-full bg-zinc-950 text-sm font-bold text-white">{number}</span>
+                <h3 className="mt-4 text-xl font-bold text-zinc-950">{title}</h3>
+                <p className="mt-2 max-w-xs text-sm leading-6 text-zinc-600">{description}</p>
               </li>
             ))}
           </ol>
+
+          <p className="mt-12 text-sm leading-6 text-zinc-500">
+            Need waste-tire pickup too? Tire hauling is a separate service —{' '}
+            <Link href="/hauling" className="font-semibold text-red-600 underline-offset-4 hover:underline">
+              see how tire hauling works
+            </Link>
+            .
+          </p>
         </div>
       </section>
 
-      <section className="border-y border-zinc-200 bg-zinc-50 py-12">
-        <div className="container flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="max-w-2xl">
-            <h2 className="text-2xl font-black text-zinc-950">Need waste-tire pickup too?</h2>
-            <p className="mt-2 text-sm leading-6 text-zinc-600">
-              Tire hauling is a separate service. Review the hauling information, then contact the shop to confirm service details for your operation.
+      <div className="container pb-4" aria-hidden="true">
+        <Image
+          src="/fleet_imgs/fleet_wide.png"
+          alt=""
+          width={1916}
+          height={821}
+          className="w-full"
+        />
+      </div>
+
+      <section className="bg-zinc-950 py-16 text-white sm:py-20">
+        <div className="container flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Ready when <span className="italic text-red-500">your fleet</span> is
+            </h2>
+            <p className="mt-3 max-w-xl text-base leading-7 text-zinc-400">
+              Five quick fields, read by the people who will actually help you.
             </p>
           </div>
-          <Button asChild variant="outline" className="h-11 shrink-0 font-bold">
-            <Link href="/hauling">
-              <Route className="h-4 w-4" aria-hidden="true" />
-              View Tire Hauling
-            </Link>
-          </Button>
-        </div>
-      </section>
-
-      <section className="bg-red-700 py-14 text-white">
-        <div className="container text-center">
-          <h2 className="text-3xl font-black tracking-tight sm:text-4xl">Ready to discuss your fleet?</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-red-100">
-            Send the basics or call the El Cajon shop. We will keep the conversation grounded in your vehicles and confirmed availability.
-          </p>
-          <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button asChild size="lg" className="h-12 bg-white px-6 font-bold text-red-700 hover:bg-zinc-100">
-              <Link href="/contact">Contact the Shop</Link>
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+            <Button asChild size="lg" className="h-12 bg-red-600 px-6 font-bold hover:bg-red-700">
+              <Link href="/fleet/request">
+                Request Fleet Service
+                <ArrowRight className="h-5 w-5" aria-hidden="true" />
+              </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 border-red-300 bg-transparent px-6 font-bold text-white hover:bg-white hover:text-red-700">
+            <Button asChild size="lg" variant="outline" className="h-12 border-zinc-600 bg-transparent px-6 font-bold text-white hover:bg-white hover:text-zinc-950">
               <a href={phoneHref}>Call 619-440-6098</a>
             </Button>
           </div>
