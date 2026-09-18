@@ -78,7 +78,7 @@ export function Header() {
   );
   const isHome = pathname === '/';
   const isTransparent = isHome && !hasScrolled;
-  const hideFinancing = pathname.startsWith('/fleet/request');
+  const hideFinancing = pathname.startsWith('/fleet/request') || pathname.startsWith('/hauling/request');
 
   return (
     <header

@@ -61,9 +61,9 @@ export default function HaulingPage() {
                 </a>
               </Button>
               <Button asChild size="lg" variant="outline" className="bg-white hover:bg-zinc-100 text-zinc-900 text-lg font-bold h-14 px-8 border-2">
-                <Link href="/contact">
+                <Link href="/hauling/request">
                   <Calendar className="mr-2 h-5 w-5" aria-hidden="true" />
-                  Send Hauling Inquiry
+                  Apply for Hauling Service
                 </Link>
               </Button>
             </div>
@@ -321,8 +321,8 @@ export default function HaulingPage() {
               </a>
             </Button>
             <Button asChild size="lg" variant="outline" className="bg-transparent border-2 border-white hover:bg-white hover:text-red-600 text-white text-lg font-bold h-14 px-8">
-              <Link href="/contact">
-                Contact Us Online
+              <Link href="/hauling/request">
+                Apply for Hauling Service
               </Link>
             </Button>
           </div>

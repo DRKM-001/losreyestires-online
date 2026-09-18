@@ -5,7 +5,7 @@ import { SnapFinanceBanner } from '@/components/financing/SnapFinanceBanner';
 import { Newsletter } from '@/components/layout/Newsletter';
 
 /** Routes that should stay formal — no financing banner or promo band. */
-const HIDDEN_PREFIXES = ['/fleet/request'];
+const HIDDEN_PREFIXES = ['/fleet/request', '/hauling/request'];
 
 export function MarketingSections() {
   const pathname = usePathname();

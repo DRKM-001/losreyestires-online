@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'edge';
 
 const MAX_BODY_BYTES = 16 * 1024;
-const ALLOWED_CONDITIONS = new Set(['custom', 'new', 'used', 'wheels', 'other', 'contact request', 'fleet']);
+const ALLOWED_CONDITIONS = new Set(['custom', 'new', 'used', 'wheels', 'other', 'contact request', 'fleet', 'hauling']);
 const ALLOWED_SEARCH_TYPES = new Set(['custom', 'vehicle', 'size']);
 
 interface ValidatedLead {
@@ -227,7 +227,7 @@ function buildEmail(lead: ValidatedLead) {
 </html>`.trim();
 
   return {
-    subject: `${lead.tireCondition === 'contact request' ? 'Contact Request' : lead.tireCondition === 'fleet' ? 'Fleet Inquiry' : 'Quote Request'} — ${lead.name}`,
+    subject: `${lead.tireCondition === 'contact request' ? 'Contact Request' : lead.tireCondition === 'fleet' ? 'Fleet Inquiry' : lead.tireCondition === 'hauling' ? 'Hauling Inquiry' : 'Quote Request'} — ${lead.name}`,
     text,
     html,
   };
@@ -235,17 +235,20 @@ function buildEmail(lead: ValidatedLead) {
 
 function buildConfirmationEmail(lead: ValidatedLead) {
   const isFleet = lead.tireCondition === 'fleet';
+  const isHauling = lead.tireCondition === 'hauling';
   const requestNoun = isFleet
     ? 'fleet account application'
-    : lead.tireCondition === 'contact request' ? 'message' : 'request';
+    : isHauling
+      ? 'tire hauling service application'
+      : lead.tireCondition === 'contact request' ? 'message' : 'request';
 
-  const subject = isFleet
-    ? 'We received your fleet account application — Los Reyes Tires'
-    : `We received your ${requestNoun} — Los Reyes Tires`;
+  const subject = `We received your ${requestNoun} — Los Reyes Tires`;
 
   const followUpLine = isFleet
     ? 'The shop reviews every application personally and will follow up directly to confirm availability, pricing, and your account details.'
-    : 'The shop will check current options and follow up directly with availability and pricing.';
+    : isHauling
+      ? 'The shop reviews every application personally and will follow up directly to confirm your pickup schedule, volume, and pricing.'
+      : 'The shop will check current options and follow up directly with availability and pricing.';
 
   const text = [
     `Hi ${lead.name},`,
