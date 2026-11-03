@@ -41,26 +41,24 @@ const steps = [
 export default function FleetPage() {
   return (
     <main className="min-h-screen bg-white">
-      <section className="relative overflow-hidden border-b border-zinc-100">
-        <Image
-          src="/fleet_imgs/fleet02.png"
-          alt=""
-          fill
-          priority
-          className="hidden object-cover object-right lg:block"
-        />
-        <div className="container relative py-14 sm:py-16 lg:py-40">
+      <section className="relative overflow-hidden border-b border-sand-200 bg-white">
+        <div className="absolute inset-x-0 top-0 z-10 h-1 bg-blaze-500" />
+        <div className="absolute inset-y-0 right-0 hidden w-[58%] lg:block">
+          <Image src="/fleet_imgs/fleet02.png" alt="" fill priority className="object-contain object-right" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/20 to-transparent" />
+        </div>
+        <div className="container relative py-14 sm:py-16 lg:py-28">
           <div className="max-w-xl">
             <div className="mb-4 flex flex-wrap items-center gap-3">
-              <span className="bg-red-600 py-1 pl-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-white [clip-path:polygon(0_0,100%_0,calc(100%-10px)_100%,0_100%)]">
+              <span className="clip-slash bg-blaze-500 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-white">
                 Fleet service
               </span>
               <span className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">El Cajon, CA</span>
             </div>
-            <h1 className="max-w-xl text-4xl font-bold tracking-tight text-zinc-950 sm:text-5xl lg:text-6xl">
-              Tire support for <span className="italic text-red-600">your business vehicles</span>
+            <h1 className="max-w-xl font-display text-5xl font-bold uppercase leading-[0.95] tracking-tight text-stone-950 sm:text-6xl">
+              Tire support for <span className="display-italic text-blaze-500">your business vehicles</span>
             </h1>
-            <div className="mt-5 h-1 w-24 bg-red-600" aria-hidden="true" />
+            <span className="speed-bar mt-5 w-28 bg-blaze-500" aria-hidden="true" />
             <p className="mt-6 max-w-md text-lg font-medium leading-8 text-zinc-800">
               Vans, pickups, box trucks, and everything in between. Send the basics once — the shop replies with real availability and pricing.
             </p>

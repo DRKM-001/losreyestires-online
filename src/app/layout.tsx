@@ -1,32 +1,22 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Geist_Mono, Inter } from "next/font/google";
+import type { Viewport } from "next";
+import "@fontsource/oswald/latin-500.css";
+import "@fontsource/oswald/latin-600.css";
+import "@fontsource/oswald/latin-700.css";
+import "@fontsource/inter/latin-400.css";
+import "@fontsource/inter/latin-500.css";
+import "@fontsource/inter/latin-600.css";
+import "@fontsource/inter/latin-700.css";
 import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ContactDock } from "@/components/layout/ContactDock";
 import { MarketingSections } from "@/components/layout/MarketingSections";
 import { siteConfig } from "@/lib/metadata";
 import { AuthProvider } from "@/contexts/AuthContext";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: 'swap',
-});
-
-const barlowCondensed = Barlow_Condensed({
-  variable: "--font-barlow-condensed",
-  subsets: ["latin"],
-  display: 'swap',
-  weight: ['500', '600', '700', '800'],
-  style: ['normal', 'italic'],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: 'swap',
-});
+export const viewport: Viewport = { themeColor: "#0d0b08", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export const metadata: Metadata = {
   metadataBase: siteConfig.metadataBase,
@@ -115,9 +105,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body
-        className={`${inter.variable} ${barlowCondensed.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-3SGF1FFFST"
@@ -134,9 +122,10 @@ export default function RootLayout({
 
         <AuthProvider>
           <Header />
-          <main className="min-h-screen">{children}</main>
+          <main id="main" className="min-h-screen">{children}</main>
           <MarketingSections />
           <Footer />
+          <ContactDock />
         </AuthProvider>
       </body>
     </html>

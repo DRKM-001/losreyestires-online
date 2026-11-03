@@ -6,6 +6,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { generatePageMetadata } from '@/lib/metadata';
+import { PageHero } from '@/components/layout/PageHero';
 
 export const metadata = generatePageMetadata({
   title: 'FAQ - Frequently Asked Questions',
@@ -59,14 +60,8 @@ const faqs = [
 export default function FAQPage() {
   return (
     <div className="min-h-screen">
-      <section className="bg-zinc-900 text-white py-16">
-        <div className="container">
-          <h1 className="text-4xl md:text-5xl font-black mb-4">Frequently Asked Questions</h1>
-          <p className="text-xl text-zinc-300">
-            Find answers to common questions about our tires, services, and shop.
-          </p>
-        </div>
-      </section>
+      <PageHero chip="Questions" title={<>Frequently asked <span className="display-italic text-blaze-500">questions</span></>}
+        lede="Answers about our tires, services, and the shop. Don't see yours? Call 619-440-6098 or WhatsApp us." />
 
       <section className="py-16">
         <div className="container max-w-4xl">

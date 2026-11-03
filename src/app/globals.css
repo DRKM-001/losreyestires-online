@@ -3,25 +3,104 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Los Reyes Tires (El Cajon) — the Reyes family look shared with reyestires.com and
+ * reyestirespro.com: warm sand surfaces, near-black ink, Oswald display type, grain and
+ * racing stripes. El Cajon is red-led ("blaze"), with the family blue ("royal") as a
+ * second accent.
+ *
+ * The stock `zinc` and `red` scales are re-pointed at the same palette, so pages written
+ * with zinc-* / red-* classes pick up the new look without being rewritten.
+ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Oswald", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-sand-50: #faf6f0;
+  --color-sand-100: #f3ebdd;
+  --color-sand-200: #e7d6bd;
+  --color-sand-300: #d8bd97;
+  --color-sand-400: #c8a06f;
+
+  --color-stone-750: #2b2722;
+  --color-stone-850: #211e1a;
+  --color-stone-950: #16140f;
+
+  --color-ink-800: #15120e;
+  --color-ink-900: #0d0b08;
+  --color-ink-950: #070503;
+
+  /* primary accent: shop red */
+  --color-blaze-50: #fdeaea;
+  --color-blaze-100: #fad1d1;
+  --color-blaze-400: #e23b3b;
+  --color-blaze-500: #d11f27;
+  --color-blaze-600: #b3151c;
+  --color-blaze-700: #8f1117;
+  --color-blaze-800: #6e0d12;
+  --color-blaze-900: #4d090c;
+
+  /* secondary accent: family blue */
+  --color-royal-50: #eaf1fd;
+  --color-royal-100: #d2e2fb;
+  --color-royal-400: #4b8ef0;
+  --color-royal-500: #1f6fe0;
+  --color-royal-600: #1a5cc0;
+  --color-royal-700: #164a9b;
+
+  --color-wa-500: #25d366;
+  --color-wa-600: #1ebe5b;
+
+  /* warm neutrals in place of cool zinc */
+  --color-zinc-50: #faf6f0;
+  --color-zinc-100: #f3ebdd;
+  --color-zinc-200: #e7d6bd;
+  --color-zinc-300: #d6c3a6;
+  --color-zinc-400: #a8967d;
+  --color-zinc-500: #7a6c5c;
+  --color-zinc-600: #574d43;
+  --color-zinc-700: #3a332c;
+  --color-zinc-800: #2b2722;
+  --color-zinc-900: #211e1a;
+  --color-zinc-950: #0d0b08;
+
+  /* shop red in place of stock red */
+  --color-red-50: #fdeaea;
+  --color-red-100: #fad1d1;
+  --color-red-200: #f4a9ab;
+  --color-red-300: #ec7d80;
+  --color-red-400: #e23b3b;
+  --color-red-500: #d11f27;
+  --color-red-600: #d11f27;
+  --color-red-700: #b3151c;
+  --color-red-800: #8f1117;
+  --color-red-900: #6e0d12;
+
+  --shadow-card: 0 1px 2px rgba(33, 30, 26, 0.04), 0 12px 32px -12px rgba(33, 30, 26, 0.18);
+  --shadow-blaze: 0 10px 30px -8px rgba(209, 31, 39, 0.45);
+
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-acc-open: acc-open 200ms ease-out;
+  --animate-acc-close: acc-close 180ms ease-out;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes acc-open {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes acc-close {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-barlow-condensed);
-  --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -45,98 +124,113 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --primary: 0 0% 9%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 240 5.9% 10%;
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --radius: 0.5rem;
+  --background: #faf6f0;
+  --foreground: #211e1a;
+  --card: #ffffff;
+  --card-foreground: #211e1a;
+  --popover: #ffffff;
+  --popover-foreground: #211e1a;
+  --primary: #d11f27;
+  --primary-foreground: #ffffff;
+  --secondary: #f3ebdd;
+  --secondary-foreground: #211e1a;
+  --muted: #f3ebdd;
+  --muted-foreground: #574d43;
+  --accent: #f3ebdd;
+  --accent-foreground: #211e1a;
+  --destructive: #b3151c;
+  --border: #e7d6bd;
+  --input: #d6c3a6;
+  --ring: #d11f27;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background font-sans text-foreground antialiased;
     text-rendering: optimizeLegibility;
   }
   h1, h2, h3, [data-slot="card-title"] {
-    font-family: var(--font-barlow-condensed), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-display);
     text-transform: uppercase;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
   }
   h1, h2 {
-    line-height: 1.05;
+    line-height: 1;
   }
   :focus-visible {
+    outline: 3px solid #f2b01e;
+    outline-offset: 2px;
     scroll-margin-block: 6rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-@layer components {
-  .container {
-    @apply w-full mx-auto px-4 sm:px-6 lg:px-8;
-    max-width: 1400px;
+/* Same content width as the family sites, on every page that uses .container */
+@utility container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
   }
+}
+
+@utility container-x {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+/* Oswald has no true italic, so slant it for a controlled racing lean */
+@utility display-italic {
+  font-style: italic;
+  display: inline-block;
+  transform: skewX(-6deg);
+}
+
+/* cut-corner race-bib chip */
+@utility clip-slash {
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+@utility speed-bar {
+  display: inline-block;
+  height: 0.375rem;
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+
+@utility safe-bottom {
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+}
+
+@utility bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+@utility bg-stripes {
+  background-image: repeating-linear-gradient(-45deg, rgba(209, 31, 39, 0.16) 0 14px, transparent 14px 30px);
 }

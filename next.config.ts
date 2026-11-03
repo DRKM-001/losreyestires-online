@@ -18,6 +18,7 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'self'",
+  "frame-src https://www.google.com https://maps.google.com",
   "worker-src 'self' blob:",
 ].join('; ');
 

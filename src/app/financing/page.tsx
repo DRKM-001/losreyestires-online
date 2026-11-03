@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
-import { TypographyH1, TypographyH2, TypographyP, TypographyLead } from '@/components/ui/typography';
+import { TypographyH2, TypographyP } from '@/components/ui/typography';
+import { PageHero } from '@/components/layout/PageHero';
 import { SNAP_FINANCE_APPLICATION_URL } from '@/lib/financing';
 
 export const metadata: Metadata = {
@@ -12,15 +13,11 @@ export const metadata: Metadata = {
 
 export default function FinancingPage() {
   return (
+    <>
+    <PageHero chip="Financing" title={<>Tires now, <span className="display-italic text-blaze-500">pay over time</span></>}
+      lede="Get the tires and wheels you need today with payment plans through Snap Finance or Acima. Apply online in minutes." />
     <div className="container py-12">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <TypographyH1>Flexible Financing Options</TypographyH1>
-          <TypographyLead className="mt-4">
-            Get the tires and wheels you need today with affordable payment plans. 
-            Apply online in minutes and get approved quickly!
-          </TypographyLead>
-        </div>
 
         {/* Benefits Section */}
         <div className="grid md:grid-cols-3 gap-6 mb-16">
@@ -184,5 +181,6 @@ export default function FinancingPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
