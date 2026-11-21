@@ -1,368 +1,115 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Building2, CircleDot, ExternalLink, MapPin, Menu, MessageCircle, Phone, Settings, Truck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { BrandWordmark } from '@/components/layout/BrandWordmark';
-import { cn } from '@/lib/utils';
-import { SNAP_FINANCE_APPLICATION_URL } from '@/lib/financing';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { Building2, ChevronDown, MapPin, Menu, Phone, Truck, X } from 'lucide-react';
+import { Wordmark } from '@/components/brand/Wordmark';
+import { WhatsAppIcon } from '@/components/brand/WhatsAppIcon';
+import { ShopWaLink } from '@/components/brand/ShopWaLink';
+import { site, track } from '@/lib/site';
 
 const navigation = [
   { name: 'Tires', href: '/tires' },
   { name: 'Wheels', href: '/wheels' },
-  { name: 'El Cajon Shop', href: '/locations' },
+  { name: 'Visit the Shop', href: '/locations' },
+  { name: 'Contact', href: '/contact' },
 ];
 
-const primaryServices = [
-  {
-    name: 'Fleet Service',
-    description: 'Tire support for local business vehicles and fleet needs.',
-    href: '/fleet',
-    icon: Building2,
-  },
-  {
-    name: 'Tire Hauling',
-    description: 'Commercial waste-tire pickup and hauling inquiries.',
-    href: '/hauling',
-    icon: Truck,
-  },
+const services = [
+  { name: 'Fleet Service', description: 'Tire support for business vehicles and fleets.', href: '/fleet', icon: Building2 },
+  { name: 'Tire Hauling', description: 'Commercial waste-tire pickup and hauling.', href: '/hauling', icon: Truck },
 ];
 
-const serviceLinks = [
-  { name: 'Tire Availability', href: '/tires', icon: CircleDot },
-  { name: 'Wheel Inquiries', href: '/wheels', icon: Settings },
-  { name: 'Contact the Shop', href: '/contact', icon: MessageCircle },
-];
-
-const phoneHref = 'tel:619-440-6098';
-const whatsAppHref = 'https://wa.me/16197299468';
-
-function subscribeToScroll(callback: () => void) {
-  window.addEventListener('scroll', callback, { passive: true });
-  return () => window.removeEventListener('scroll', callback);
-}
-
-function getScrollSnapshot() {
-  return window.scrollY > 16;
-}
-
-function getServerScrollSnapshot() {
-  return false;
-}
+const navLink = 'whitespace-nowrap text-sm font-semibold uppercase tracking-wide text-stone-750 transition-colors hover:text-blaze-600';
 
 export function Header() {
   const pathname = usePathname();
-  const hasScrolled = useSyncExternalStore(
-    subscribeToScroll,
-    getScrollSnapshot,
-    getServerScrollSnapshot
-  );
-  const isHome = pathname === '/';
-  const isTransparent = isHome && !hasScrolled;
-  const hideFinancing = pathname.startsWith('/fleet/request') || pathname.startsWith('/hauling/request');
+  const [open, setOpen] = useState(false);
+  const quoteHref = pathname === '/' ? '#quote' : '/#quote';
+
+  useEffect(() => { setOpen(false); }, [pathname]);
 
   return (
-    <header
-      className={cn(
-        'top-0 z-50 w-full transition-colors duration-200 motion-reduce:transition-none',
-        isHome ? 'fixed inset-x-0' : 'sticky',
-        isTransparent ? 'bg-transparent shadow-none' : 'bg-white shadow-sm'
-      )}
-    >
-      <div
-        className={cn(
-          'hidden border-b text-white transition-colors duration-200 motion-reduce:transition-none sm:block',
-          isTransparent ? 'border-white/15 bg-transparent' : 'border-zinc-800 bg-zinc-950'
-        )}
-      >
-        <div className="container flex h-9 items-center justify-between text-sm">
-          <Link
-            href="/locations"
-            className={cn(
-              'flex min-h-9 items-center gap-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-              isTransparent ? 'text-white hover:text-zinc-200 focus-visible:ring-white' : 'text-zinc-200 hover:text-white focus-visible:ring-red-400'
-            )}
-          >
-            <MapPin className="h-4 w-4" aria-hidden="true" />
-            <span>El Cajon · Open 7 days</span>
-          </Link>
-          <div className="flex h-full items-center gap-5">
-            <a
-              href={phoneHref}
-              className={cn(
-                'flex min-h-9 items-center gap-2 font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-                isTransparent ? 'text-white hover:text-zinc-200 focus-visible:ring-white' : 'hover:text-red-300 focus-visible:ring-red-400'
-              )}
-            >
-              <Phone className="h-4 w-4" aria-hidden="true" />
-              <span>Call 619-440-6098</span>
+    <header className="sticky top-0 z-50">
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
+
+      {/* Thin ink bar: where and how to reach the shop */}
+      <div className="hidden bg-ink-900 text-sand-200 sm:block">
+        <div className="container-x flex h-9 items-center justify-between text-[13px]">
+          <a href={site.mapsHref} target="_blank" rel="noopener noreferrer" onClick={() => track('directions')} className="inline-flex items-center gap-2 hover:text-sand-50">
+            <MapPin className="h-3.5 w-3.5 text-blaze-400" aria-hidden="true" />{site.street}, El Cajon · Open 7 days
+          </a>
+          <div className="flex items-center gap-5 font-semibold">
+            <a href={site.phoneHref} onClick={() => track('call')} className="inline-flex items-center gap-1.5 hover:text-sand-50">
+              <Phone className="h-3.5 w-3.5 text-blaze-400" aria-hidden="true" />{site.phone}
             </a>
-            <a
-              href={whatsAppHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                'flex min-h-9 items-center gap-2 font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-                isTransparent ? 'text-white hover:text-zinc-200 focus-visible:ring-white' : 'hover:text-red-300 focus-visible:ring-red-400'
-              )}
-            >
-              <MessageCircle className="h-4 w-4" aria-hidden="true" />
-              <span>WhatsApp</span>
-            </a>
+            <ShopWaLink className="inline-flex items-center gap-1.5 hover:text-sand-50">
+              <WhatsAppIcon className="h-3.5 w-3.5 text-wa-500" />WhatsApp {site.whatsappDisplay}
+            </ShopWaLink>
           </div>
         </div>
       </div>
 
-      <div className={cn(
-        'container flex h-16 items-center justify-between gap-2 transition-colors duration-200 motion-reduce:transition-none sm:h-20 sm:gap-6',
-        isTransparent ? 'text-white' : 'text-zinc-950'
-      )}>
-        <Link
-          href="/"
-          className={cn(
-            'flex shrink-0 items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-            isTransparent ? 'focus-visible:ring-white focus-visible:ring-offset-zinc-950' : 'focus-visible:ring-red-600'
-          )}
-          aria-label="Los Reyes Tires home"
-        >
-          <BrandWordmark inverse={isTransparent} />
-        </Link>
+      <div className="border-b border-sand-200/70 bg-sand-50/95 backdrop-blur">
+        <div className="container-x flex h-16 items-center justify-between gap-3">
+          <Link href="/" aria-label={`${site.name} home`}><Wordmark /></Link>
 
-        <NavigationMenu className="hidden lg:flex" aria-label="Primary navigation">
-          <NavigationMenuList>
-            {navigation.slice(0, 2).map((item) => (
-              <NavigationMenuItem key={item.name}>
-                <NavigationMenuLink asChild>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      'block rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2',
-                      isTransparent
-                        ? 'text-white hover:bg-white/10 hover:text-white focus-visible:ring-white'
-                        : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus-visible:ring-red-600'
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            ))}
-
-            <NavigationMenuItem>
-              <NavigationMenuTrigger
-                className={cn(
-                  'h-9 bg-transparent px-3 text-sm font-semibold uppercase tracking-wide focus-visible:ring-2',
-                  isTransparent
-                    ? 'text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white focus-visible:ring-white'
-                    : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus:bg-zinc-100 focus:text-red-600 data-[state=open]:bg-zinc-100 data-[state=open]:text-red-600 focus-visible:ring-red-600'
-                )}
-              >
-                Services
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="w-[36rem] border-zinc-200 bg-white p-3 text-zinc-950 shadow-xl">
-                <div className="grid grid-cols-[1.35fr_1fr] gap-3">
-                  <div className="grid gap-2">
-                    {primaryServices.map((service) => {
-                      const Icon = service.icon;
-                      return (
-                        <NavigationMenuLink asChild key={service.name}>
-                          <Link href={service.href} className="group flex min-h-24 flex-row gap-3 rounded-lg border border-zinc-200 p-4 hover:border-red-200 hover:bg-red-50/60 focus:bg-red-50/60">
-                            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-600 group-hover:bg-white">
-                              <Icon className="h-5 w-5" aria-hidden="true" />
-                            </span>
-                            <span>
-                              <span className="block font-black text-zinc-950">{service.name}</span>
-                              <span className="mt-1 block text-sm leading-5 text-zinc-600">{service.description}</span>
-                            </span>
-                          </Link>
-                        </NavigationMenuLink>
-                      );
-                    })}
-                  </div>
-                  <div className="rounded-lg bg-zinc-50 p-3">
-                    <p className="px-2 pb-2 text-xs font-black uppercase tracking-[0.14em] text-zinc-500">Shop help</p>
-                    {serviceLinks.map((service) => {
-                      const Icon = service.icon;
-                      return (
-                        <NavigationMenuLink asChild key={service.name}>
-                          <Link href={service.href} className="flex min-h-11 flex-row items-center gap-3 rounded-md px-2 py-2 font-bold text-zinc-700 hover:bg-white hover:text-red-600 focus:bg-white focus:text-red-600">
-                            <Icon className="h-4 w-4 text-red-600" aria-hidden="true" />
-                            {service.name}
-                          </Link>
-                        </NavigationMenuLink>
-                      );
-                    })}
-                    <NavigationMenuLink asChild>
-                      <Link href="/#quote" className="mt-2 flex min-h-11 flex-row items-center justify-center rounded-md bg-red-600 px-3 py-2 font-bold text-white hover:bg-red-700 hover:text-white focus:bg-red-700 focus:text-white">
-                        Check Availability
-                      </Link>
-                    </NavigationMenuLink>
-                  </div>
-                </div>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-
-            {navigation.slice(2).map((item) => (
-              <NavigationMenuItem key={item.name}>
-                <NavigationMenuLink asChild>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      'block rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2',
-                      isTransparent
-                        ? 'text-white hover:bg-white/10 hover:text-white focus-visible:ring-white'
-                        : 'text-zinc-700 hover:bg-zinc-100 hover:text-red-600 focus-visible:ring-red-600'
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
-        </NavigationMenu>
-
-        <div className="flex items-center gap-2">
-          {!hideFinancing && (
-            <Button
-              asChild
-              variant="outline"
-              className={cn(
-                'hidden w-40 md:inline-flex',
-                isTransparent && 'border-white/70 bg-transparent text-white hover:bg-white hover:text-zinc-950'
-              )}
-            >
-              {isTransparent ? (
-                <a href={phoneHref}>
-                  <Phone className="h-4 w-4" aria-hidden="true" />
-                  Call Now
-                </a>
-              ) : (
-                <a href={SNAP_FINANCE_APPLICATION_URL} target="_blank" rel="noopener noreferrer">
-                  Apply for Financing
-                  <ExternalLink aria-hidden="true" />
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              )}
-            </Button>
-          )}
-          <Button asChild className="h-11 bg-red-600 px-3 font-bold hover:bg-red-700 sm:px-4">
-            <Link href="/#quote">
-              <span className="sm:hidden">Availability</span>
-              <span className="hidden sm:inline">Check Availability</span>
-            </Link>
-          </Button>
-
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  'size-11 lg:hidden',
-                  isTransparent && 'text-white hover:bg-white/10 hover:text-white'
-                )}
-                aria-label="Open navigation menu"
-              >
-                <Menu className="h-6 w-6" aria-hidden="true" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="bg-white p-6">
-              <SheetHeader className="p-0 pr-8 text-left">
-                <SheetTitle>Los Reyes Tires</SheetTitle>
-                <SheetDescription>Local tire and wheel help in El Cajon.</SheetDescription>
-              </SheetHeader>
-              <nav className="mt-6 flex flex-col" aria-label="Mobile navigation">
-                {navigation.slice(0, 2).map((item) => (
-                  <SheetClose asChild key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="flex min-h-12 items-center border-b border-zinc-100 py-3 text-lg font-bold uppercase tracking-wide text-zinc-800 transition-colors hover:text-red-600"
-                    >
-                      {item.name}
+          <nav aria-label="Main" className="hidden items-center gap-6 lg:flex xl:gap-7">
+            {navigation.slice(0, 2).map((l) => <Link key={l.href} href={l.href} className={navLink}>{l.name}</Link>)}
+            <div className="group relative">
+              <button type="button" aria-haspopup="true" className={`${navLink} inline-flex items-center gap-1`}>
+                Services<ChevronDown className="h-3.5 w-3.5 transition-transform group-focus-within:rotate-180 group-hover:rotate-180" aria-hidden="true" />
+              </button>
+              <div className="invisible absolute left-1/2 top-full z-50 w-[22rem] -translate-x-1/2 pt-3 opacity-0 transition-all group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                <div className="rounded-xl border border-sand-200 bg-white p-2 shadow-card">
+                  {services.map((s) => (
+                    <Link key={s.href} href={s.href} className="group/item flex gap-3 rounded-lg p-3 transition-colors hover:bg-sand-50">
+                      <span className="clip-slash flex h-10 w-10 shrink-0 items-center justify-center bg-blaze-50 text-blaze-600 transition-colors group-hover/item:bg-blaze-500 group-hover/item:text-white">
+                        <s.icon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <span>
+                        <span className="block font-display text-base font-semibold uppercase tracking-wide text-stone-850">{s.name}</span>
+                        <span className="block text-sm leading-5 text-stone-750/80">{s.description}</span>
+                      </span>
                     </Link>
-                  </SheetClose>
-                ))}
-                <div className="border-b border-zinc-100 py-4">
-                  <p className="mb-2 text-xs font-black uppercase tracking-[0.14em] text-zinc-500">Services</p>
-                  <div className="grid gap-1">
-                    {primaryServices.map((service) => {
-                      const Icon = service.icon;
-                      return (
-                        <SheetClose asChild key={service.name}>
-                          <Link
-                            href={service.href}
-                            className="flex min-h-12 items-center gap-3 rounded-md px-2 py-2 text-base font-bold text-zinc-800 transition-colors hover:bg-zinc-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
-                          >
-                            <Icon className="h-5 w-5 text-red-600" aria-hidden="true" />
-                            {service.name}
-                          </Link>
-                        </SheetClose>
-                      );
-                    })}
-                  </div>
+                  ))}
+                  <Link href="/financing" className="mt-1 flex items-center justify-between rounded-lg border-t border-sand-200 px-3 pb-2 pt-3 text-sm font-semibold text-stone-750 hover:text-blaze-600">
+                    Financing options<span aria-hidden="true">→</span>
+                  </Link>
                 </div>
-                {navigation.slice(2).map((item) => (
-                  <SheetClose asChild key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="flex min-h-12 items-center border-b border-zinc-100 py-3 text-lg font-bold uppercase tracking-wide text-zinc-800 transition-colors hover:text-red-600"
-                    >
-                      {item.name}
-                    </Link>
-                  </SheetClose>
-                ))}
-              </nav>
-              <div className="mt-6 grid gap-3">
-                <Button asChild className="h-11 bg-red-600 font-bold hover:bg-red-700">
-                  <a href={phoneHref}>
-                    <Phone className="h-4 w-4" aria-hidden="true" />
-                    Call 619-440-6098
-                  </a>
-                </Button>
-                <Button asChild variant="outline" className="h-11 font-bold">
-                  <a href={whatsAppHref} target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="h-4 w-4" aria-hidden="true" />
-                    WhatsApp
-                  </a>
-                </Button>
-                {!hideFinancing && (
-                  <Button asChild variant="outline" className="h-11 font-bold">
-                    <a href={SNAP_FINANCE_APPLICATION_URL} target="_blank" rel="noopener noreferrer">
-                      Apply for Financing
-                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                      <span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                  </Button>
-                )}
-                <SheetClose asChild>
-                  <Button asChild variant="outline" className="h-11 font-bold">
-                    <Link href="/#quote">Check Availability</Link>
-                  </Button>
-                </SheetClose>
               </div>
-            </SheetContent>
-          </Sheet>
+            </div>
+            {navigation.slice(2).map((l) => <Link key={l.href} href={l.href} className={navLink}>{l.name}</Link>)}
+          </nav>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <a href={quoteHref} className="whitespace-nowrap rounded-md bg-blaze-500 px-3.5 py-2 text-sm font-bold uppercase tracking-wide text-white shadow-sm transition-colors hover:bg-blaze-600 sm:px-4">
+              Get a Quote
+            </a>
+            <button type="button" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen((o) => !o)} className="p-1 text-stone-850 lg:hidden">
+              {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
+
+        {open && (
+          <nav aria-label="Mobile" className="border-t border-sand-200 bg-sand-50 lg:hidden">
+            <div className="container-x flex flex-col py-3">
+              {[...navigation.slice(0, 2), ...services, { name: 'Financing', href: '/financing' }, ...navigation.slice(2)].map((l) => (
+                <Link key={l.href} href={l.href} className="border-b border-sand-200/70 py-3 font-display text-lg font-semibold uppercase tracking-wide text-stone-850">{l.name}</Link>
+              ))}
+              <div className="grid grid-cols-2 gap-2 pt-4">
+                <a href={site.phoneHref} onClick={() => track('call')} className="inline-flex items-center justify-center gap-2 rounded-md bg-blaze-500 py-3 font-bold uppercase tracking-wide text-white">
+                  <Phone className="h-4 w-4" />Call
+                </a>
+                <ShopWaLink className="inline-flex items-center justify-center gap-2 rounded-md bg-wa-500 py-3 font-bold uppercase tracking-wide text-ink-950">
+                  <WhatsAppIcon className="h-4 w-4" />WhatsApp
+                </ShopWaLink>
+              </div>
+            </div>
+          </nav>
+        )}
       </div>
     </header>
   );

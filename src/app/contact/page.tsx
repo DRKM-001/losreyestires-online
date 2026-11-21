@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ContactForm } from '@/components/contact/ContactForm';
 import { generatePageMetadata } from '@/lib/metadata';
+import { WhatsAppIcon } from '@/components/brand/WhatsAppIcon';
+import { ShopWaLink } from '@/components/brand/ShopWaLink';
+import { PageHero, heroBtn } from '@/components/layout/PageHero';
 
 export const metadata = generatePageMetadata({
   title: 'Contact Us - Get in Touch',
@@ -15,26 +18,12 @@ export const metadata = generatePageMetadata({
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-zinc-50">
-      <section className="border-b bg-white py-10 sm:py-14">
-        <div className="container">
-          <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-red-600">Talk to the local team</p>
-          <h1 className="text-4xl font-black tracking-tight text-zinc-950 sm:text-5xl">Contact Los Reyes Tires</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-zinc-600">
-            Call, message, or send a request with questions about tires, wheels, and current options.
-          </p>
-          <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
-            <Button asChild size="lg" className="h-12 bg-red-600 font-bold hover:bg-red-700">
-              <a href="tel:619-440-6098"><Phone aria-hidden="true" />Call 619-440-6098</a>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 bg-white font-bold">
-              <a href="https://wa.me/16197299468" target="_blank" rel="noopener noreferrer"><MessageCircle aria-hidden="true" />WhatsApp</a>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 bg-white font-bold">
-              <Link href="/locations"><MapPin aria-hidden="true" />Shop details</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <PageHero chip="Talk to the local team" title={<>Contact <span className="display-italic text-blaze-500">Los Reyes Tires</span></>}
+        lede="Call, WhatsApp, or send a request with questions about tires, wheels, and what's in stock.">
+        <a href="tel:+16194406098" className={heroBtn.primary}><Phone className="h-4 w-4" aria-hidden="true" />Call 619-440-6098</a>
+        <ShopWaLink className={heroBtn.wa}><WhatsAppIcon className="h-4 w-4" />WhatsApp</ShopWaLink>
+        <Link href="/locations" className={heroBtn.ghost}><MapPin className="h-4 w-4 text-blaze-400" aria-hidden="true" />Shop details</Link>
+      </PageHero>
 
       <section className="py-10 sm:py-14">
         <div className="container">

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { ExternalLink, Star } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { GoogleIcon } from '@/components/icons/GoogleIcon';
+import { site } from '@/lib/site';
 import { fetchGoogleReviews, type LiveGoogleReview } from '@/lib/google-reviews';
 
 function ReviewAuthor({ review }: { review: LiveGoogleReview }) {
@@ -10,13 +10,13 @@ function ReviewAuthor({ review }: { review: LiveGoogleReview }) {
       href={review.authorUri}
       target="_blank"
       rel="noopener noreferrer"
-      className="font-bold text-zinc-900 hover:text-red-700 hover:underline"
+      className="font-bold text-sand-50 hover:underline"
     >
       {review.authorName}
       <span className="sr-only"> on Google Maps (opens in a new tab)</span>
     </a>
   ) : (
-    <span className="font-bold text-zinc-900">{review.authorName}</span>
+    <span className="font-bold text-sand-50">{review.authorName}</span>
   );
 
   return (
@@ -32,7 +32,7 @@ function ReviewAuthor({ review }: { review: LiveGoogleReview }) {
       )}
       <div className="min-w-0 text-sm">
         <p className="truncate">{name}</p>
-        {review.relativePublishTime && <p className="mt-0.5 text-zinc-500">{review.relativePublishTime}</p>}
+        {review.relativePublishTime && <p className="mt-0.5 text-blaze-100/70">{review.relativePublishTime}</p>}
       </div>
     </div>
   );
@@ -45,19 +45,25 @@ export async function GoogleReviews() {
     if (!data.googleMapsUri) return null;
 
     return (
-      <aside className="border-b bg-white" aria-label="Los Reyes Tires on Google Maps">
-        <div className="container flex min-h-14 items-center justify-center py-2">
-          <a
-            href={data.googleMapsUri}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-zinc-700 hover:text-red-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
-          >
-            <GoogleIcon className="h-5 w-5" />
-            View Los Reyes Tires on Google Maps
-            <ExternalLink className="h-4 w-4" aria-hidden="true" />
-            <span className="sr-only"> (opens in a new tab)</span>
-          </a>
+      <aside className="relative overflow-hidden bg-blaze-700 text-sand-50" aria-label="Los Reyes Tires on Google Maps">
+        <div className="absolute inset-0 bg-grain opacity-[0.06]" />
+        <div className="container-x relative flex flex-col items-start justify-between gap-5 py-12 sm:flex-row sm:items-center">
+          <div>
+            <p className="font-display text-sm font-bold uppercase tracking-widest text-blaze-100">Local feedback</p>
+            <h2 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight sm:text-4xl">See what El Cajon says</h2>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <a href={data.googleMapsUri} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-md bg-white px-5 py-3 font-bold uppercase tracking-wide text-blaze-700 hover:bg-blaze-50">
+              <GoogleIcon className="h-5 w-5" />Read our Google reviews<ExternalLink className="h-4 w-4" aria-hidden="true" />
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+            <a href={site.reviewHref} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-sand-50/30 px-5 py-3 font-bold uppercase tracking-wide text-sand-50 hover:bg-sand-50/10">
+              <Star className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />Leave a review
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          </div>
         </div>
       </aside>
     );
@@ -66,70 +72,52 @@ export async function GoogleReviews() {
   const visibleReviews = data.reviews.slice(0, 3);
 
   return (
-    <section className="border-b bg-white py-10 sm:py-12" aria-labelledby="google-reviews-heading">
-      <div className="container">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+    <section className="relative overflow-hidden bg-blaze-700 py-20 text-sand-50" aria-labelledby="google-reviews-heading">
+      <div className="absolute inset-0 bg-grain opacity-[0.06]" />
+      <div className="container-x relative">
+        <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-red-600">Local feedback</p>
-            <h2 id="google-reviews-heading" className="text-2xl font-black tracking-tight text-zinc-950 sm:text-3xl">
-              Reviews from Google Maps
-            </h2>
-            {(data.rating !== null || data.userRatingCount !== null) && (
-              <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-zinc-600">
-                {data.rating !== null && (
-                  <span className="inline-flex items-center gap-1 font-bold text-zinc-900">
-                    <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" aria-hidden="true" />
-                    {data.rating.toFixed(1)}
-                  </span>
-                )}
-                {data.userRatingCount !== null && <span>from {data.userRatingCount.toLocaleString()} ratings</span>}
-              </p>
-            )}
+            <p className="font-display text-sm font-bold uppercase tracking-widest text-blaze-100">Local feedback</p>
+            <h2 id="google-reviews-heading" className="mt-3 font-display text-4xl font-bold uppercase tracking-tight sm:text-5xl">What El Cajon says</h2>
           </div>
           {data.googleMapsUri && (
-            <a
-              href={data.googleMapsUri}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center gap-2 self-start text-sm font-bold text-zinc-700 hover:text-red-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 sm:self-auto"
-            >
-              <GoogleIcon className="h-5 w-5" />
-              View on Google Maps
-              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+            <a href={data.googleMapsUri} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-4 rounded-lg border border-sand-50/15 bg-ink-950/20 px-5 py-3 hover:bg-ink-950/30">
+              {data.rating !== null && <span className="font-display text-5xl font-bold leading-none">{data.rating.toFixed(1)}</span>}
+              <span>
+                <span className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />)}</span>
+                <span className="flex items-center gap-1.5 text-sm text-blaze-100">
+                  <GoogleIcon className="h-4 w-4" />
+                  {data.userRatingCount !== null ? `${data.userRatingCount.toLocaleString()} Google ratings` : 'View on Google Maps'}
+                </span>
+              </span>
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
           )}
         </div>
 
         {visibleReviews.length > 0 && (
-          <div className="mt-7 grid gap-4 lg:grid-cols-3">
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
             {visibleReviews.map((review) => (
-              <Card key={review.googleMapsUri} className="gap-4 border-zinc-200 py-5 shadow-sm">
-                <CardContent className="flex h-full flex-col px-5">
+              <figure key={review.googleMapsUri} className="flex flex-col rounded-xl border border-sand-50/10 bg-ink-950/25 p-6">
+                <span className="flex gap-0.5" aria-label={`${review.rating.toFixed(1)} out of 5`}>
+                  {[...Array(5)].map((_, i) => <Star key={i} className={`h-4 w-4 ${i < Math.round(review.rating) ? 'fill-amber-400 text-amber-400' : 'text-sand-50/30'}`} aria-hidden="true" />)}
+                </span>
+                <blockquote className="mt-4 line-clamp-6 flex-1 text-[15px] leading-relaxed text-sand-50/95">
+                  <p>{review.text}</p>
+                </blockquote>
+                <figcaption className="mt-6 border-t border-sand-50/10 pt-4">
                   <ReviewAuthor review={review} />
-                  <p className="mt-4 text-xs font-bold uppercase tracking-[0.12em] text-zinc-500">
-                    {review.rating.toFixed(1)} out of 5
-                  </p>
-                  <blockquote className="mt-3 flex-1 text-sm leading-6 text-zinc-700">
-                    <p>{review.text}</p>
-                  </blockquote>
-                  <a
-                    href={review.googleMapsUri}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 inline-flex min-h-11 items-center gap-2 border-t border-zinc-100 pt-3 text-sm font-bold text-zinc-600 hover:text-red-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
-                  >
-                    View this review on Google Maps
-                    <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                    <span className="sr-only"> (opens in a new tab)</span>
+                  <a href={review.googleMapsUri} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-blaze-100 hover:text-white hover:underline">
+                    View on Google Maps<ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span>
                   </a>
-                </CardContent>
-              </Card>
+                </figcaption>
+              </figure>
             ))}
           </div>
         )}
 
-        <p className="mt-5 text-xs leading-5 text-zinc-500">
+        <p className="mt-6 text-xs leading-5 text-blaze-100/70">
           Google Maps content. {visibleReviews.length > 0 && 'Showing the first reviews in the order returned by Google Maps. '}
           Reviews reflect individual customer opinions.
         </p>

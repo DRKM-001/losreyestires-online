@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sendToRavnPro } from '@/lib/ravnpro';
 
 export const runtime = 'edge';
 
@@ -296,13 +297,38 @@ export async function POST(request: NextRequest) {
 
   try {
     const lead = validateLead(await readJsonBody(request));
+    // Tire requests and messages also go to the shop's RavnPro inbox; hauling
+    // is its own business and stays email-only.
+    const ravnpro = lead.tireCondition === 'hauling'
+      ? Promise.resolve(false)
+      : sendToRavnPro({
+          kind: lead.tireCondition === 'contact request' ? 'web_contact' : 'web_quote',
+          name: lead.name,
+          phone: lead.phone,
+          email: lead.email,
+          summary: lead.tireCondition === 'contact request'
+            ? lead.additionalInfo.split('\n')[0].slice(0, 160) || 'Message from the website'
+            : [displayCondition(lead.tireCondition), lead.vehicleOrSizeInfo].filter(Boolean).join(' · '),
+          details: Object.fromEntries(
+            Object.entries({
+              request: lead.tireCondition,
+              condition: lead.tireCondition === 'new' || lead.tireCondition === 'used' ? lead.tireCondition : '',
+              size: lead.searchType === 'size' ? lead.vehicleOrSizeInfo : '',
+              vehicle: lead.searchType === 'vehicle' ? lead.vehicleOrSizeInfo : '',
+              message: lead.additionalInfo,
+            }).filter(([, v]) => v !== ''),
+          ),
+        });
     const apiKey = process.env.RESEND_API_KEY;
     // All inquiries deliver to the shop's sales inbox unless explicitly overridden.
     const emailTo = process.env.RFI_EMAIL_TO || 'sales@losreyestires.com';
     const emailFrom = process.env.RFI_EMAIL_FROM || 'Los Reyes Tires <no-reply@losreyestires.com>';
 
     if (!apiKey) {
-      console.error('RFI route unavailable: RESEND_API_KEY is required');
+      console.error('RFI route: RESEND_API_KEY is missing; trying RavnPro only');
+      if (await ravnpro) {
+        return NextResponse.json({ success: true, message: 'Request submitted successfully' }, { status: 200, headers: { 'Cache-Control': 'no-store' } });
+      }
       return jsonError('Lead delivery is temporarily unavailable', 503);
     }
 
@@ -325,7 +351,10 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       console.error(`RFI email provider failed with status ${response.status}`);
-      return jsonError('Lead delivery is temporarily unavailable', 502);
+      // The lead still counts if it reached the RavnPro inbox.
+      if (!(await ravnpro)) return jsonError('Lead delivery is temporarily unavailable', 502);
+    } else {
+      await ravnpro;
     }
 
     // Confirmation email to the submitter. The shop notification above is the

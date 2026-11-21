@@ -3,6 +3,7 @@ import { Clock, MapPin, MessageCircle, Navigation, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { generatePageMetadata } from '@/lib/metadata';
+import { PageHero } from '@/components/layout/PageHero';
 
 export const metadata = generatePageMetadata({
   title: 'El Cajon Tire Shop Location',
@@ -16,15 +17,8 @@ const directionsUrl = 'https://maps.google.com/?q=1245+N+1st+St+El+Cajon+CA+9202
 export default function LocationsPage() {
   return (
     <div className="min-h-screen bg-zinc-50">
-      <section className="border-b bg-white py-10 sm:py-14">
-        <div className="container">
-          <div className="max-w-3xl">
-            <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-red-600">El Cajon, California</p>
-            <h1 className="text-4xl font-black tracking-tight text-zinc-950 sm:text-5xl">Visit Los Reyes Tires</h1>
-            <p className="mt-4 text-lg leading-8 text-zinc-600">Call ahead to discuss what you need or stop by during shop hours.</p>
-          </div>
-        </div>
-      </section>
+      <PageHero chip="El Cajon, California" title={<>Visit <span className="display-italic text-blaze-500">Los Reyes Tires</span></>}
+        lede="Walk in during shop hours or call ahead and we'll have your size ready. 1245 N 1st St, open 7 days." />
 
       <section className="py-10 sm:py-14">
         <div className="container">

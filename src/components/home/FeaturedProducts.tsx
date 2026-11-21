@@ -55,17 +55,17 @@ export function FeaturedProducts() {
   }, []);
 
   return (
-    <section className="bg-white py-12 sm:py-16">
+    <section className="border-t border-sand-200 bg-white py-20 sm:py-24">
       <div className="container">
         <div className="mb-8 flex items-end justify-between gap-6">
           <div>
-            <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-red-600">Browse online</p>
-            <h2 className="text-3xl font-black tracking-tight text-zinc-900 sm:text-4xl">Current tire listings</h2>
-            <p className="mt-3 text-sm leading-6 text-zinc-600">
+            <p className="font-display text-sm font-bold uppercase tracking-widest text-blaze-600">Browse online</p>
+            <h2 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-stone-850 sm:text-5xl">Current tire listings</h2>
+            <p className="mt-4 text-lg text-stone-750">
               Confirm availability with our local team
             </p>
           </div>
-          <Button asChild className="hidden h-11 bg-red-600 font-bold hover:bg-red-700 sm:inline-flex">
+          <Button asChild className="hidden h-12 bg-blaze-500 px-6 font-bold uppercase tracking-wide shadow-blaze hover:bg-blaze-600 sm:inline-flex">
             <Link href="/tires">
               View Inventory
               <ArrowRight className="ml-2 h-4 w-4" />

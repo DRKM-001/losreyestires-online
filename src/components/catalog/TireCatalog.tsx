@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ProductCard } from '@/components/products/ProductCard';
+import { PageHero } from '@/components/layout/PageHero';
 import {
   fetchTires,
   isValidTire,
@@ -113,15 +114,8 @@ export function TireCatalog() {
 
   return (
     <main className="min-h-screen bg-zinc-50">
-      <section className="border-b bg-white py-10 sm:py-14">
-        <div className="container">
-          <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-red-600">Current listings</p>
-          <h1 className="text-4xl font-black tracking-tight text-zinc-950 sm:text-5xl">Tire inventory</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-zinc-600">
-            Search the connected inventory by exact tire size or brand, then ask the El Cajon team to confirm fit, pricing, and availability.
-          </p>
-        </div>
-      </section>
+      <PageHero chip="Current listings" title={<>Tire <span className="display-italic text-blaze-500">inventory</span></>}
+        lede="Search the connected inventory by exact tire size or brand, then ask the El Cajon team to confirm fit, pricing, and availability." />
 
       <div className="container py-8 sm:py-10">
         <form
