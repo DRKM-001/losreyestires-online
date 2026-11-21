@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sendToRavnPro } from '@/lib/ravnpro';
 
 export const runtime = 'edge';
 
@@ -67,10 +68,40 @@ export async function POST(request: NextRequest) {
   ];
   const filled = lines.filter(([, v]) => v);
 
+  // The shop's RavnPro inbox gets the same request, alongside the email.
+  const what = mode === 'package' ? 'wheel + tire combo' : mode === 'wheels' ? 'wheels' : '';
+  const size = str(body.size, 24);
+  const vehicle = str(body.vehicle, 120);
+  const summary = [
+    [qty ? `${qty} ×` : '', size || what || 'Tires', condition && condition !== 'either' ? condition : condition === 'either' ? 'new or used' : ''].filter(Boolean).join(' '),
+    vehicle,
+  ].filter(Boolean).join(' · ');
+  const ravnpro = sendToRavnPro({
+    kind: 'web_quote',
+    name: str(body.name, 80),
+    phone,
+    summary,
+    details: Object.fromEntries(
+      Object.entries({
+        size,
+        qty: qty ? Number(qty) : '',
+        condition,
+        vehicle,
+        mode,
+        wheel_size: str(body.wheelSize, 6),
+        style: str(body.style, 80),
+        lang: str(body.lang, 4),
+        page: str(body.source, 120),
+      }).filter(([, v]) => v !== ''),
+    ) as Record<string, string | number>,
+  });
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.error('Quote route unavailable: RESEND_API_KEY is required');
-    return fail('Lead delivery is temporarily unavailable', 503);
+    console.error('Quote route: RESEND_API_KEY is missing; trying RavnPro only');
+    return (await ravnpro)
+      ? NextResponse.json({ delivered: ['ravnpro'] }, { headers: { 'Cache-Control': 'no-store' } })
+      : fail('Lead delivery is temporarily unavailable', 503);
   }
 
   const subjectBits = [str(body.size, 24), str(body.vehicle, 60)].filter(Boolean).join(' · ');
@@ -93,9 +124,10 @@ export async function POST(request: NextRequest) {
     }),
   }).catch(() => null);
 
-  if (!res || !res.ok) {
-    console.error(`Quote email failed${res ? ` with status ${res.status}` : ''}`);
-    return fail('Lead delivery is temporarily unavailable', 502);
-  }
-  return NextResponse.json({ delivered: ['email'] }, { headers: { 'Cache-Control': 'no-store' } });
+  const inRavnPro = await ravnpro;
+  const emailed = !!res && res.ok;
+  if (!emailed) console.error(`Quote email failed${res ? ` with status ${res.status}` : ''}`);
+  const delivered = [...(emailed ? ['email'] : []), ...(inRavnPro ? ['ravnpro'] : [])];
+  if (!delivered.length) return fail('Lead delivery is temporarily unavailable', 502);
+  return NextResponse.json({ delivered }, { headers: { 'Cache-Control': 'no-store' } });
 }
