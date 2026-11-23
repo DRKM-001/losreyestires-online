@@ -14,7 +14,6 @@ import { Footer } from "@/components/layout/Footer";
 import { ContactDock } from "@/components/layout/ContactDock";
 import { MarketingSections } from "@/components/layout/MarketingSections";
 import { siteConfig } from "@/lib/metadata";
-import { AuthProvider } from "@/contexts/AuthContext";
 
 export const viewport: Viewport = { themeColor: "#0d0b08", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
@@ -119,14 +118,11 @@ export default function RootLayout({
             gtag('config', 'G-3SGF1FFFST');
           `}
         </Script>
-
-        <AuthProvider>
-          <Header />
-          <main id="main" className="min-h-screen">{children}</main>
-          <MarketingSections />
-          <Footer />
-          <ContactDock />
-        </AuthProvider>
+        <Header />
+        <main id="main" className="min-h-screen">{children}</main>
+        <MarketingSections />
+        <Footer />
+        <ContactDock />
       </body>
     </html>
   );
