@@ -46,9 +46,13 @@ export async function POST(request: NextRequest) {
     return fail('Request body must be JSON', 400);
   }
 
+  // Two ways in: the WhatsApp hand-off (logged here in the background, no
+  // phone yet — the conversation continues on WhatsApp) and the "No WhatsApp?"
+  // form, which must carry a phone and also goes to the shop by email.
+  const viaWhatsApp = body.direct !== true;
   const phone = str(body.phone, 40);
   const digits = phone.replace(/\D/g, '');
-  if (digits.length < 10 || digits.length > 15) return fail('Phone number is invalid', 400);
+  if (!viaWhatsApp && (digits.length < 10 || digits.length > 15)) return fail('Phone number is invalid', 400);
 
   const mode = MODES.has(str(body.mode, 10)) ? str(body.mode, 10) : 'tires';
   const condition = CONDITIONS.has(str(body.condition, 10)) ? str(body.condition, 10) : '';
@@ -80,7 +84,7 @@ export async function POST(request: NextRequest) {
     kind: 'web_quote',
     name: str(body.name, 80),
     phone,
-    summary,
+    summary: viaWhatsApp ? `WhatsApp · ${summary}` : summary,
     details: Object.fromEntries(
       Object.entries({
         size,
@@ -92,9 +96,17 @@ export async function POST(request: NextRequest) {
         style: str(body.style, 80),
         lang: str(body.lang, 4),
         page: str(body.source, 120),
+        channel: viaWhatsApp ? 'whatsapp' : 'form',
       }).filter(([, v]) => v !== ''),
     ) as Record<string, string | number>,
   });
+
+  if (viaWhatsApp) {
+    // Logged for the front desk; the customer is already in WhatsApp.
+    return (await ravnpro)
+      ? NextResponse.json({ delivered: ['ravnpro'] }, { headers: { 'Cache-Control': 'no-store' } })
+      : fail('Lead delivery is temporarily unavailable', 503);
+  }
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {

@@ -16,6 +16,7 @@ export function QuoteBox({ mode, size }: { mode?: QuoteMode; size?: string }) {
       sizeHelpHref: '/encyclopedia',
       onEvent: (name, data) => track(name, data),
       directEndpoint: '/api/quote',
+      logEndpoint: '/api/quote',
     }} />
   );
 }
