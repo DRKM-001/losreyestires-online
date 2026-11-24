@@ -60,14 +60,15 @@ export default function QuoteCard({ lang, config }: { lang: Lang; config: QuoteC
   const [typed, setTyped] = useState("");
   useEffect(() => { if (draft.size !== typed && document.activeElement?.id !== "q-size") setTyped(draft.size); }, [draft.size]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [direct, setDirect] = useState(false);
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [dState, setDState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const phoneOk = phone.replace(/\D/g, "").length >= 10;
+  const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim());
+  const canSend = !!config.directEndpoint && phoneOk && emailOk && hasSize;
 
   async function sendDirect() {
-    if (!config.directEndpoint || !phoneOk || !hasSize) return;
+    if (!canSend || !config.directEndpoint) return;
     setDState("sending");
     try {
       const r = await fetch(config.directEndpoint, { method: "POST", headers: { "content-type": "application/json" },
@@ -190,49 +191,47 @@ export default function QuoteCard({ lang, config }: { lang: Lang; config: QuoteC
         </div>
 
         {/* What will actually be sent */}
-        <div className="mt-5 rounded-lg border border-wa-500/25 bg-wa-500/[0.07] px-3.5 py-2.5" aria-live="polite">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-wa-500">{s.preview}</p>
+        <div className="mt-5 rounded-lg border border-sand-200/15 bg-ink-950/40 px-3.5 py-2.5" aria-live="polite">
+          <p className="text-[11px] font-bold uppercase tracking-wide text-sand-200/60">{s.preview}</p>
           <p className="mt-0.5 whitespace-pre-line text-sm text-sand-100">{message}</p>
         </div>
 
-        {/* A real link, so it works even before JavaScript loads. */}
-        <a href={href} target="_blank" rel="noopener noreferrer" onClick={send}
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-wa-500 px-6 py-3.5 text-center font-bold uppercase tracking-wide text-ink-950 transition-colors hover:bg-wa-600">
-          <WhatsAppGlyph className="h-5 w-5 shrink-0" />{hasSize ? s.sendWith(btnLabel) : s.send}
-        </a>
-        <div className="mt-3 flex flex-col items-center gap-1 text-center text-xs text-sand-200/60">
+        {/* Primary: the request lands in the shop's inbox as a conversation (phone + email). */}
+        {config.directEndpoint ? (
+          dState === "sent" ? (
+            <p className="mt-4 rounded-lg border border-wa-500/30 bg-wa-500/10 px-3.5 py-3 text-sm font-semibold text-wa-500" aria-live="polite">{s.directSent(phone)}</p>
+          ) : (
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <div>
+                <label htmlFor="q-phone" className={label}>{s.phone}</label>
+                <input id="q-phone" type="tel" inputMode="tel" autoComplete="tel" className={field} placeholder="(619) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="q-email" className={label}>{s.email}</label>
+                <input id="q-email" type="email" inputMode="email" autoComplete="email" className={field} placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+              </div>
+              <button type="button" onClick={sendDirect} disabled={!canSend || dState === "sending"}
+                className="sm:col-span-2 inline-flex w-full items-center justify-center gap-2 rounded-md bg-blaze-500 px-6 py-3.5 font-bold uppercase tracking-wide text-white shadow-blaze transition-colors hover:bg-blaze-600 disabled:opacity-40 disabled:shadow-none">
+                {dState === "sending" ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}{s.directSend}
+              </button>
+              <p className="sm:col-span-2 text-center text-xs text-sand-200/60">{dState === "error" ? <span className="text-amber-300">{s.directError}</span> : s.directHint}</p>
+            </div>
+          )
+        ) : null}
+
+        {/* Secondary: WhatsApp. A real link, so it works even before JavaScript loads. */}
+        <div className="mt-4 flex flex-col items-center gap-1.5 border-t border-sand-200/10 pt-4 text-center text-sm">
+          <a href={href} target="_blank" rel="noopener noreferrer" onClick={send} className="inline-flex items-center gap-2 font-semibold text-wa-500 hover:text-wa-600">
+            <WhatsAppGlyph className="h-4 w-4 shrink-0" />{config.directEndpoint ? <>{s.orWa} <span className="underline">{s.waHint}</span></> : (hasSize ? s.sendWith(btnLabel) : s.send)}
+          </a>
           {mode === "tires" && (
             <a href={whatsappUrl(config.whatsapp, photoMessage[lang])} target="_blank" rel="noopener noreferrer" onClick={() => config.onEvent?.("whatsapp_photo")}
-               className="inline-flex items-center gap-1.5 hover:text-sand-50">
+               className="inline-flex items-center gap-1.5 text-xs text-sand-200/60 hover:text-sand-50">
               <Camera className="h-3.5 w-3.5" />{s.photo} <span className="underline">{s.photoLink}</span>
             </a>
           )}
-          <span className="text-sand-200/40">{s.opens(config.whatsappDisplay)}</span>
-          {config.directEndpoint && !direct && (
-            <button type="button" onClick={() => setDirect(true)} className="mt-1 underline hover:text-sand-50">{s.noWa}</button>
-          )}
+          <span className="text-xs text-sand-200/40">{s.opens(config.whatsappDisplay)}</span>
         </div>
-        {config.directEndpoint && direct && (
-          <div className="mt-4 rounded-lg border border-sand-200/15 bg-ink-950/40 p-4">
-            {dState === "sent" ? (
-              <p className="text-sm font-semibold text-wa-500" aria-live="polite">{s.directSent(phone)}</p>
-            ) : (
-              <>
-                <label htmlFor="q-phone" className={label}>{s.phone}</label>
-                <input id="q-phone" type="tel" inputMode="tel" autoComplete="tel" className={field} placeholder="(619) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                <label htmlFor="q-email" className={`${label} mt-3`}>{s.email}</label>
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <input id="q-email" type="email" inputMode="email" autoComplete="email" className={field} placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-                  <button type="button" onClick={sendDirect} disabled={!phoneOk || !hasSize || dState === "sending"}
-                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-blaze-500 px-5 py-2.5 font-bold uppercase tracking-wide text-white disabled:opacity-40">
-                    {dState === "sending" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}{s.directSend}
-                  </button>
-                </div>
-                <p className="mt-2 text-xs text-sand-200/60">{dState === "error" ? <span className="text-amber-300">{s.directError}</span> : s.directHint}</p>
-              </>
-            )}
-          </div>
-        )}
       </form>
     </div>
   );
