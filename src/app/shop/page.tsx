@@ -8,7 +8,7 @@ import { listProducts } from '@/lib/store';
 
 export const metadata = generatePageMetadata({
   title: 'Shop Method Race Wheels — Ships to Your Door',
-  description: 'Method Race Wheels at MAP pricing, shipped from the warehouse to your door. Filter by bolt pattern and size. Los Reyes Tires, El Cajon.',
+  description: 'Buy Method Race Wheels online, shipped to your door, mounted and balanced at Los Reyes Tires in El Cajon. Filter by bolt pattern and size.',
   path: '/shop',
   keywords: ['Method Race Wheels', 'buy wheels online', 'Method 305 NV', 'Method 703', 'off-road wheels San Diego'],
 });
@@ -44,7 +44,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   return (
     <main className="min-h-screen bg-sand-50">
       <PageHero chip="Ships to your door" title={<>Method <span className="display-italic text-blaze-500">Race Wheels</span></>}
-        lede="Every Method wheel at MAP pricing, shipped straight from the warehouse. Want them mounted? Bring them in when they land — we install what we sell." />
+        lede="Every Method wheel, shipped to your door in 1–3 business days. When they land, bring them in — we mount and balance." />
 
       <section className="container-x py-8 sm:py-10">
         <div className="flex flex-col gap-4">
@@ -100,7 +100,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             {[
               ['Pick your wheels', 'Filter by your bolt pattern. Not sure what you need? WhatsApp us the year, make and model.'],
               ['Pay online', 'Card, Apple Pay or Google Pay. Tax is calculated at checkout; shipping is shown before you pay.'],
-              ['Delivered, then installed', 'Shipped from the Method warehouse to your door in 1–3 business days. Bring them in and we mount and balance.'],
+              ['Delivered, then installed', 'At your door in 1–3 business days. Bring them in and we mount and balance.'],
             ].map(([t, d], i) => (
               <li key={t} className="flex gap-3">
                 <span className="font-display text-3xl font-bold text-blaze-500">{i + 1}</span>

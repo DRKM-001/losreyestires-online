@@ -88,7 +88,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                     <div className="mt-2 flex flex-wrap gap-2">
                       {mine ? <span className="rounded-md border-2 border-blaze-500 bg-white px-3 py-1.5 text-sm font-semibold text-stone-850">{p.spec.size} · {p.spec.bolt_pattern} · {fmt('offset_mm', p.spec.offset_mm ?? 0)}</span> : null}
                       {opts.map((s) => (
-                        <Link key={s.id} href={`/shop/${s.id}`} className={`rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors hover:border-blaze-500 ${s.available > 0 ? 'border-sand-300 bg-white text-stone-850' : 'border-sand-200 bg-sand-100 text-stone-750/60'}`} title={s.available > 0 ? `${s.available} in stock` : 'Backorder'}>
+                        <Link key={s.id} href={`/shop/${s.id}`} className={`rounded-md border px-3 py-1.5 text-sm font-semibold transition-colors hover:border-blaze-500 ${s.available > 0 ? 'border-sand-300 bg-white text-stone-850' : 'border-sand-200 bg-sand-100 text-stone-750/60'}`} title={s.available > 0 ? 'In stock' : 'Backorder'}>
                           {s.size} · {s.bolt_pattern} · {s.offset_mm && Number(s.offset_mm) > 0 ? '+' : ''}{s.offset_mm ?? 0} mm
                         </Link>
                       ))}

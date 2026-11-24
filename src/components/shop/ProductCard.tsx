@@ -25,7 +25,7 @@ export function ProductCard({ p }: { p: StoreItem }) {
         <div className="mt-auto flex items-baseline gap-2 pt-3">
           <span className="font-display text-2xl font-bold text-stone-850">{money(p.price_cents)}</span>
           {compare ? <span className="text-sm text-stone-750/60 line-through">{money(compare)}</span> : null}
-          <span className="ml-auto text-xs text-stone-750/70">{p.available > 0 ? `${p.available} in stock` : p.eta_30 > 0 ? `${p.eta_30} coming` : 'Sold out'}</span>
+          <span className="ml-auto text-xs text-stone-750/70">{p.available > 0 ? 'In stock' : p.eta_30 > 0 ? 'Backorder' : 'Sold out'}</span>
         </div>
       </div>
     </Link>
