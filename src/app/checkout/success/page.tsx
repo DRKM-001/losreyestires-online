@@ -17,6 +17,7 @@ type PublicOrder = {
   tax_cents: number;
   total_cents: number;
   ship_to: Record<string, string> | null;
+  deliver?: 'address' | 'shop';
 };
 
 // Back from Stripe. The webhook usually lands before the customer does; if
@@ -76,7 +77,7 @@ export default function SuccessPage() {
                 <div className="flex justify-between"><dt className="text-stone-750">Tax</dt><dd>{money(order.tax_cents)}</dd></div>
                 <div className="flex justify-between text-base font-bold"><dt>Paid</dt><dd className="font-display text-xl">{money(order.total_cents)}</dd></div>
               </dl>
-              {order.ship_to ? <p className="mt-4 text-sm text-stone-750">Ships to {[order.ship_to.line1, order.ship_to.city, order.ship_to.state, order.ship_to.postal_code].filter(Boolean).join(', ')}.</p> : null}
+              {order.deliver === 'shop' ? <p className="mt-4 text-sm text-stone-750">Shipping to our shop in El Cajon — we&apos;ll call you when it lands to book the mounting and balancing.</p> : order.ship_to ? <p className="mt-4 text-sm text-stone-750">Ships to {[order.ship_to.line1, order.ship_to.city, order.ship_to.state, order.ship_to.postal_code].filter(Boolean).join(', ')}.</p> : null}
             </>
           ) : null}
           <div className="mt-8 flex flex-wrap gap-3">
