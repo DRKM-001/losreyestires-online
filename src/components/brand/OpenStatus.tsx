@@ -15,12 +15,12 @@ export function OpenStatus({ className = '' }: { className?: string }) {
     return () => { clearTimeout(first); clearInterval(id); };
   }, []);
 
-  let text = 'Open 7 days · WhatsApp answered anytime';
+  let text = 'Open 7 days · Messages answered anytime';
   if (s) {
-    if (s.open) text = `Open now until ${fmtHour(s.closesAt!)} · WhatsApp answered anytime`;
+    if (s.open) text = `Open now until ${fmtHour(s.closesAt!)} · Messages answered anytime`;
     else {
       const when = s.opensDay === s.day ? 'today' : s.opensDay === (s.day + 1) % 7 ? 'tomorrow' : DAYS[s.opensDay!];
-      text = `Closed, opens ${when} at ${fmtHour(s.opensAt!)} · WhatsApp answered anytime`;
+      text = `Closed, opens ${when} at ${fmtHour(s.opensAt!)} · Messages answered anytime`;
     }
   }
   return (
