@@ -7,11 +7,13 @@ import { Building2, ChevronDown, MapPin, Menu, Phone, Truck, X } from 'lucide-re
 import { Wordmark } from '@/components/brand/Wordmark';
 import { WhatsAppIcon } from '@/components/brand/WhatsAppIcon';
 import { ShopWaLink } from '@/components/brand/ShopWaLink';
+import { CartButton } from '@/components/shop/CartButton';
 import { site, track } from '@/lib/site';
 
 const navigation = [
   { name: 'Tires', href: '/tires' },
   { name: 'Wheels', href: '/wheels' },
+  { name: 'Shop', href: '/shop' },
   { name: 'Visit the Shop', href: '/locations' },
   { name: 'Contact', href: '/contact' },
 ];
@@ -56,7 +58,7 @@ export function Header() {
           <Link href="/" aria-label={`${site.name} home`}><Wordmark /></Link>
 
           <nav aria-label="Main" className="hidden items-center gap-6 lg:flex xl:gap-7">
-            {navigation.slice(0, 2).map((l) => <Link key={l.href} href={l.href} className={navLink}>{l.name}</Link>)}
+            {navigation.slice(0, 3).map((l) => <Link key={l.href} href={l.href} className={navLink}>{l.name}</Link>)}
             <div className="group relative">
               <button type="button" aria-haspopup="true" className={`${navLink} inline-flex items-center gap-1`}>
                 Services<ChevronDown className="h-3.5 w-3.5 transition-transform group-focus-within:rotate-180 group-hover:rotate-180" aria-hidden="true" />
@@ -80,10 +82,11 @@ export function Header() {
                 </div>
               </div>
             </div>
-            {navigation.slice(2).map((l) => <Link key={l.href} href={l.href} className={navLink}>{l.name}</Link>)}
+            {navigation.slice(3).map((l) => <Link key={l.href} href={l.href} className={navLink}>{l.name}</Link>)}
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <CartButton />
             <a href={quoteHref} className="whitespace-nowrap rounded-md bg-blaze-500 px-3.5 py-2 text-sm font-bold uppercase tracking-wide text-white shadow-sm transition-colors hover:bg-blaze-600 sm:px-4">
               Get a Quote
             </a>
@@ -96,7 +99,7 @@ export function Header() {
         {open && (
           <nav aria-label="Mobile" className="border-t border-sand-200 bg-sand-50 lg:hidden">
             <div className="container-x flex flex-col py-3">
-              {[...navigation.slice(0, 2), ...services, { name: 'Financing', href: '/financing' }, ...navigation.slice(2)].map((l) => (
+              {[...navigation.slice(0, 3), ...services, { name: 'Financing', href: '/financing' }, ...navigation.slice(3)].map((l) => (
                 <Link key={l.href} href={l.href} className="border-b border-sand-200/70 py-3 font-display text-lg font-semibold uppercase tracking-wide text-stone-850">{l.name}</Link>
               ))}
               <div className="grid grid-cols-2 gap-2 pt-4">

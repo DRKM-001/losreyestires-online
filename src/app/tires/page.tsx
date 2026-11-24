@@ -51,7 +51,7 @@ export default function TiresPage() {
           <WhatsAppIcon className="h-4 w-4" />
           WhatsApp
         </ShopWaLink>
-        <a href={`tel:${site.phoneTel ?? '+16194406098'}`} className={heroBtn.ghost}>
+        <a href={site.phoneHref} className={heroBtn.ghost}>
           <Phone className="h-4 w-4 text-blaze-400" aria-hidden="true" />
           Call 619-440-6098
         </a>

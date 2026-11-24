@@ -32,6 +32,8 @@ export const site = {
     { d: 'Sunday', t: '8AM–3PM' },
   ],
   brands: ['Michelin', 'BFGoodrich', 'Goodyear', 'Bridgestone', 'Continental', 'Method', 'Fuel', 'TSW'],
+  // The online store's catalog (RavnPro → Store). Public, read-only.
+  storeApi: 'https://v2.ravnpro.com/api/store/f734df0f-9a67-41b4-b3c2-acce6cdebcf9',
 } as const;
 
 export type OpenState = {

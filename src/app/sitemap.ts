@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/locations',
     '/financing',
     '/tires',
+    '/shop',
     '/wheels',
     '/fleet',
     '/hauling',
