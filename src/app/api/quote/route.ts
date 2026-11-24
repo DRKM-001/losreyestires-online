@@ -75,11 +75,14 @@ export async function POST(request: NextRequest) {
   const filled = lines.filter(([, v]) => v);
 
   // The shop's RavnPro inbox gets the same request, alongside the email.
-  const what = mode === 'package' ? 'wheel + tire combo' : mode === 'wheels' ? 'wheels' : '';
+  const wheel = str(body.wheelSize, 6);
+  const style = str(body.style, 80);
+  const wheelsLabel = [wheel ? `${wheel}″ wheels` : 'wheels', style ? style.toLowerCase() : ''].filter(Boolean).join(', ');
+  const what = mode === 'package' ? `wheel + tire combo${wheel ? ` (${wheel}″)` : ''}` : mode === 'wheels' ? wheelsLabel : '';
   const size = str(body.size, 24);
   const vehicle = str(body.vehicle, 120);
   const summary = [
-    [qty ? `${qty} ×` : '', size || what || 'Tires', condition && condition !== 'either' ? condition : condition === 'either' ? 'new or used' : ''].filter(Boolean).join(' '),
+    [qty ? `${qty} ×` : '', mode === 'wheels' ? what : size || what || 'Tires', mode === 'wheels' ? '' : condition && condition !== 'either' ? condition : condition === 'either' ? 'new or used' : ''].filter(Boolean).join(' '),
     vehicle,
   ].filter(Boolean).join(' · ');
   const ravnpro = sendToRavnPro({
