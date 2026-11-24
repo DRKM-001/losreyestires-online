@@ -12,6 +12,9 @@ export type StoreItem = {
   name: string;
   status: 'active' | 'closeout' | 'coming_soon' | 'discontinued';
   price_cents: number;
+  /** The regular price when a sale is on; null otherwise. */
+  compare_cents?: number | null;
+  sale?: { bp: number; label: string; ends: string | null } | null;
   msrp_cents: number | null;
   available: number;
   eta_30: number;
@@ -22,6 +25,7 @@ export type StoreItem = {
 export type StoreList = {
   total: number;
   items: StoreItem[];
+  sale?: { bp: number; label: string; ends: string | null } | null;
   facets: { brands: string[]; bolt_patterns: string[]; diameters: number[] };
 };
 
@@ -86,8 +90,8 @@ export const titleCase = (s: string) => s.toLowerCase().replace(/(^|[\s/-])([a-z
 
 /** What the shipping/availability line says for a product. */
 export function availabilityLine(p: { available: number; eta_30: number; status: string }, qty = 1) {
-  if (p.available >= qty) return { ok: true, text: 'In stock at the warehouse — ships in 1–3 business days' };
+  if (p.available >= qty) return { ok: true, text: 'In stock — ships in 1–3 business days' };
   if (p.available > 0) return { ok: true, text: `Only ${p.available} in stock — the rest ships when it lands` };
-  if (p.eta_30 > 0) return { ok: false, text: `Backordered — ${p.eta_30} arriving within 30 days` };
+  if (p.eta_30 > 0) return { ok: false, text: 'Backordered — more arriving within 30 days' };
   return { ok: false, text: 'Out of stock — WhatsApp us for an ETA' };
 }

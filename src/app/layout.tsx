@@ -10,6 +10,7 @@ import "@fontsource/inter/latin-700.css";
 import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
+import { SaleStrip } from "@/components/promo/SaleStrip";
 import { Footer } from "@/components/layout/Footer";
 import { ContactDock } from "@/components/layout/ContactDock";
 import { MarketingSections } from "@/components/layout/MarketingSections";
@@ -119,6 +120,7 @@ export default function RootLayout({
           `}
         </Script>
         <Header />
+        <SaleStrip />
         <main id="main" className="min-h-screen">{children}</main>
         <MarketingSections />
         <Footer />

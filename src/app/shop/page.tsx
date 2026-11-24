@@ -2,12 +2,13 @@ import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { PageHero } from '@/components/layout/PageHero';
 import { ProductCard } from '@/components/shop/ProductCard';
+import { SaleLayout } from '@/components/promo/SaleRail';
 import { generatePageMetadata } from '@/lib/metadata';
 import { listProducts } from '@/lib/store';
 
 export const metadata = generatePageMetadata({
   title: 'Shop Method Race Wheels — Ships to Your Door',
-  description: 'Method Race Wheels at MAP pricing, shipped from the warehouse to your door. Filter by bolt pattern and size. Los Reyes Tires, El Cajon.',
+  description: 'Buy Method Race Wheels online, shipped to your door, mounted and balanced at Los Reyes Tires in El Cajon. Filter by bolt pattern and size.',
   path: '/shop',
   keywords: ['Method Race Wheels', 'buy wheels online', 'Method 305 NV', 'Method 703', 'off-road wheels San Diego'],
 });
@@ -43,7 +44,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   return (
     <main className="min-h-screen bg-sand-50">
       <PageHero chip="Ships to your door" title={<>Method <span className="display-italic text-blaze-500">Race Wheels</span></>}
-        lede="Every Method wheel at MAP pricing, shipped straight from the warehouse. Want them mounted? Bring them in when they land — we install what we sell." />
+        lede="Every Method wheel, shipped to your door in 1–3 business days. When they land, bring them in — we mount and balance." />
 
       <section className="container-x py-8 sm:py-10">
         <div className="flex flex-col gap-4">
@@ -73,8 +74,9 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           </p>
         </div>
 
+        <SaleLayout>
         {data?.items.length ? (
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div id="wheels" className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data.items.map((p) => <ProductCard key={p.id} p={p} />)}
           </div>
         ) : (
@@ -92,13 +94,15 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           </nav>
         ) : null}
 
+        </SaleLayout>
+
         <div className="mt-14 rounded-xl border border-sand-200 bg-white p-6 shadow-card sm:p-8">
           <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-stone-850 sm:text-3xl">How ordering works</h2>
           <ol className="mt-4 grid gap-4 sm:grid-cols-3">
             {[
               ['Pick your wheels', 'Filter by your bolt pattern. Not sure what you need? WhatsApp us the year, make and model.'],
               ['Pay online', 'Card, Apple Pay or Google Pay. Tax is calculated at checkout; shipping is shown before you pay.'],
-              ['Delivered, then installed', 'Shipped from the Method warehouse to your door in 1–3 business days. Bring them in and we mount and balance.'],
+              ['Delivered, then installed', 'At your door in 1–3 business days. Bring them in and we mount and balance.'],
             ].map(([t, d], i) => (
               <li key={t} className="flex gap-3">
                 <span className="font-display text-3xl font-bold text-blaze-500">{i + 1}</span>
