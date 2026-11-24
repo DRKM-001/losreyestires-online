@@ -42,7 +42,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const p = await getProduct((await params).id);
   if (!p) notFound();
   const avail = availabilityLine(p, 1);
-  const sale = p.msrp_cents && p.msrp_cents > p.price_cents;
+  const compare = p.compare_cents ?? null;
   const finishes = Array.from(new Set([p.spec.finish, ...p.siblings.map((s) => s.finish)].filter(Boolean).map(String)));
   const sizesForFinish = (finish: string) => p.siblings.filter((s) => s.finish === finish);
   const defaultQty = p.kind === 'wheel' ? 4 : 1;
@@ -63,7 +63,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <div className="mt-5 flex items-baseline gap-3">
             <span className="font-display text-4xl font-bold text-stone-850">{money(p.price_cents)}</span>
             <span className="text-sm text-stone-750/70">each</span>
-            {sale ? <span className="text-stone-750/60 line-through">{money(p.msrp_cents!)}</span> : null}
+            {compare ? <span className="text-stone-750/60 line-through">{money(compare)}</span> : null}
+            {compare && p.sale ? <span className="clip-slash bg-blaze-500 px-2.5 py-1 text-[11px] font-bold uppercase tracking-widest text-white">{p.sale.label}</span> : null}
             {p.status === 'closeout' ? <span className="clip-slash bg-blaze-500 px-2.5 py-1 text-[11px] font-bold uppercase tracking-widest text-white">Closeout</span> : null}
           </div>
           <p className={`mt-2 flex items-center gap-2 text-sm font-semibold ${avail.ok ? 'text-green-700' : 'text-stone-750'}`}>

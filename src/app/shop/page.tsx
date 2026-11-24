@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { PageHero } from '@/components/layout/PageHero';
 import { ProductCard } from '@/components/shop/ProductCard';
+import { SaleRail } from '@/components/promo/SaleRail';
 import { generatePageMetadata } from '@/lib/metadata';
 import { listProducts } from '@/lib/store';
 
@@ -73,8 +74,9 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           </p>
         </div>
 
+        <SaleRail />
         {data?.items.length ? (
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div id="wheels" className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data.items.map((p) => <ProductCard key={p.id} p={p} />)}
           </div>
         ) : (

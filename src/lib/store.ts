@@ -12,6 +12,9 @@ export type StoreItem = {
   name: string;
   status: 'active' | 'closeout' | 'coming_soon' | 'discontinued';
   price_cents: number;
+  /** The regular price when a sale is on; null otherwise. */
+  compare_cents?: number | null;
+  sale?: { bp: number; label: string; ends: string | null } | null;
   msrp_cents: number | null;
   available: number;
   eta_30: number;
@@ -22,6 +25,7 @@ export type StoreItem = {
 export type StoreList = {
   total: number;
   items: StoreItem[];
+  sale?: { bp: number; label: string; ends: string | null } | null;
   facets: { brands: string[]; bolt_patterns: string[]; diameters: number[] };
 };
 
