@@ -9,7 +9,9 @@ import { WhatsAppIcon } from '@/components/brand/WhatsAppIcon';
 import { availabilityLine, getProduct, money, specLine, titleCase } from '@/lib/store';
 import { site } from '@/lib/site';
 
-export const revalidate = 120;
+// Cloudflare Pages: server-rendered pages run on the edge; no ISR there, so each view fetches fresh stock.
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const p = await getProduct((await params).id);

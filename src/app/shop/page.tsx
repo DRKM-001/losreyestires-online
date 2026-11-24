@@ -12,7 +12,9 @@ export const metadata = generatePageMetadata({
   keywords: ['Method Race Wheels', 'buy wheels online', 'Method 305 NV', 'Method 703', 'off-road wheels San Diego'],
 });
 
-export const revalidate = 120;
+// Cloudflare Pages: server-rendered pages run on the edge; no ISR there, so each view fetches fresh stock.
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 const PAGE = 48;
 
