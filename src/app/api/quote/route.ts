@@ -52,6 +52,8 @@ export async function POST(request: NextRequest) {
   const viaWhatsApp = body.direct !== true;
   const phone = str(body.phone, 40);
   const email = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(str(body.email, 120)) ? str(body.email, 120).toLowerCase() : '';
+  // The customer's own words, when they edited the generated message.
+  const note = typeof body.message === 'string' ? body.message.replace(/\r/g, '').trim().slice(0, 1000) : '';
   const digits = phone.replace(/\D/g, '');
   if (!viaWhatsApp && (digits.length < 10 || digits.length > 15)) return fail('Phone number is invalid', 400);
 
@@ -69,6 +71,7 @@ export async function POST(request: NextRequest) {
     ['Quantity', qty],
     ['Type', condition],
     ['Vehicle', str(body.vehicle, 120)],
+    ['Message', note],
     ['Language', str(body.lang, 4) === 'es' ? 'Spanish' : 'English'],
     ['Page', str(body.source, 120)],
   ];
@@ -102,6 +105,7 @@ export async function POST(request: NextRequest) {
         style: str(body.style, 80),
         lang: str(body.lang, 4),
         page: str(body.source, 120),
+        message: note,
         channel: viaWhatsApp ? 'whatsapp' : 'form',
       }).filter(([, v]) => v !== ''),
     ) as Record<string, string | number>,

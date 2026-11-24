@@ -55,7 +55,11 @@ function logLead(endpoint: string, body: object) {
 
 export default function QuoteCard({ lang, config }: { lang: Lang; config: QuoteConfig }) {
   const s = quoteStrings[lang];
-  const { href, message, size, hasSize, valid, label: btnLabel, mode, draft } = useQuoteLink(config.whatsapp, lang);
+  const { message: generated, size, hasSize, valid, label: btnLabel, mode, draft } = useQuoteLink(config.whatsapp, lang);
+  // The message follows the form until the customer types in it; then their words are sent as written.
+  const [custom, setCustom] = useState<string | null>(null);
+  const message = custom ?? generated;
+  const href = whatsappUrl(config.whatsapp, message);
   // Controlled input shows what the customer typed; the message uses the normalized size.
   const [typed, setTyped] = useState("");
   useEffect(() => { if (draft.size !== typed && document.activeElement?.id !== "q-size") setTyped(draft.size); }, [draft.size]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -73,7 +77,7 @@ export default function QuoteCard({ lang, config }: { lang: Lang; config: QuoteC
     try {
       const r = await fetch(config.directEndpoint, { method: "POST", headers: { "content-type": "application/json" },
         body: JSON.stringify({ mode, size: size || undefined, wheelSize: normalizeWheelSize(draft.wheelSize) || undefined, style: draft.style || undefined, qty: draft.qty, condition: draft.condition,
-          vehicle: draft.vehicle || undefined, name: draft.name || undefined, phone, email: email.trim() || undefined, lang, source: location.pathname, direct: true }) });
+          vehicle: draft.vehicle || undefined, name: draft.name || undefined, phone, email: email.trim() || undefined, message: custom ?? undefined, lang, source: location.pathname, direct: true }) });
       const j = await r.json().catch(() => ({}));
       if (r.ok && Array.isArray(j.delivered) && j.delivered.length > 0) { setDState("sent"); config.onEvent?.("quote_direct", { mode, size: size || "" }); }
       else setDState("error");
@@ -192,8 +196,21 @@ export default function QuoteCard({ lang, config }: { lang: Lang; config: QuoteC
 
         {/* What will actually be sent */}
         <div className="mt-5 rounded-lg border border-sand-200/15 bg-ink-950/40 px-3.5 py-2.5" aria-live="polite">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-sand-200/60">{s.preview}</p>
-          <p className="mt-0.5 whitespace-pre-line text-sm text-sand-100">{message}</p>
+          <div className="flex items-baseline justify-between gap-2">
+            <label htmlFor="q-message" className="text-[11px] font-bold uppercase tracking-wide text-sand-200/60">{s.preview}</label>
+            {custom !== null ? (
+              <button type="button" onClick={() => setCustom(null)} className="text-[11px] text-sand-200/60 underline hover:text-sand-50">{s.resetMessage}</button>
+            ) : (
+              <span className="text-[11px] text-sand-200/40">{s.editHint}</span>
+            )}
+          </div>
+          <textarea
+            id="q-message"
+            value={message}
+            onChange={(e) => setCustom(e.target.value.slice(0, 1000))}
+            rows={Math.min(8, Math.max(3, message.split("\n").length + 1))}
+            className="mt-1 block w-full resize-y rounded-sm border-0 bg-transparent p-0 text-sm leading-relaxed text-sand-100 outline-none focus:ring-1 focus:ring-sand-200/30"
+          />
         </div>
 
         {/* Primary: the request lands in the shop's inbox as a conversation (phone + email). */}
