@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Lock } from 'lucide-react';
+import { Home, Lock, Wrench } from 'lucide-react';
 import { cart, cartShipping, cartSubtotal, useCart } from '@/modules/cart/store';
 import { money } from '@/lib/store';
 import { site, track } from '@/lib/site';
@@ -12,19 +12,20 @@ export default function CheckoutPage() {
   const lines = useCart();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deliver, setDeliver] = useState<'address' | 'shop'>('address');
   const subtotal = cartSubtotal(lines);
-  const shipping = cartShipping(lines);
+  const shipping = deliver === 'shop' ? 0 : cartShipping(lines);
 
   async function pay() {
     setBusy(true);
     setError(null);
-    track('begin_checkout', { items: String(lines.length) });
+    track('begin_checkout', { items: String(lines.length), deliver });
     try {
       const origin = window.location.origin;
       const r = await fetch(`${site.storeApi}/checkout`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ lines: lines.map((l) => ({ id: l.id, qty: l.qty })), success_url: `${origin}/checkout/success`, cancel_url: `${origin}/cart`, page: '/checkout' }),
+        body: JSON.stringify({ lines: lines.map((l) => ({ id: l.id, qty: l.qty })), success_url: `${origin}/checkout/success`, cancel_url: `${origin}/cart`, page: '/checkout', deliver }),
       });
       const j = (await r.json().catch(() => ({}))) as { url?: string; error?: string };
       if (!r.ok || !j.url) throw new Error(j.error || 'Checkout is unavailable right now.');
@@ -65,13 +66,42 @@ export default function CheckoutPage() {
               </ul>
               <Link href="/cart" className="mt-3 inline-block text-sm font-semibold text-blaze-600">Change quantities</Link>
 
+              <h2 className="mt-8 font-display text-2xl font-bold uppercase text-stone-850">Deliver to</h2>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Delivery">
+                {(
+                  [
+                    { k: 'address', Icon: Home, t: 'My address', d: 'Shipped to your door. Bring them by any time after for mounting and balancing.' },
+                    { k: 'shop', Icon: Wrench, t: 'Los Reyes Tires, El Cajon', d: 'Shipped to our shop; we call you when they land and mount and balance them here (paid at the shop).' },
+                  ] as const
+                ).map(({ k, Icon, t, d }) => (
+                  <button key={k} type="button" role="radio" aria-checked={deliver === k} onClick={() => setDeliver(k)}
+                    className={`flex items-start gap-3 rounded-lg border p-4 text-left transition-colors ${deliver === k ? 'border-blaze-500 bg-blaze-50 ring-1 ring-blaze-500' : 'border-sand-300 bg-white hover:border-stone-750/40'}`}>
+                    <Icon className={`mt-0.5 h-5 w-5 flex-none ${deliver === k ? 'text-blaze-600' : 'text-stone-750/60'}`} aria-hidden="true" />
+                    <span>
+                      <span className="block font-bold text-stone-850">{t}</span>
+                      <span className="mt-1 block text-sm text-stone-750">{d}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+
               <div className="mt-8 rounded-lg bg-sand-100 p-4 text-sm text-stone-750">
                 <p className="font-bold text-stone-850">What happens next</p>
                 <ol className="mt-2 list-decimal space-y-1 pl-5">
-                  <li>Stripe&apos;s secure page takes your shipping address and card (Apple Pay / Google Pay work too). Tax is added there.</li>
-                  <li>We place the order with the Method warehouse the same business day.</li>
-                  <li>Tracking lands in your email; delivery is usually 1–3 business days to Southern California.</li>
-                  <li>Want them mounted and balanced? Bring them by the shop when they arrive.</li>
+                  {deliver === 'shop' ? (
+                    <>
+                      <li>Stripe&apos;s secure page takes your card (Apple Pay / Google Pay work too). Tax is added there.</li>
+                      <li>We place the order the same business day; it ships to our shop.</li>
+                      <li>We call you the day it lands to book the mounting and balancing.</li>
+                    </>
+                  ) : (
+                    <>
+                      <li>Stripe&apos;s secure page takes your shipping address and card (Apple Pay / Google Pay work too). Tax is added there.</li>
+                      <li>We place the order the same business day.</li>
+                      <li>Tracking lands in your email; delivery is usually 1–3 business days in Southern California.</li>
+                      <li>Want them mounted and balanced? Bring them by the shop when they arrive.</li>
+                    </>
+                  )}
                 </ol>
               </div>
             </div>

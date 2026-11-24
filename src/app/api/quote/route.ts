@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
   // form, which must carry a phone and also goes to the shop by email.
   const viaWhatsApp = body.direct !== true;
   const phone = str(body.phone, 40);
+  const email = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(str(body.email, 120)) ? str(body.email, 120).toLowerCase() : '';
   const digits = phone.replace(/\D/g, '');
   if (!viaWhatsApp && (digits.length < 10 || digits.length > 15)) return fail('Phone number is invalid', 400);
 
@@ -60,6 +61,7 @@ export async function POST(request: NextRequest) {
   const lines: [string, string][] = [
     ['Request', mode === 'package' ? 'Wheel + tire combo' : mode === 'wheels' ? 'Wheels' : 'Tires'],
     ['Phone', phone],
+    ['Email', email],
     ['Name', str(body.name, 80)],
     ['Tire size', str(body.size, 24)],
     ['Wheel size', str(body.wheelSize, 6) ? `${str(body.wheelSize, 6)}"` : ''],
@@ -84,6 +86,7 @@ export async function POST(request: NextRequest) {
     kind: 'web_quote',
     name: str(body.name, 80),
     phone,
+    email: email || undefined,
     summary: viaWhatsApp ? `WhatsApp · ${summary}` : summary,
     details: Object.fromEntries(
       Object.entries({
@@ -108,13 +111,12 @@ export async function POST(request: NextRequest) {
       : fail('Lead delivery is temporarily unavailable', 503);
   }
 
+  // RavnPro is the inbox: a request with an email becomes a conversation there.
+  // The email to the shop's general mailbox is only the fallback when RavnPro
+  // can't be reached (or isn't configured), so the request is never lost.
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.error('Quote route: RESEND_API_KEY is missing; trying RavnPro only');
-    return (await ravnpro)
-      ? NextResponse.json({ delivered: ['ravnpro'] }, { headers: { 'Cache-Control': 'no-store' } })
-      : fail('Lead delivery is temporarily unavailable', 503);
-  }
+  if (await ravnpro) return NextResponse.json({ delivered: ['ravnpro'] }, { headers: { 'Cache-Control': 'no-store' } });
+  if (!apiKey) return fail('Lead delivery is temporarily unavailable', 503);
 
   const subjectBits = [str(body.size, 24), str(body.vehicle, 60)].filter(Boolean).join(' · ');
   const text = ['LOS REYES TIRES — WEBSITE QUOTE (NO WHATSAPP)', '', ...filled.map(([k, v]) => `${k}: ${v}`), '', 'Call or text the customer back with a price.'].join('\n');
@@ -136,10 +138,8 @@ export async function POST(request: NextRequest) {
     }),
   }).catch(() => null);
 
-  const inRavnPro = await ravnpro;
   const emailed = !!res && res.ok;
   if (!emailed) console.error(`Quote email failed${res ? ` with status ${res.status}` : ''}`);
-  const delivered = [...(emailed ? ['email'] : []), ...(inRavnPro ? ['ravnpro'] : [])];
-  if (!delivered.length) return fail('Lead delivery is temporarily unavailable', 502);
-  return NextResponse.json({ delivered }, { headers: { 'Cache-Control': 'no-store' } });
+  if (!emailed) return fail('Lead delivery is temporarily unavailable', 502);
+  return NextResponse.json({ delivered: ['email'] }, { headers: { 'Cache-Control': 'no-store' } });
 }
