@@ -62,6 +62,7 @@ export default function QuoteCard({ lang, config }: { lang: Lang; config: QuoteC
 
   const [direct, setDirect] = useState(false);
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [dState, setDState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const phoneOk = phone.replace(/\D/g, "").length >= 10;
 
@@ -71,7 +72,7 @@ export default function QuoteCard({ lang, config }: { lang: Lang; config: QuoteC
     try {
       const r = await fetch(config.directEndpoint, { method: "POST", headers: { "content-type": "application/json" },
         body: JSON.stringify({ mode, size: size || undefined, wheelSize: normalizeWheelSize(draft.wheelSize) || undefined, style: draft.style || undefined, qty: draft.qty, condition: draft.condition,
-          vehicle: draft.vehicle || undefined, name: draft.name || undefined, phone, lang, source: location.pathname, direct: true }) });
+          vehicle: draft.vehicle || undefined, name: draft.name || undefined, phone, email: email.trim() || undefined, lang, source: location.pathname, direct: true }) });
       const j = await r.json().catch(() => ({}));
       if (r.ok && Array.isArray(j.delivered) && j.delivered.length > 0) { setDState("sent"); config.onEvent?.("quote_direct", { mode, size: size || "" }); }
       else setDState("error");
@@ -218,8 +219,10 @@ export default function QuoteCard({ lang, config }: { lang: Lang; config: QuoteC
             ) : (
               <>
                 <label htmlFor="q-phone" className={label}>{s.phone}</label>
+                <input id="q-phone" type="tel" inputMode="tel" autoComplete="tel" className={field} placeholder="(619) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                <label htmlFor="q-email" className={`${label} mt-3`}>{s.email}</label>
                 <div className="flex flex-col gap-2 sm:flex-row">
-                  <input id="q-phone" type="tel" inputMode="tel" autoComplete="tel" className={field} placeholder="(619) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                  <input id="q-email" type="email" inputMode="email" autoComplete="email" className={field} placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
                   <button type="button" onClick={sendDirect} disabled={!phoneOk || !hasSize || dState === "sending"}
                     className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-blaze-500 px-5 py-2.5 font-bold uppercase tracking-wide text-white disabled:opacity-40">
                     {dState === "sending" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}{s.directSend}
