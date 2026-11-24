@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { PageHero } from '@/components/layout/PageHero';
 import { ProductCard } from '@/components/shop/ProductCard';
-import { SaleRail } from '@/components/promo/SaleRail';
+import { SaleLayout } from '@/components/promo/SaleRail';
 import { generatePageMetadata } from '@/lib/metadata';
 import { listProducts } from '@/lib/store';
 
@@ -74,7 +74,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           </p>
         </div>
 
-        <SaleRail />
+        <SaleLayout>
         {data?.items.length ? (
           <div id="wheels" className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data.items.map((p) => <ProductCard key={p.id} p={p} />)}
@@ -93,6 +93,8 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             {page < pages ? chip(link({ page: String(page + 1) }), false, 'Next →') : null}
           </nav>
         ) : null}
+
+        </SaleLayout>
 
         <div className="mt-14 rounded-xl border border-sand-200 bg-white p-6 shadow-card sm:p-8">
           <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-stone-850 sm:text-3xl">How ordering works</h2>
