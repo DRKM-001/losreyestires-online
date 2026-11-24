@@ -50,9 +50,10 @@ export async function listProducts(f: StoreFilters): Promise<StoreList | null> {
   if (f.limit) p.set('limit', String(f.limit));
   if (f.offset) p.set('offset', String(f.offset));
   try {
-    const r = await fetch(`${site.storeApi}/products?${p}`, { cache: 'no-store' });
+    const r = await fetch(`${site.storeApi}/products?${p}`);
     return r.ok ? ((await r.json()) as StoreList) : null;
-  } catch {
+  } catch (e) {
+    console.error('store api: products', String(e));
     return null;
   }
 }
@@ -60,9 +61,10 @@ export async function listProducts(f: StoreFilters): Promise<StoreList | null> {
 export async function getProduct(id: string): Promise<StoreProduct | null> {
   if (!/^[0-9a-f-]{36}$/.test(id)) return null;
   try {
-    const r = await fetch(`${site.storeApi}/products/${id}`, { cache: 'no-store' });
+    const r = await fetch(`${site.storeApi}/products/${id}`);
     return r.ok ? ((await r.json()) as StoreProduct) : null;
-  } catch {
+  } catch (e) {
+    console.error('store api: product', String(e));
     return null;
   }
 }
