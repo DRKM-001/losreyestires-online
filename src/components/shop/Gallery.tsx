@@ -1,16 +1,14 @@
 'use client';
 import { useState } from 'react';
+import { ProductImage } from '@/components/shop/ProductImage';
 
-export function Gallery({ images, alt }: { images: string[]; alt: string }) {
+export function Gallery({ images, alt, kind = 'wheel' }: { images: string[]; alt: string; kind?: string }) {
   const [i, setI] = useState(0);
   const src = images[i] ?? images[0];
   return (
     <div className="flex flex-col gap-3">
       <div className="aspect-square overflow-hidden rounded-xl border border-sand-200 bg-white">
-        {src ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt={alt} className="h-full w-full object-contain p-6" />
-        ) : null}
+        <ProductImage src={src} alt={alt} kind={kind} large eager className="h-full w-full object-contain p-6" />
       </div>
       {images.length > 1 ? (
         <div className="flex gap-2">

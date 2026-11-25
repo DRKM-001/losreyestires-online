@@ -1,12 +1,11 @@
 import Link from 'next/link';
-import { CircleDot, Clock, Phone, Recycle, Ruler, ShieldCheck, Wrench } from 'lucide-react';
+import { CircleDot, Clock, Recycle, Ruler, ShieldCheck, ShoppingCart, Wrench } from 'lucide-react';
 import { QuoteBox } from '@/components/brand/QuoteBox';
 import { ShopWaLink } from '@/components/brand/ShopWaLink';
 import { WhatsAppIcon } from '@/components/brand/WhatsAppIcon';
 import { BrandMarquee } from '@/components/home/BrandMarquee';
 import { PageHero, heroBtn } from '@/components/layout/PageHero';
 import { generatePageMetadata } from '@/lib/metadata';
-import { site } from '@/lib/site';
 
 export const metadata = generatePageMetadata({
   title: 'New & Used Tires in El Cajon',
@@ -51,10 +50,10 @@ export default function TiresPage() {
           <WhatsAppIcon className="h-4 w-4" />
           WhatsApp
         </ShopWaLink>
-        <a href={site.phoneHref} className={heroBtn.ghost}>
-          <Phone className="h-4 w-4 text-blaze-400" aria-hidden="true" />
-          Call 619-440-6098
-        </a>
+        <Link href="/shop/tires" className={heroBtn.ghost}>
+          <ShoppingCart className="h-4 w-4 text-blaze-400" aria-hidden="true" />
+          Shop tires online
+        </Link>
       </PageHero>
 
       <section id="quote" className="scroll-mt-24 py-12 sm:py-16">
@@ -88,6 +87,26 @@ export default function TiresPage() {
           </div>
           <div className="lg:sticky lg:top-24">
             <QuoteBox mode="tires" />
+          </div>
+        </div>
+      </section>
+
+      <section className="pb-12 sm:pb-16">
+        <div className="container-x">
+          <div className="rounded-xl border border-sand-200 bg-white p-6 shadow-card sm:p-8">
+            <p className="font-display text-sm font-bold uppercase tracking-widest text-blaze-600">Or order online</p>
+            <h2 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight text-stone-850 sm:text-4xl">Shop new tires by size</h2>
+            <p className="mt-2 max-w-2xl text-stone-750">Toyo, Nitto, Falken, Mickey Thompson, Maxxis and more — free shipping, or ship to the shop and we mount and balance.</p>
+            <form action="/shop/tires" className="mt-5 flex flex-wrap items-end gap-3">
+              {[['width', 'Width', '275'], ['aspect', 'Profile', '60'], ['dia', 'Rim', '20']].map(([name, label, ph]) => (
+                <label key={name} className="flex flex-col gap-1">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-stone-750/70">{label}</span>
+                  <input name={name} inputMode="decimal" placeholder={ph} className="h-11 w-24 rounded-md border border-sand-300 bg-white px-3 font-display text-xl font-bold text-stone-850 placeholder:text-stone-750/30 focus:border-blaze-500 focus:outline-none" />
+                </label>
+              ))}
+              <button type="submit" className="h-11 rounded-md bg-blaze-500 px-6 font-bold uppercase tracking-wide text-white hover:bg-blaze-600">Find tires</button>
+              <Link href="/shop/tires?q=35x12.50" className="pb-3 text-sm font-semibold text-blaze-600">Flotation sizes (35x12.50…) →</Link>
+            </form>
           </div>
         </div>
       </section>
