@@ -6,7 +6,7 @@ import { AddToCart } from '@/components/shop/AddToCart';
 import { Gallery } from '@/components/shop/Gallery';
 import { ShopWaLink } from '@/components/brand/ShopWaLink';
 import { WhatsAppIcon } from '@/components/brand/WhatsAppIcon';
-import { availabilityLine, getProduct, money, specLine, titleCase } from '@/lib/store';
+import { availabilityLine, deptFor, getProduct, money, specLine, titleCase } from '@/lib/store';
 import { site } from '@/lib/site';
 
 // Cloudflare Pages: server-rendered pages run on the edge; no ISR there, so each view fetches fresh stock.
@@ -17,22 +17,35 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const p = await getProduct((await params).id);
   if (!p) return { title: 'Not found' };
   return {
-    title: `${p.model ?? p.name} ${p.spec.size ?? ''} ${p.spec.bolt_pattern ?? ''} — ${money(p.price_cents)} | ${site.name}`,
-    description: `${p.name}. ${p.features[0] ?? ''} Ships to your door from ${site.name}, El Cajon.`,
+    title: `${[p.brand, p.kind === 'accessory' ? p.name : p.model ?? p.name, p.kind === 'wheel' ? p.spec.size : null, p.kind === 'wheel' && p.spec.bolt_pattern !== 'BLANK' ? p.spec.bolt_pattern : null, p.kind === 'tire' ? p.spec.size : null].filter(Boolean).join(' ')} — ${money(p.price_cents)} | ${site.name}`,
+    description: `${p.name}. ${p.features[0] ?? ''} Free shipping from ${site.name}, El Cajon — or ship to the shop for install.`.replace(/\s+/g, ' '),
     openGraph: p.images[0] ? { images: [p.images[0]] } : undefined,
   };
 }
 
-const specRows: [string, string][] = [
-  ['size', 'Size'], ['bolt_pattern', 'Bolt pattern'], ['offset_mm', 'Offset'], ['backspacing_in', 'Backspacing'], ['hub_bore_mm', 'Hub bore'],
-  ['finish', 'Finish'], ['max_load_lbs', 'Max load'], ['weight_lbs', 'Weight'], ['cap_type', 'Center cap'], ['hub_centric', 'Hub centric'], ['lip_in', 'Lip'],
-];
+const specRows: Record<string, [string, string][]> = {
+  wheel: [
+    ['size', 'Size'], ['bolt_pattern', 'Bolt pattern'], ['bolt_pattern_metric', 'Bolt pattern (mm)'], ['offset_mm', 'Offset'], ['backspacing_in', 'Backspacing'], ['hub_bore_mm', 'Hub bore'],
+    ['finish', 'Finish'], ['material', 'Material'], ['construction', 'Construction'], ['max_load_lbs', 'Max load'], ['weight_lbs', 'Weight'], ['cap_type', 'Center cap'], ['cap_part', 'Center cap part #'],
+    ['tpms', 'TPMS compatible'], ['hub_centric', 'Hub centric'], ['lip_in', 'Lip'], ['beadlock_ring', 'Beadlock ring'],
+  ],
+  tire: [
+    ['size', 'Size'], ['tread', 'Tire line'], ['load_index', 'Load index'], ['speed_rating', 'Speed rating'], ['load_range', 'Load range'], ['ply', 'Ply'],
+    ['overall_diameter_in', 'Overall diameter'], ['tread_depth_32', 'Tread depth'], ['max_psi', 'Max pressure'], ['utqg', 'UTQG'], ['mileage_warranty', 'Mileage warranty'],
+  ],
+  accessory: [['size', 'Size'], ['type', 'Type'], ['thread', 'Thread'], ['seat', 'Seat'], ['color', 'Color'], ['finish', 'Finish']],
+};
 const fmt = (k: string, v: string | number) => {
   if (k === 'offset_mm') return `${Number(v) > 0 ? '+' : ''}${v} mm`;
   if (k === 'backspacing_in' || k === 'lip_in') return `${v}"`;
   if (k === 'hub_bore_mm') return `${v} mm`;
   if (k === 'max_load_lbs') return `${Number(v).toLocaleString()} lbs`;
   if (k === 'weight_lbs') return `${v} lbs`;
+  if (k === 'overall_diameter_in') return `${v}"`;
+  if (k === 'tread_depth_32') return `${v}/32"`;
+  if (k === 'max_psi') return `${v} psi`;
+  if (k === 'mileage_warranty') return Number(v) ? `${Number(v).toLocaleString()} miles` : String(v);
+  if (k === 'tread' || k === 'material' || k === 'construction') return titleCase(String(v));
   if (k === 'finish') return titleCase(String(v));
   if (k === 'hub_centric') return String(v).toUpperCase() === 'YES' ? 'Yes' : 'No (lug centric)';
   return String(v);
@@ -45,18 +58,21 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const compare = p.compare_cents ?? null;
   const finishes = Array.from(new Set([p.spec.finish, ...p.siblings.map((s) => s.finish)].filter(Boolean).map(String)));
   const sizesForFinish = (finish: string) => p.siblings.filter((s) => s.finish === finish);
-  const defaultQty = p.kind === 'wheel' ? 4 : 1;
+  const defaultQty = p.kind === 'accessory' ? 1 : 4;
+  const dept = deptFor(p.kind);
+  const title = p.kind === 'accessory' ? p.name : (p.model ?? p.name);
+  const rows = (specRows[p.kind] ?? specRows.accessory).filter(([k]) => p.spec[k] !== undefined && p.spec[k] !== null && p.spec[k] !== '' && p.spec[k] !== 'BLANK');
 
   return (
     <main className="min-h-screen bg-sand-50">
       <div className="container-x pt-5">
-        <Link href="/shop" className="inline-flex items-center gap-1 text-sm font-semibold text-stone-750 hover:text-blaze-600"><ChevronLeft className="h-4 w-4" /> All wheels</Link>
+        <Link href={`/shop/${dept.slug}`} className="inline-flex items-center gap-1 text-sm font-semibold text-stone-750 hover:text-blaze-600"><ChevronLeft className="h-4 w-4" /> All {dept.title.toLowerCase()}</Link>
       </div>
       <section className="container-x grid gap-8 py-6 lg:grid-cols-[1.1fr_1fr] lg:gap-12 lg:py-10">
-        <Gallery images={p.images} alt={p.name} />
+        <Gallery images={p.images} alt={p.name} kind={p.kind} />
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-stone-750/60">{p.brand}{p.series ? ` · ${p.series.replace(/\s*\(.*\)$/, '')}` : ''}</p>
-          <h1 className="mt-1 font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight text-stone-850 sm:text-5xl">{p.model ?? p.name}</h1>
+          <h1 className="mt-1 font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight text-stone-850 text-balance sm:text-5xl">{title}</h1>
           <p className="mt-2 text-lg text-stone-750">{specLine(p)}</p>
           <p className="mt-1 font-mono text-xs text-stone-750/60">Part # {p.sku}</p>
 
@@ -70,13 +86,13 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <p className={`mt-2 flex items-center gap-2 text-sm font-semibold ${avail.ok ? 'text-green-700' : 'text-stone-750'}`}>
             <Truck className="h-4 w-4" aria-hidden="true" />{avail.text}
           </p>
-          <p className="mt-1 text-sm text-stone-750/80">{p.ship_flat_cents ? `${money(p.ship_flat_cents)} shipping per order` : 'Free shipping'} · tax calculated at checkout · mounting at the shop extra</p>
+          <p className="mt-1 text-sm text-stone-750/80">{p.ship_flat_cents ? `${money(p.ship_flat_cents)} shipping per order` : 'Free shipping — included in the price'} · tax at checkout{p.kind === 'accessory' ? '' : ' · mounting at the shop extra'}</p>
 
           <div className="mt-6">
-            <AddToCart line={{ id: p.id, sku: p.sku, name: p.model ?? p.name, spec: specLine(p), image: p.images[0] ?? null, price_cents: p.price_cents, ship_flat_cents: p.ship_flat_cents }} available={p.available} defaultQty={defaultQty} />
+            <AddToCart line={{ id: p.id, sku: p.sku, name: title, spec: specLine(p), image: p.images[0] ?? null, price_cents: p.price_cents, ship_flat_cents: p.ship_flat_cents }} available={p.available} defaultQty={defaultQty} />
           </div>
 
-          {p.siblings.length ? (
+          {p.kind === 'wheel' && p.siblings.length ? (
             <div className="mt-8 space-y-4">
               {finishes.map((finish) => {
                 const opts = sizesForFinish(finish);
@@ -111,7 +127,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <div className="rounded-xl border border-sand-200 bg-white p-6 shadow-card">
           <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-stone-850">Specs</h2>
           <dl className="mt-4 divide-y divide-sand-200">
-            {specRows.filter(([k]) => p.spec[k] !== undefined && p.spec[k] !== null && p.spec[k] !== '').map(([k, label]) => (
+            {rows.map(([k, label]) => (
               <div key={k} className="flex justify-between gap-4 py-2 text-sm">
                 <dt className="text-stone-750/80">{label}</dt>
                 <dd className="font-semibold text-stone-850">{fmt(k, p.spec[k])}</dd>
@@ -120,12 +136,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             {p.upc ? <div className="flex justify-between gap-4 py-2 text-sm"><dt className="text-stone-750/80">UPC</dt><dd className="font-mono text-stone-850">{p.upc}</dd></div> : null}
           </dl>
         </div>
-        {p.features.length ? (
+        {p.features.length || p.description ? (
           <div className="rounded-xl border border-sand-200 bg-white p-6 shadow-card">
-            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-stone-850">Features</h2>
-            <ul className="mt-4 space-y-2">
-              {p.features.map((f) => <li key={f} className="flex gap-3 text-sm text-stone-750"><span className="mt-[7px] h-1.5 w-1.5 flex-none rounded-full bg-blaze-500" />{f}</li>)}
-            </ul>
+            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-stone-850">{p.features.length ? 'Features' : 'About it'}</h2>
+            {p.description ? <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-stone-750">{p.description}</p> : null}
+            {p.features.length ? (
+              <ul className="mt-4 space-y-2">
+                {p.features.map((f) => <li key={f} className="flex gap-3 text-sm text-stone-750"><span className="mt-[7px] h-1.5 w-1.5 flex-none rounded-full bg-blaze-500" />{f}</li>)}
+              </ul>
+            ) : null}
             <p className="mt-5 text-xs text-stone-750/60">Sold and supported by {site.name}, an authorized {p.vendor} dealer. Ships from the {p.vendor} warehouse.</p>
           </div>
         ) : null}

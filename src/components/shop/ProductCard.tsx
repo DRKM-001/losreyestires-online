@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { money, specLine, type StoreItem } from '@/lib/store';
+import { ProductImage } from '@/components/shop/ProductImage';
 
 export function ProductCard({ p }: { p: StoreItem }) {
   const compare = p.compare_cents ?? null;
@@ -7,10 +8,7 @@ export function ProductCard({ p }: { p: StoreItem }) {
   return (
     <Link href={`/shop/${p.id}`} className="group flex flex-col overflow-hidden rounded-xl border border-sand-200 bg-white shadow-card transition-all hover:-translate-y-1 hover:border-blaze-500/50">
       <div className="relative aspect-square bg-sand-100">
-        {p.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={p.image} alt={p.name} loading="lazy" className="h-full w-full object-contain p-4 transition-transform group-hover:scale-[1.03]" />
-        ) : null}
+        <ProductImage src={p.image} alt={p.name} kind={p.kind} className="h-full w-full object-contain p-4 transition-transform group-hover:scale-[1.03]" />
         {compare ? (
           <span className="absolute left-3 top-3 clip-slash bg-blaze-500 px-2.5 py-1 text-[11px] font-bold uppercase tracking-widest text-white">{pct}% off</span>
         ) : p.status === 'closeout' ? (
@@ -20,8 +18,8 @@ export function ProductCard({ p }: { p: StoreItem }) {
       </div>
       <div className="flex flex-1 flex-col gap-1 p-4">
         <p className="text-[11px] font-bold uppercase tracking-widest text-stone-750/60">{p.brand}</p>
-        <h3 className="font-display text-xl font-bold uppercase leading-tight text-stone-850">{p.model ?? p.name}</h3>
-        <p className="text-sm text-stone-750">{specLine(p)}</p>
+        <h3 className="line-clamp-2 font-display text-xl font-bold uppercase leading-tight text-stone-850">{p.kind === 'accessory' ? p.name : (p.model ?? p.name)}</h3>
+        <p className="line-clamp-2 text-sm text-stone-750">{specLine(p)}</p>
         <div className="mt-auto flex items-baseline gap-2 pt-3">
           <span className="font-display text-2xl font-bold text-stone-850">{money(p.price_cents)}</span>
           {compare ? <span className="text-sm text-stone-750/60 line-through">{money(compare)}</span> : null}

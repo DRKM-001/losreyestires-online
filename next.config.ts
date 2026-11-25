@@ -12,8 +12,8 @@ const contentSecurityPolicy = [
   `script-src ${scriptSources.join(' ')}`,
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
-  "img-src 'self' data: blob: https://images.unsplash.com https://budstyres.com.au https://di-uploads-pod45.dealerinspire.com https://www.simivalleychryslerdodgejeepram.com https://summit4x4company.com https://assets.snapfinance.com https://www.google-analytics.com https://*.googleusercontent.com https://*.box.com https://*.boxcloud.com",
-  "connect-src 'self' https://v2.ravnpro.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+  "img-src 'self' data: blob: https://images.unsplash.com https://budstyres.com.au https://di-uploads-pod45.dealerinspire.com https://www.simivalleychryslerdodgejeepram.com https://summit4x4company.com https://assets.snapfinance.com https://www.google-analytics.com https://*.googleusercontent.com https://*.box.com https://*.boxcloud.com https://assets.wheelpros.com https://images.wheelpros.com https://media.wheelpros.com https://5129608.app.netsuite.com",
+  "connect-src 'self' https://v2.ravnpro.com https://analytics.google.com https://www.google.com https://stats.g.doubleclick.net https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -29,6 +29,10 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
     remotePatterns: [
+      { protocol: 'https', hostname: 'assets.wheelpros.com' },
+      { protocol: 'https', hostname: 'images.wheelpros.com' },
+      { protocol: 'https', hostname: 'media.wheelpros.com' },
+      { protocol: 'https', hostname: '5129608.app.netsuite.com' },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
