@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
       
       <div className="prose prose-lg max-w-none space-y-6">
         <p className="text-muted-foreground">
-          <strong>Last Updated:</strong> December 30, 2024
+          <strong>Last Updated:</strong> November 26, 2026
         </p>
 
         <section className="space-y-4">
@@ -71,6 +71,22 @@ export default function PrivacyPolicyPage() {
             <li><strong>Legal Requirements:</strong> When required by law or to protect our rights and safety</li>
             <li><strong>Business Transfers:</strong> In connection with a merger, sale, or acquisition</li>
           </ul>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold mt-8">Text Messages (SMS)</h2>
+          <p>
+            If you agree to receive text messages from Los Reyes Tires, we use your mobile number only to text you about your
+            quotes, purchases, payments, your vehicle, and occasional offers. Message frequency varies. Message and data rates may
+            apply. Reply STOP (or ALTO) at any time to opt out, or HELP (or AYUDA) for help. Agreeing to texts is not a condition
+            of purchase.
+          </p>
+          <p>
+            <strong>No mobile information will be shared with third parties or affiliates for marketing or promotional purposes.</strong>{" "}
+            Your mobile number and your consent to receive text messages are never sold, rented, or shared with anyone else. The
+            sharing described above excludes text messaging originator opt-in data and consent; this information will not be
+            shared with any third parties. See our <a href="/messaging-terms" className="text-primary hover:underline">Messaging Terms</a>.
+          </p>
         </section>
 
         <section className="space-y-4">

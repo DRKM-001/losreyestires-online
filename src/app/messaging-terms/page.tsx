@@ -17,10 +17,10 @@ export default function MessagingTermsPage() {
           El Cajon, CA 92021-4840</p>
           <p className="mt-3">
             Email: <a href="mailto:sales@losreyestires.com" className="text-red-600 hover:underline">sales@losreyestires.com</a><br />
-            Phone: <a href="tel:6199919982" className="text-red-600 hover:underline">(619) 991-9982</a>
+            Phone: <a href="tel:6194406098" className="text-red-600 hover:underline">(619) 440-6098</a>
           </p>
           <p className="mt-3">
-            Privacy Policy: <a href="https://sandiegotires.com/privacy" className="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">sandiegotires.com/privacy</a>
+            Privacy Policy: <a href="https://losreyestires.com/privacy" className="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">losreyestires.com/privacy</a>
           </p>
         </div>
 
@@ -41,6 +41,9 @@ export default function MessagingTermsPage() {
           <p>
             Your consent to receive marketing messages is not a condition of purchase.
           </p>
+          <p>
+            No mobile information will be shared with third parties or affiliates for marketing or promotional purposes. Text messaging originator opt-in data and consent will not be shared with any third parties.
+          </p>
         </section>
 
         <section>
@@ -53,14 +56,14 @@ export default function MessagingTermsPage() {
         <section>
           <h2 className="text-2xl font-bold mb-3">Cancellation</h2>
           <p>
-            Messages will provide instructions to unsubscribe either by texting STOP or through an included link. After you unsubscribe, we will send you a message to confirm that you have been unsubscribed and no more messages will be sent. If you would like to receive messages from Los Reyes Tires again, just sign up as you did the first time and Los Reyes Tires will start sending messages to you again.
+            Reply STOP (or ALTO / BAJA in Spanish) at any time to unsubscribe. Messages will provide instructions to unsubscribe either by texting STOP or through an included link. After you unsubscribe, we will send you a message to confirm that you have been unsubscribed and no more messages will be sent. If you would like to receive messages from Los Reyes Tires again, just sign up as you did the first time and Los Reyes Tires will start sending messages to you again.
           </p>
         </section>
 
         <section>
           <h2 className="text-2xl font-bold mb-3">Info</h2>
           <p>
-            For support regarding our services, email us at <a href="mailto:sales@losreyestires.com" className="text-red-600 hover:underline">sales@losreyestires.com</a> or, if supported, text "HELP" to our messages at any time and we will respond with instructions on how to unsubscribe. If we include a link in messages we send you from Los Reyes Tires, you may also access instructions on how to unsubscribe and our company information by following that link.
+            For support regarding our services, email us at <a href="mailto:sales@losreyestires.com" className="text-red-600 hover:underline">sales@losreyestires.com</a> or, text "HELP" (or "AYUDA") to our messages at any time and we will respond with instructions on how to unsubscribe. If we include a link in messages we send you from Los Reyes Tires, you may also access instructions on how to unsubscribe and our company information by following that link.
           </p>
         </section>
 
@@ -74,7 +77,7 @@ export default function MessagingTermsPage() {
         <section>
           <h2 className="text-2xl font-bold mb-3">Privacy</h2>
           <p>
-            If you have any questions about your data or our privacy practices, please visit our <a href="https://sandiegotires.com/privacy" className="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+            If you have any questions about your data or our privacy practices, please visit our <a href="https://losreyestires.com/privacy" className="text-red-600 hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
           </p>
         </section>
 
@@ -87,7 +90,7 @@ export default function MessagingTermsPage() {
 
         <div className="bg-zinc-50 p-6 rounded-lg mt-8">
           <p className="text-sm text-zinc-600">
-            <strong>Last Updated:</strong> January 7, 2026
+            <strong>Last Updated:</strong> November 26, 2026
           </p>
         </div>
       </div>
