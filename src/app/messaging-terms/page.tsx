@@ -33,7 +33,7 @@ export default function MessagingTermsPage() {
             By opting into messages, you agree to receive recurring automated marketing and informational text messages from Los Reyes Tires. Automated messages may be sent using an automatic telephone dialing system to the mobile telephone number you provided when signing up or any other number that you designate.
           </p>
           <p>
-            Message frequency varies, and additional mobile messages may be sent periodically based on your interaction with Los Reyes Tires. Los Reyes Tires reserves the right to alter the frequency of messages sent at any time to increase or decrease the total number of sent messages. Los Reyes Tires also reserves the right to change the short code or phone number or alphanumeric sender where messages are sent.
+            Message frequency varies based on your interaction with Los Reyes Tires, up to 10 messages per month. Los Reyes Tires also reserves the right to change the short code or phone number or alphanumeric sender where messages are sent.
           </p>
           <p>
             Your usual message and data rates may apply. If you have any questions about your text plan or data plan, it is best to contact your mobile provider. Your mobile provider is not liable for delayed or undelivered messages.
