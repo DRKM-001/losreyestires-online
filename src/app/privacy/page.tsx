@@ -75,7 +75,7 @@ export default function PrivacyPolicyPage() {
             <strong>
               All the above categories exclude text messaging originator opt-in data and consent; this information will not be
               shared with any third parties. No mobile information will be shared with third parties or affiliates for marketing or
-              promotional purposes.
+              promotional purposes. SMS opt-in data and consent will not be shared with any third parties.
             </strong>
           </p>
         </section>
@@ -90,7 +90,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <p>
             <strong>No mobile information will be shared with third parties or affiliates for marketing or promotional purposes.</strong>{" "}
-            Your mobile number and your consent to receive text messages are never sold, rented, or shared with anyone else. The
+            We do not share or sell SMS opt-in data, phone numbers, or consent with any third parties or affiliates. Your mobile number and your consent to receive text messages are never sold, rented, or shared with anyone else. The
             sharing described above excludes text messaging originator opt-in data and consent; this information will not be
             shared with any third parties. See our <a href="/messaging-terms" className="text-primary hover:underline">Messaging Terms</a>.
           </p>
