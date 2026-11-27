@@ -71,13 +71,20 @@ export default function PrivacyPolicyPage() {
             <li><strong>Legal Requirements:</strong> When required by law or to protect our rights and safety</li>
             <li><strong>Business Transfers:</strong> In connection with a merger, sale, or acquisition</li>
           </ul>
+          <p>
+            <strong>
+              All the above categories exclude text messaging originator opt-in data and consent; this information will not be
+              shared with any third parties. No mobile information will be shared with third parties or affiliates for marketing or
+              promotional purposes.
+            </strong>
+          </p>
         </section>
 
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold mt-8">Text Messages (SMS)</h2>
           <p>
             If you agree to receive text messages from Los Reyes Tires, we use your mobile number only to text you about your
-            quotes, purchases, payments, your vehicle, and occasional offers. Message frequency varies. Message and data rates may
+            quotes, purchases, payments, your vehicle, and occasional offers. Up to 10 messages per month. Message and data rates may
             apply. Reply STOP (or ALTO) at any time to opt out, or HELP (or AYUDA) for help. Agreeing to texts is not a condition
             of purchase.
           </p>
